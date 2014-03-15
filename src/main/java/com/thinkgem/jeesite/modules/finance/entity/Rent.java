@@ -1,7 +1,7 @@
 /**
  * There are <a href="https://github.com/thinkgem/jeesite">JeeSite</a> code generation
  */
-package ${packageName}.${moduleName}.entity${subModuleName};
+package com.thinkgem.jeesite.modules.finance.entity;
 
 import java.util.Date;
 
@@ -25,23 +25,23 @@ import com.thinkgem.jeesite.common.persistence.IdEntity;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 
 /**
- * ${functionName}Entity
- * @author ${classAuthor}
- * @version ${classVersion}
+ * 包租明细Entity
+ * @author 夏天
+ * @version 2014-03-15
  */
 @Entity
-@Table(name = "${tableName}")
+@Table(name = "finance_rent")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class ${ClassName} extends IdEntity<${ClassName}> {
+public class Rent extends IdEntity<Rent> {
 	
 	private static final long serialVersionUID = 1L;
 	private String name; 	// 名称
 
-	public ${ClassName}() {
+	public Rent() {
 		super();
 	}
 
-	public ${ClassName}(String id){
+	public Rent(String id){
 		this();
 		this.id = id;
 	}

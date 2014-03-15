@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
+import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
@@ -37,7 +38,7 @@ public class ${ClassName}Controller extends BaseController {
 	
 	@ModelAttribute
 	public ${ClassName} get(@RequestParam(required=false) String id) {
-		if (id != null){
+		if (StringUtils.isNotBlank(id)){
 			return ${className}Service.get(id);
 		}else{
 			return new ${ClassName}();
