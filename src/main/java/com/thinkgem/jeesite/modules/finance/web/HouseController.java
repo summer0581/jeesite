@@ -3,6 +3,8 @@
  */
 package com.thinkgem.jeesite.modules.finance.web;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -13,15 +15,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.thinkgem.jeesite.common.config.Global;
+import com.thinkgem.jeesite.common.mapper.JsonMapper;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import com.thinkgem.jeesite.modules.finance.entity.House;
+import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.service.HouseService;
 
 /**
@@ -81,6 +86,27 @@ public class HouseController extends BaseController {
 		houseService.delete(id);
 		addMessage(redirectAttributes, "删除房屋明细成功");
 		return "redirect:"+Global.getAdminPath()+"/finance/house/?repage";
+	}
+	
+	/**
+	 * 房屋选择列表
+	 */
+	@RequiresPermissions("finance:rent:view")
+	@RequestMapping(value = "selectList")
+	public String selectList(House house, HttpServletRequest request, HttpServletResponse response, Model model) {
+        list(house, request, response, model);
+		return "modules/finance/houseSelectList";
+	}
+	
+	/**
+	 * 通过编号获取房屋名称
+	 */
+	@RequiresPermissions("finance:rent:view")
+	@ResponseBody
+	@RequestMapping(value = "findByIds")
+	public String findByIds(String ids) {
+		List<Object[]> list = houseService.findByIds(ids);
+		return JsonMapper.nonDefaultMapper().toJson(list);
 	}
 
 }

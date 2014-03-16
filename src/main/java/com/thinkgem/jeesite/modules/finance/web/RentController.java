@@ -3,6 +3,9 @@
  */
 package com.thinkgem.jeesite.modules.finance.web;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,10 +22,10 @@ import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
-import com.thinkgem.jeesite.modules.sys.entity.User;
-import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.service.RentService;
+import com.thinkgem.jeesite.modules.sys.entity.User;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
 /**
  * 包租明细Controller
@@ -54,14 +57,29 @@ public class RentController extends BaseController {
 		}
         Page<Rent> page = rentService.find(new Page<Rent>(request, response), rent); 
         model.addAttribute("page", page);
-		return "finance/rentList";
+		return "modules/finance/rentList";
+	}
+	
+	/**
+	 * 包租信息
+	 * @param paramMap
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions("finance:rent:view")
+	@RequestMapping(value = "rentList")
+	public String rentList(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, Model model) {
+		Page<Rent> page = rentService.rentList(new Page<Rent>(request, response),paramMap);
+		model.addAttribute("page", page);
+		model.addAttribute("paramMap", paramMap);
+		return "modules/finance/rentList";
 	}
 
 	@RequiresPermissions("finance:rent:view")
 	@RequestMapping(value = "form")
 	public String form(Rent rent, Model model) {
 		model.addAttribute("rent", rent);
-		return "finance/rentForm";
+		return "modules/finance/rentForm";
 	}
 
 	@RequiresPermissions("finance:rent:edit")
@@ -82,5 +100,9 @@ public class RentController extends BaseController {
 		addMessage(redirectAttributes, "删除包租明细成功");
 		return "redirect:"+Global.getAdminPath()+"/finance/rent/?repage";
 	}
+	
+
+	
+
 
 }

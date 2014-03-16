@@ -34,9 +34,168 @@
 		<form:hidden path="id"/>
 		<tags:message content="${message}"/>
 		<div class="control-group">
-			<label class="control-label">名称:</label>
+			<label class="control-label">房屋名称:</label>
 			<div class="controls">
-				<form:input path="name" htmlEscape="false" maxlength="200" class="required"/>
+				<form:hidden id="houseid" path="house.id" htmlEscape="false" maxlength="64" class="input-xlarge"/>
+				<form:input id="name" path="name" htmlEscape="false" maxlength="64" class="input-xlarge" readonly="true"/>
+				<a id="relationButton" href="javascript:" class="btn">选择房屋</a>
+				<script type="text/javascript">
+					var houseSelect = [];
+					function houseSelectAddOrDel(id,title){
+						houseSelect = []
+						houseSelect.push([id,title]);
+						houseSelectRefresh();
+					}
+					function houseSelectRefresh(){
+						$("#houseid").val("");
+						$("#name").val("");
+						for (var i=0; i<houseSelect.length; i++){
+							$("#name").val(houseSelect[i][1]);
+							$("#houseid").val(houseSelect[i][0]);
+						}
+					}
+					$.getJSON("${ctx}/finance/house/findByIds",{ids:$("#houseid").val()},function(data){
+						for (var i=0; i<data.length; i++){
+							houseSelect.push([data[i][1],data[i][2]]);
+						}
+						//houseSelectRefresh();
+					});
+					$("#relationButton").click(function(){
+						top.$.jBox.open("iframe:${ctx}/finance/house/selectList?pageSize=8", "添加房屋",$(top.document).width()-220,$(top.document).height()-180,{
+							buttons:{"确定":true}, loaded:function(h){
+								$(".jbox-content", top.document).css("overflow-y","hidden");
+							}
+						});
+					});
+				</script>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">承租业务员:</label>
+			<div class="controls">
+				<form:input path="rentin_person" htmlEscape="false" maxlength="64" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">承租付款方式:</label>
+			<div class="controls">
+				<form:input path="rentin_paytype" htmlEscape="false" maxlength="64" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">承租时间:</label>
+			<div class="controls">
+				<input id="rentin_sdate" name="rentin_sdate" type="text"  maxlength="20" class="input-medium Wdate"
+					value="<fmt:formatDate value="${rent.rentin_sdate}" pattern="yyyy-MM-dd"/>"
+					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+				至
+				<input id="rentin_edate" name="rentin_edate" type="text"  maxlength="20" class="input-medium Wdate"
+					value="<fmt:formatDate value="${rent.rentin_edate}" pattern="yyyy-MM-dd"/>"
+					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">承租押金:</label>
+			<div class="controls">
+				<form:input path="rentin_deposit" htmlEscape="false" maxlength="64" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">承租月租金:</label>
+			<div class="controls">
+				<form:input path="rentin_rentmonth" htmlEscape="false" maxlength="64" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">承租已付月份:</label>
+			<div class="controls">
+				<input id="rentin_lastpaysdate" name="rentin_lastpaysdate" type="text"  maxlength="20" class="input-medium Wdate"
+					value="<fmt:formatDate value="${rent.rentin_lastpaysdate}" pattern="yyyy-MM-dd"/>"
+					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+				至
+				<input id="rentin_lastpayedate" name="rentin_lastpayedate" type="text"  maxlength="20" class="input-medium Wdate"
+					value="<fmt:formatDate value="${rent.rentin_lastpayedate}" pattern="yyyy-MM-dd"/>"
+					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">承租下次付租日期:</label>
+			<div class="controls">
+				<input id="rentin_nextpaydate" name="rentin_nextpaydate" type="text"  maxlength="20" class="input-medium Wdate"
+					value="<fmt:formatDate value="${rent.rentin_nextpaydate}" pattern="yyyy-MM-dd"/>"
+					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">出租时间:</label>
+			<div class="controls">
+				<input id="rentout_sdate" name="rentout_sdate" type="text"  maxlength="20" class="input-medium Wdate"
+					value="<fmt:formatDate value="${rent.rentout_sdate}" pattern="yyyy-MM-dd"/>"
+					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+				至
+				<input id="rentout_edate" name="rentout_edate" type="text"  maxlength="20" class="input-medium Wdate"
+					value="<fmt:formatDate value="${rent.rentout_edate}" pattern="yyyy-MM-dd"/>"
+					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">出租押金:</label>
+			<div class="controls">
+				<form:input path="rentout_deposit" htmlEscape="false" maxlength="64" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">出租月租金:</label>
+			<div class="controls">
+				<form:input path="rentout_rentmonth" htmlEscape="false" maxlength="64" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">出租已付月份:</label>
+			<div class="controls">
+				<input id="rentout_lastpaysdate" name="rentout_lastpaysdate" type="text"  maxlength="20" class="input-medium Wdate"
+					value="<fmt:formatDate value="${rent.rentout_lastpaysdate}" pattern="yyyy-MM-dd"/>"
+					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">出租上次付款结束日期:</label>
+			<div class="controls">
+				<input id="rentout_lastpayedate" name="rentout_lastpayedate" type="text"  maxlength="20" class="input-medium Wdate"
+					value="<fmt:formatDate value="${rent.rentout_lastpayedate}" pattern="yyyy-MM-dd"/>"
+					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">出租已收金额:</label>
+			<div class="controls">
+				<form:input path="rentout_amountreceived" htmlEscape="false" maxlength="64" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">出租下次付租日期:</label>
+			<div class="controls">
+				<input id="rentout_nextpaydate" name="rentout_nextpaydate" type="text"  maxlength="20" class="input-medium Wdate"
+					value="<fmt:formatDate value="${rent.rentout_nextpaydate}" pattern="yyyy-MM-dd"/>"
+					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">出租付款方式:</label>
+			<div class="controls">
+				<form:input path="rentout_paytype" htmlEscape="false" maxlength="64" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">出租业务员:</label>
+			<div class="controls">
+				<form:input path="rentout_person" htmlEscape="false" maxlength="64" />
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">出租每月利润:</label>
+			<div class="controls">
+				<form:input path="rentout_profitmonth" htmlEscape="false" maxlength="64" />
 			</div>
 		</div>
 		<div class="control-group">

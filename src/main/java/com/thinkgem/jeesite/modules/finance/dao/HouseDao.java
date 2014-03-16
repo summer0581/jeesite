@@ -3,10 +3,13 @@
  */
 package com.thinkgem.jeesite.modules.finance.dao;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.thinkgem.jeesite.common.persistence.BaseDao;
 import com.thinkgem.jeesite.common.persistence.Parameter;
+import com.thinkgem.jeesite.modules.cms.entity.Article;
 import com.thinkgem.jeesite.modules.finance.entity.House;
 
 /**
@@ -16,5 +19,7 @@ import com.thinkgem.jeesite.modules.finance.entity.House;
  */
 @Repository
 public class HouseDao extends BaseDao<House> {
-	
+	public List<House> findByIdIn(String[] ids){
+		return find("from House where id in (:p1)", new Parameter(new Object[]{ids}));
+	}
 }
