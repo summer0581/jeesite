@@ -7,8 +7,8 @@ import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -20,6 +20,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
 
 import com.thinkgem.jeesite.common.persistence.IdEntity;
+import com.thinkgem.jeesite.modules.sys.entity.User;
 
 /**
  * 包租明细Entity
@@ -34,7 +35,7 @@ public class Rent extends IdEntity<Rent> {
 	private static final long serialVersionUID = 1L;
 	private String name; 	//房屋地址
 	private House house; //房屋
-	private String rentin_person;//'承租业务员'
+	private User rentin_person;//'承租业务员'
 	private String rentin_paytype;//'承租付款方式',
 	private Date  rentin_sdate;//'承租开始时间',
 	private Date  rentin_edate;//'承租结束时间',
@@ -53,7 +54,7 @@ public class Rent extends IdEntity<Rent> {
 	private String  rentout_amountreceived;//'出租已收金额',
 	private Date  rentout_nextpaydate;//'出租下次付租日期',
 	private String  rentout_paytype;//'出租付款方式',
-	private String  rentout_person;//'出租业务员',
+	private User  rentout_person;//'出租业务员',
 	private String  rentout_profitmonth;//'出租每月利润',
 
 	public Rent() {
@@ -91,14 +92,18 @@ public class Rent extends IdEntity<Rent> {
 	public void setHouse(House house) {
 		this.house = house;
 	}
-	@Length(min=0, max=64)
-	public String getRentin_person() {
+	@ManyToOne
+	@JoinColumn(name="rentin_person")
+	@NotFound(action = NotFoundAction.IGNORE)
+	@IndexedEmbedded
+	public User getRentin_person() {
 		return rentin_person;
 	}
 
-	public void setRentin_person(String rentin_person) {
+	public void setRentin_person(User rentin_person) {
 		this.rentin_person = rentin_person;
 	}
+
 	@Length(min=0, max=64)
 	public String getRentin_paytype() {
 		return rentin_paytype;
@@ -205,15 +210,19 @@ public class Rent extends IdEntity<Rent> {
 
 	public void setRentout_paytype(String rentout_paytype) {
 		this.rentout_paytype = rentout_paytype;
-	}
-	@Length(min=0, max=64)
-	public String getRentout_person() {
+	}	
+	@ManyToOne
+	@JoinColumn(name="rentout_person")
+	@NotFound(action = NotFoundAction.IGNORE)
+	@IndexedEmbedded
+	public User getRentout_person() {
 		return rentout_person;
 	}
 
-	public void setRentout_person(String rentout_person) {
+	public void setRentout_person(User rentout_person) {
 		this.rentout_person = rentout_person;
 	}
+
 	@Length(min=0, max=64)
 	public String getRentout_profitmonth() {
 		return rentout_profitmonth;

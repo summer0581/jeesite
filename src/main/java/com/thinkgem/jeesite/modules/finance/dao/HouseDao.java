@@ -22,4 +22,8 @@ public class HouseDao extends BaseDao<House> {
 	public List<House> findByIdIn(String[] ids){
 		return find("from House where id in (:p1)", new Parameter(new Object[]{ids}));
 	}
+	
+	public List<House> findByName(String name){
+		return find("from House where name = :p1", new Parameter(name));
+	}
 }

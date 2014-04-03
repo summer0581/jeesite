@@ -67,6 +67,10 @@ public class SystemService extends BaseService  {
 		return userDao.get(id);
 	}
 	
+	public List<User> findUserList(){
+		return UserUtils.getUserList(); 
+	}
+	
 	public Page<User> findUser(Page<User> page, User user) {
 		DetachedCriteria dc = userDao.createDetachedCriteria();
 		User currentUser = UserUtils.getUser();
@@ -119,6 +123,7 @@ public class SystemService extends BaseService  {
 		systemRealm.clearAllCachedAuthorizationInfo();
 		// 同步到Activiti
 		saveActiviti(user);
+		UserUtils.removeCache(UserUtils.CACHE_USER_LIST);
 	}
 
 	@Transactional(readOnly = false)
@@ -126,6 +131,7 @@ public class SystemService extends BaseService  {
 		userDao.deleteById(id);
 		// 同步到Activiti
 		deleteActiviti(userDao.get(id));
+		UserUtils.removeCache(UserUtils.CACHE_USER_LIST);
 	}
 	
 	@Transactional(readOnly = false)

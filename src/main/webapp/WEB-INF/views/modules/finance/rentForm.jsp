@@ -73,13 +73,16 @@
 		<div class="control-group">
 			<label class="control-label">承租业务员:</label>
 			<div class="controls">
-				<form:input path="rentin_person" htmlEscape="false" maxlength="64" />
+			<tags:treeselect id="rentin_person" name="rentin_person.id" notAllowSelectParent="true" value="${rent.rentin_person.id}" labelName="rentin_person.name" labelValue="${rent.rentin_person.name}"
+					title="人员" url="/sys/user/treeData" />
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">承租付款方式:</label>
 			<div class="controls">
-				<form:input path="rentin_paytype" htmlEscape="false" maxlength="64" />
+				<form:select path="rentin_paytype">
+					<form:options items="${fns:getDictList('finance_rent_paytype')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+				</form:select>
 			</div>
 		</div>
 		<div class="control-group">
@@ -183,13 +186,16 @@
 		<div class="control-group">
 			<label class="control-label">出租付款方式:</label>
 			<div class="controls">
-				<form:input path="rentout_paytype" htmlEscape="false" maxlength="64" />
+				<form:select path="rentout_paytype">
+					<form:options items="${fns:getDictList('finance_rent_paytype')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+				</form:select>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">出租业务员:</label>
 			<div class="controls">
-				<form:input path="rentout_person" htmlEscape="false" maxlength="64" />
+				<tags:treeselect id="rentout_person" name="rentout_person.id" notAllowSelectParent="true" value="${rent.rentout_person.id}" labelName="rentout_person.name" labelValue="${rent.rentout_person.name}"
+					title="人员" url="/sys/user/treeData" />
 			</div>
 		</div>
 		<div class="control-group">

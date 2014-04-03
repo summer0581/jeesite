@@ -65,6 +65,15 @@ public class HouseService extends BaseService {
 		return list;
 	}
 	
+	/**
+	 * 根据房屋名称查找房屋
+	 * @param name
+	 * @return
+	 */
+	public House findByName(String name) {
+		return houseDao.findByName(name).get(0);
+	}
+	
 	@Transactional(readOnly = false)
 	public void save(House house) {
 		houseDao.save(house);

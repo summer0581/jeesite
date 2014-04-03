@@ -70,7 +70,7 @@
 				<td>${house.debit_card}</td>
 				<td>${house.tenant_name}</td>
 				<td>${house.tenant_telephone}</td>
-				<td>${house.team_leader}</td>
+				<td>${house.team_leader.name}</td>
 				
 			</tr>
 		</c:forEach>

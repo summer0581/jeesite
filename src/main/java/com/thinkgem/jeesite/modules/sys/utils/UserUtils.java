@@ -47,6 +47,7 @@ public class UserUtils extends BaseService {
 	private static OfficeDao officeDao = SpringContextHolder.getBean(OfficeDao.class);
 
 	public static final String CACHE_USER = "user";
+	public static final String CACHE_USER_LIST = "userList";
 	public static final String CACHE_ROLE_LIST = "roleList";
 	public static final String CACHE_MENU_LIST = "menuList";
 	public static final String CACHE_AREA_LIST = "areaList";
@@ -87,6 +88,22 @@ public class UserUtils extends BaseService {
 			removeCache(CACHE_USER);
 		}
 		return getUser();
+	}
+	
+	public static List<User> getUserList(){
+		@SuppressWarnings("unchecked")
+		List<User> list = (List<User>)getCache(CACHE_USER_LIST);
+		if (list == null){
+			User user = getUser();
+			DetachedCriteria dc = userDao.createDetachedCriteria();
+			dc.createAlias("office", "office");
+			dc.add(dataScopeFilter(user, "office",""));
+			dc.add(Restrictions.eq(User.FIELD_DEL_FLAG, User.DEL_FLAG_NORMAL));
+			dc.addOrder(Order.asc("name"));
+			list = userDao.find(dc);
+			putCache(CACHE_USER_LIST, list);
+		}
+		return list;
 	}
 
 	public static List<Role> getRoleList(){

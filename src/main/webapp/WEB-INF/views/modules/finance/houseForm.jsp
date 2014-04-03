@@ -84,7 +84,8 @@
 		<div class="control-group">
 			<label class="control-label">组长:</label>
 			<div class="controls">
-				<form:input path="team_leader" htmlEscape="false" maxlength="64" class="required"/>
+				<tags:treeselect id="team_leader" name="team_leader.id" notAllowSelectParent="true" value="${house.team_leader.id}" labelName="team_leader.name" labelValue="${house.team_leader.name}"
+					title="人员" url="/sys/user/treeData" cssClass="required"/>
 			</div>
 		</div>
 		<div class="control-group">

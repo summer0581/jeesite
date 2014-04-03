@@ -33,7 +33,7 @@ public class OfficeService extends BaseService {
 	}
 	
 	public List<Office> findAll(){
-		return UserUtils.getOfficeList();
+		return UserUtils.getOfficeList(); 
 	}
 	
 	@Transactional(readOnly = false)

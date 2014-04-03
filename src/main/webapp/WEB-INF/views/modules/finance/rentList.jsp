@@ -86,15 +86,15 @@
 		<c:forEach items="${page.list}" var="rent">
 			<tr>
 				<td><a href="${ctx}/finance/rent/form?id=${rent.id}">${rent.name}</a></td>
-				<td>${rent.rentin_person}</td>
-				<td>${rent.rentin_paytype}</td>
+				<td>${rent.rentin_person.name}</td>
+				<td>${fns:getDictLabel(rent.rentin_paytype, 'finance_rent_paytype', '')}</td>
 				<td><fmt:formatDate value="${rent.rentin_sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentin_edate}" pattern="yyyy-MM-dd"/></td>
 				<td>${rent.rentin_deposit}</td>
 				<td>${rent.rentin_rentmonth}</td>
 				<td><fmt:formatDate value="${rent.rentin_lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentin_lastpayedate}" pattern="yyyy-MM-dd"/></td>
 				<td><fmt:formatDate value="${rent.rentin_nextpaydate}" pattern="yyyy-MM-dd"/></td>
-				<td>${rent.rentout_person}</td>
-				<td>${rent.rentout_paytype}</td>
+				<td>${rent.rentout_person.name}</td>
+				<td>${fns:getDictLabel(rent.rentout_paytype, 'finance_rent_paytype', '')}</td>
 				<td><fmt:formatDate value="${rent.rentout_lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentout_lastpayedate}" pattern="yyyy-MM-dd"/></td>
 				<td>${rent.rentout_rentmonth}</td>
 				<td>${rent.rentout_amountreceived}</td>

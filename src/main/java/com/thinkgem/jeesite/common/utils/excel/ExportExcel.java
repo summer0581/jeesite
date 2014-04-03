@@ -5,6 +5,8 @@
  */
 package com.thinkgem.jeesite.common.utils.excel;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,6 +36,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,7 +94,7 @@ public class ExportExcel {
 	 * @param title 表格标题，传“空值”，表示无标题
 	 * @param cls 实体对象，通过annotation.ExportField获取标题
 	 * @param type 导出类型（1:导出数据；2：导出模板）
-	 * @param groups 导入分组
+	 * @param groups 导入分组 ,指定要导出的分组，当属性或者方法上含有此分组才会被导出
 	 */
 	public ExportExcel(String title, Class<?> cls, int type, int... groups){
 		// Get annotation field 
@@ -182,6 +185,7 @@ public class ExportExcel {
 	public ExportExcel(String title, List<String> headerList) {
 		initialize(title, headerList);
 	}
+	
 	
 	/**
 	 * 初始化函数

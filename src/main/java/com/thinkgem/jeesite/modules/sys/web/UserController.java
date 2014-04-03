@@ -6,6 +6,7 @@
 package com.thinkgem.jeesite.modules.sys.web;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.thinkgem.jeesite.common.beanvalidator.BeanValidators;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
@@ -36,6 +38,7 @@ import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.sys.entity.Office;
 import com.thinkgem.jeesite.modules.sys.entity.Role;
 import com.thinkgem.jeesite.modules.sys.entity.User;
+import com.thinkgem.jeesite.modules.sys.service.OfficeService;
 import com.thinkgem.jeesite.modules.sys.service.SystemService;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
@@ -50,6 +53,8 @@ public class UserController extends BaseController {
 
 	@Autowired
 	private SystemService systemService;
+	@Autowired
+	private OfficeService officeService;
 	
 	@ModelAttribute
 	public User get(@RequestParam(required=false) String id) {
@@ -280,6 +285,47 @@ public class UserController extends BaseController {
 		model.addAttribute("user", user);
 		return "modules/sys/userModifyPwd";
 	}
+	
+	@RequiresUser
+	@ResponseBody
+	@RequestMapping(value = "treeData")
+	public List<Map<String, Object>> treeData(@RequestParam(required=false) Long extId, @RequestParam(required=false) Long type,
+			@RequestParam(required=false) Long grade, HttpServletResponse response) {
+		response.setContentType("application/json; charset=UTF-8");
+		List<Map<String, Object>> mapList = Lists.newArrayList();
+//		User user = UserUtils.getUser();
+		List<User> list = systemService.findUserList();
+		List<Office> officeList = officeService.findAll();
+		for (int i=0; i<officeList.size(); i++){
+			Office e = officeList.get(i);
+			if ((extId == null || (extId!=null && !extId.equals(e.getId()) && e.getParentIds().indexOf(","+extId+",")==-1))
+					){
+				Map<String, Object> map = Maps.newHashMap();
+				map.put("id", "d_"+e.getId());
+//				map.put("pId", !user.isAdmin() && e.getId().equals(user.getOffice().getId())?0:e.getParent()!=null?e.getParent().getId():0);
+				map.put("isParent", "true");
+				map.put("pId", "d_"+(e.getParent()!=null?e.getParent().getId():0));
+				map.put("name", e.getName());
+				mapList.add(map);
+			}
+		}
+		for (int i=0; i<list.size(); i++){
+			User e = list.get(i);
+			if ((extId == null || (extId!=null && !extId.equals(e.getId()) )
+					&& (type == null || (type != null && Integer.parseInt(e.getUserType()) <= type.intValue()))
+					) && !e.isAdmin()){
+				Map<String, Object> map = Maps.newHashMap();
+				map.put("id", e.getId());
+				//map.put("pId",e.getId().equals(UserUtils.getUser().getId())?0:"d_"+(e.getOffice()!=null?e.getOffice().getId():0));
+				map.put("pId", "d_"+(e.getOffice()!=null?e.getOffice().getId():0)); 
+				map.put("name", e.getName());
+				mapList.add(map);
+			}
+		}
+
+		return mapList;
+	}
+
     
 //	@InitBinder
 //	public void initBinder(WebDataBinder b) {
