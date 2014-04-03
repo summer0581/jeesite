@@ -96,10 +96,10 @@
 				<td>${rent.rentout_person.name}</td>
 				<td>${fns:getDictLabel(rent.rentout_paytype, 'finance_rent_paytype', '')}</td>
 				<td><fmt:formatDate value="${rent.rentout_lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentout_lastpayedate}" pattern="yyyy-MM-dd"/></td>
-				<td>${rent.rentout_rentmonth}</td>
-				<td>${rent.rentout_amountreceived}</td>
-				<td><fmt:formatDate value="${rent.rentout_nextpaydate}" pattern="yyyy-MM-dd"/></td>
 				<td>${rent.rentout_deposit}</td>
+				<td>${rent.rentout_rentmonth}</td>
+				<td><fmt:formatDate value="${rent.rentout_nextpaydate}" pattern="yyyy-MM-dd"/></td>
+				<td>${rent.rentout_amountreceived}</td>
 				<td><fmt:formatDate value="${rent.rentout_sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentout_edate}" pattern="yyyy-MM-dd"/></td>
 				<td>${rent.rentout_profitmonth}</td>
 				<shiro:hasPermission name="finance:rent:edit"><td>
