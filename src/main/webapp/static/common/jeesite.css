@@ -42,3 +42,9 @@ a.btn-primary,a.btn-primary:hover,a.btn-warning,a.btn-warning:hover,a.btn-danger
 #left,#right,#openClose {float:left;} #openClose {width:8px;margin:0 1px;cursor:pointer;}
 #openClose,#openClose.close {background:#fdfdfd url("../images/openclose.png") no-repeat -29px center;}
 #openClose.close {background-position:1px center;}
+
+/*!
+*xt begin
+*/
+.sort{color:#0663A2;cursor:pointer;}
+.table td.total_td{text-align:center;}

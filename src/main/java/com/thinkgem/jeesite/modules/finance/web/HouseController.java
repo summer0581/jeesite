@@ -103,7 +103,12 @@ public class HouseController extends BaseController {
 	@RequiresPermissions("finance:house:view")
 	@RequestMapping(value = "selectList")
 	public String selectList(House house, HttpServletRequest request, HttpServletResponse response, Model model) {
-        list(house, request, response, model);
+		User user = UserUtils.getUser();
+		if (!user.isAdmin()){
+			house.setCreateBy(user);
+		}
+        Page<House> page = houseService.findNoRelation(new Page<House>(request, response), house); 
+        model.addAttribute("page", page);
 		return "modules/finance/houseSelectList";
 	}
 	
@@ -141,15 +146,18 @@ public class HouseController extends BaseController {
 			StringBuilder failureMsg = new StringBuilder();
 			ImportExcel ei = new ImportExcel(file, 1, 0);
 			List<House> list = ei.getDataList(House.class);
+			House temphouse = null;
 			for (House house : list){
 				try{
-
-					if (null == houseService.findByName(house.getName())){
+					temphouse = houseService.findByName(house.getName());
+					if (null == temphouse){
 						BeanValidators.validateWithException(validator, house);
 						houseService.save(house);
 						successNum++;
 					}else{
-						failureMsg.append("<br/>地址 "+house.getName()+" 已存在; ");
+						house.setId(temphouse.getId());
+						houseService.save(house);
+						failureMsg.append("<br/>地址 "+house.getName()+" 已存在;进行更新; ");
 						failureNum++;
 					}
 				}catch(ConstraintViolationException ex){

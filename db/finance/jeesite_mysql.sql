@@ -3,6 +3,7 @@ SET SESSION FOREIGN_KEY_CHECKS=0;
 /* Drop Tables */
 DROP TABLE finance_house;
 DROP TABLE finance_rent;
+DROP TABLE finance_customer;
 
 
 
@@ -20,6 +21,16 @@ CREATE TABLE finance_house (
   tenant_name VARCHAR(64)  COMMENT '租户姓名',
   tenant_telephone VARCHAR(64)  COMMENT '租户联系方式',
   team_leader VARCHAR(64)  COMMENT '组长',
+  is_canrent char(1) COMMENT '是否可租',
+  is_cansale char(1) COMMENT '是否可卖',
+  area char(2) COMMENT '区域',
+  sale_price VARCHAR(64) COMMENT '价格',
+  measure VARCHAR(64) COMMENT '面积',
+  direction VARCHAR(64) COMMENT '朝向',
+  age VARCHAR(64) COMMENT '年代',
+  decorate VARCHAR(64) COMMENT '装修',
+  is_needdeposit char(1) COMMENT '是否需要下定金',
+  office_id varchar(64) NOT NULL COMMENT '归属部门',
   
   create_by VARCHAR(64)  COMMENT '创建者',
   create_date DATETIME DEFAULT NULL COMMENT '创建时间',
@@ -34,6 +45,7 @@ CREATE TABLE finance_rent (
   id VARCHAR(64) NOT NULL DEFAULT '' COMMENT '编号',
   house_id VARCHAR(64) NOT NULL DEFAULT '' COMMENT '房屋id',
   name VARCHAR(255)  COMMENT '房屋地址',
+  vacant_period VARCHAR(64)  COMMENT '空置期设置',
   rentin_person VARCHAR(64)  COMMENT '承租业务员',
   rentin_paytype VARCHAR(64)  COMMENT '承租付款方式',
   rentin_sdate DATETIME  COMMENT '承租开始时间',
@@ -66,13 +78,33 @@ CREATE TABLE finance_rent (
 
 )COMMENT='包租明细';
 
+/* Create Tables */
+CREATE TABLE finance_customer (
+  id VARCHAR(64) NOT NULL DEFAULT '' COMMENT '编号',
+  name VARCHAR(255)  COMMENT '姓名',
+  social_context VARCHAR(500)  COMMENT '客户的社会背景',
+  telephone VARCHAR(64)  COMMENT '电话号码',
+  job VARCHAR(100)  COMMENT '工作',
+  hobby VARCHAR(64)  COMMENT '爱好',
+  sex char(1)  COMMENT '性别',
+  office_id varchar(64) NOT NULL COMMENT '所属部门',
+  remark VARCHAR(255)  COMMENT '备注',
+  
+  create_by VARCHAR(64)  COMMENT '创建者',
+  create_date DATETIME DEFAULT NULL COMMENT '创建时间',
+  update_by VARCHAR(64)  COMMENT '更新者',
+  update_date DATETIME DEFAULT NULL COMMENT '更新时间',
+  remarks VARCHAR(255)  COMMENT '备注信息',
+  del_flag CHAR(1) DEFAULT '0' NOT NULL COMMENT '删除标志',
+  PRIMARY KEY (id)
+) COMMENT='客户信息';
 
 
 /* Create Indexes */
 
 CREATE INDEX finance_house_create_by ON finance_house (create_by ASC);
 CREATE INDEX finance_rent_create_by ON finance_rent (create_by ASC);
-
+CREATE INDEX finance_customer_create_by ON finance_customer (create_by ASC);
 
 
 

@@ -195,7 +195,11 @@ public class UserController extends BaseController {
 						systemService.saveUser(user);
 						successNum++;
 					}else{
-						failureMsg.append("<br/>登录名 "+user.getLoginName()+" 已存在; ");
+						User temp_user = systemService.getUserByLoginName(user.getLoginName());
+						user.setId(temp_user.getId());
+						user.setPassword(temp_user.getPassword());
+						systemService.saveUser(user);
+						failureMsg.append("<br/>登录名 "+user.getLoginName()+" 已存在,进行更新; ");
 						failureNum++;
 					}
 				}catch(ConstraintViolationException ex){

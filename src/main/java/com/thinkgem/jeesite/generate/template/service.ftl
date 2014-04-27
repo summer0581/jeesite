@@ -3,6 +3,7 @@
  */
 package ${packageName}.${moduleName}.service${subModuleName};
 
+import java.util.List;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -31,6 +32,12 @@ public class ${ClassName}Service extends BaseService {
 	public ${ClassName} get(String id) {
 		return ${className}Dao.get(id);
 	}
+	
+	public ${ClassName} findByName(String name) {
+		List<${ClassName}> ${className}s = ${className}Dao.findByName(name);
+		return (${className}s.size()>0)?${className}Dao.findByName(name).get(0):null;
+	}
+	
 	
 	public Page<${ClassName}> find(Page<${ClassName}> page, ${ClassName} ${className}) {
 		DetachedCriteria dc = ${className}Dao.createDetachedCriteria();

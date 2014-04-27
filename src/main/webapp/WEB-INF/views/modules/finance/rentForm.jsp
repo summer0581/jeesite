@@ -49,17 +49,11 @@
 					function houseSelectRefresh(){
 						$("#houseid").val("");
 						$("#name").val("");
-						for (var i=0; i<houseSelect.length; i++){
-							$("#name").val(houseSelect[i][1]);
-							$("#houseid").val(houseSelect[i][0]);
+						if(houseSelect.length > 0){
+							$("#name").val(houseSelect[houseSelect.length-1][1]);
+							$("#houseid").val(houseSelect[houseSelect.length-1][0]);
 						}
 					}
-					$.getJSON("${ctx}/finance/house/findByIds",{ids:$("#houseid").val()},function(data){
-						for (var i=0; i<data.length; i++){
-							houseSelect.push([data[i][1],data[i][2]]);
-						}
-						//houseSelectRefresh();
-					});
 					$("#relationButton").click(function(){
 						top.$.jBox.open("iframe:${ctx}/finance/house/selectList?pageSize=8", "添加房屋",$(top.document).width()-220,$(top.document).height()-180,{
 							buttons:{"确定":true}, loaded:function(h){
@@ -81,6 +75,7 @@
 			<label class="control-label">承租付款方式:</label>
 			<div class="controls">
 				<form:select path="rentin_paytype">
+					<form:option value="" label="请选择"/>
 					<form:options items="${fns:getDictList('finance_rent_paytype')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 				</form:select>
 			</div>
@@ -100,13 +95,13 @@
 		<div class="control-group">
 			<label class="control-label">承租押金:</label>
 			<div class="controls">
-				<form:input path="rentin_deposit" htmlEscape="false" maxlength="64" />
+				<form:input path="rentin_deposit" htmlEscape="false" maxlength="64" class="digits"/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">承租月租金:</label>
 			<div class="controls">
-				<form:input path="rentin_rentmonth" htmlEscape="false" maxlength="64" />
+				<form:input path="rentin_rentmonth" htmlEscape="false" maxlength="64" class="digits"/>
 			</div>
 		</div>
 		<div class="control-group">
@@ -144,13 +139,13 @@
 		<div class="control-group">
 			<label class="control-label">出租押金:</label>
 			<div class="controls">
-				<form:input path="rentout_deposit" htmlEscape="false" maxlength="64" />
+				<form:input path="rentout_deposit" htmlEscape="false" maxlength="64" class="digits"/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">出租月租金:</label>
 			<div class="controls">
-				<form:input path="rentout_rentmonth" htmlEscape="false" maxlength="64" />
+				<form:input path="rentout_rentmonth" htmlEscape="false" maxlength="64" class="digits"/>
 			</div>
 		</div>
 		<div class="control-group">
@@ -159,11 +154,7 @@
 				<input id="rentout_lastpaysdate" name="rentout_lastpaysdate" type="text"  maxlength="20" class="input-medium Wdate"
 					value="<fmt:formatDate value="${rent.rentout_lastpaysdate}" pattern="yyyy-MM-dd"/>"
 					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">出租上次付款结束日期:</label>
-			<div class="controls">
+				至
 				<input id="rentout_lastpayedate" name="rentout_lastpayedate" type="text"  maxlength="20" class="input-medium Wdate"
 					value="<fmt:formatDate value="${rent.rentout_lastpayedate}" pattern="yyyy-MM-dd"/>"
 					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
@@ -172,7 +163,7 @@
 		<div class="control-group">
 			<label class="control-label">出租已收金额:</label>
 			<div class="controls">
-				<form:input path="rentout_amountreceived" htmlEscape="false" maxlength="64" />
+				<form:input path="rentout_amountreceived" htmlEscape="false" maxlength="64" class="digits"/>
 			</div>
 		</div>
 		<div class="control-group">
@@ -187,6 +178,7 @@
 			<label class="control-label">出租付款方式:</label>
 			<div class="controls">
 				<form:select path="rentout_paytype">
+					<form:option value="" label="请选择"/>
 					<form:options items="${fns:getDictList('finance_rent_paytype')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 				</form:select>
 			</div>
@@ -198,12 +190,12 @@
 					title="人员" url="/sys/user/treeData" />
 			</div>
 		</div>
-		<div class="control-group">
+		<!--  <div class="control-group">
 			<label class="control-label">出租每月利润:</label>
 			<div class="controls">
 				<form:input path="rentout_profitmonth" htmlEscape="false" maxlength="64" />
 			</div>
-		</div>
+		</div>-->
 		<div class="control-group">
 			<label class="control-label">备注:</label>
 			<div class="controls">

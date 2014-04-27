@@ -3,6 +3,7 @@
 <html>
 <head>
 	<title>房屋明细管理</title>
+	<%@include file="/WEB-INF/views/include/dialog.jsp" %>
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -16,7 +17,7 @@
 				top.$('.jbox-body .jbox-icon').css('top','55px');
 			});
 			$("#btnImport").click(function(){
-				top.$.jBox($("#importBox").html(), {title:"导入数据", buttons:{"关闭":true}, 
+				$.jBox($("#importBox").html(), {title:"导入数据", buttons:{"关闭":true}, 
 					bottomText:"导入文件不能超过5M，仅允许导入“xls”或“xlsx”格式文件！"});
 			});
 		});
@@ -47,10 +48,14 @@
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
 		<label>地址 ：</label><form:input path="name" htmlEscape="false" maxlength="50" class="input-small"/>
-		<label>房东姓名 ：</label><form:input path="landlord_name" htmlEscape="false" maxlength="50" class="input-small"/>
+		<label>房东姓名 ：</label><form:input path="landlord.name" htmlEscape="false" maxlength="50" class="input-small"/>
 		&nbsp;<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/>
-		&nbsp;<input id="btnExport" class="btn btn-primary" type="button" value="导出"/>
-		&nbsp;<input id="btnImport" class="btn btn-primary" type="button" value="导入"/>
+		<shiro:hasPermission name="finance:house:view">
+			&nbsp;<input id="btnExport" class="btn btn-primary" type="button" value="导出"/>
+		</shiro:hasPermission>
+		<shiro:hasPermission name="finance:house:edit">
+			&nbsp;<input id="btnImport" class="btn btn-primary" type="button" value="导入"/>
+		</shiro:hasPermission>
 	</form:form>
 	<tags:message content="${message}"/>
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
@@ -71,11 +76,11 @@
 				<td>${house.busi_id}</td>
 				<td><a href="${ctx}/finance/house/form?id=${house.id}">${house.name}</a></td>
 				<td>${house.houses}</td>
-				<td>${house.landlord_name}</td>
-				<td>${house.landlord_telephone}</td>
+				<td>${house.landlord.name}</td>
+				<td>${house.landlord.telephone}</td>
 				<td>${house.debit_card}</td>
-				<td>${house.tenant_name}</td>
-				<td>${house.tenant_telephone}</td>
+				<td>${house.tenant.name}</td>
+				<td>${house.tenant.telephone}</td>
 				<td>${house.team_leader.name}</td>
 				<shiro:hasPermission name="finance:house:edit"><td>
     				<a href="${ctx}/finance/house/form?id=${house.id}">修改</a>

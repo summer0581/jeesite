@@ -148,7 +148,7 @@ public class MenuController extends BaseController {
 	@RequiresUser
 	@ResponseBody
 	@RequestMapping(value = "treeData")
-	public List<Map<String, Object>> treeData(@RequestParam(required=false) Long extId, HttpServletResponse response) {
+	public List<Map<String, Object>> treeData(@RequestParam(required=false) String extId, HttpServletResponse response) {
 		response.setContentType("application/json; charset=UTF-8");
 		List<Map<String, Object>> mapList = Lists.newArrayList();
 		List<Menu> list = systemService.findAllMenu();

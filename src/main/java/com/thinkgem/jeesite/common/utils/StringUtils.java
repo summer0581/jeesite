@@ -154,4 +154,34 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         return remoteAddr != null ? remoteAddr : request.getRemoteAddr();
 	}
 	
+	/**
+	 * 根据标志以及标志的序号进行字符串切割，主要用于 类似于日期切割：2014-03-04-2015-04-06 切割成 2014-03-04  和  2015-04-06
+	 * @param str 
+	 * @param token 标志
+	 * @param index 标志序号
+	 * @return
+	 */
+	public static String[] splitWithTokenIndex(String str,String token,int index){
+		int target_index = 0;
+		int temp_index = 0;
+		String[] strArry = new String[2];
+		for(int i = 0 ; i < index ; i++){ 
+			temp_index = str.indexOf(token, temp_index+1);
+			if(temp_index > target_index){
+				target_index = temp_index;
+			}else{
+				break;
+			} 
+		}
+		if(target_index>0){
+			strArry[0] = str.substring(0, target_index);
+			strArry[1] = str.substring(target_index+1, str.length());
+		}
+		
+		return strArry;
+	}
+	
+	public static void main(String[] args){
+		
+	}
 }

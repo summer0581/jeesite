@@ -38,7 +38,7 @@
 </head>
 <body>
 <div style="margin:10px;">
-	<form:form id="searchForm" modelAttribute="house" action="${ctx}/finance/house/" method="post" class="breadcrumb form-search">
+	<form:form id="searchForm" modelAttribute="house" action="${ctx}/finance/house/selectList" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
 		<label>地址 ：</label><form:input path="name" htmlEscape="false" maxlength="50" class="input-small"/>

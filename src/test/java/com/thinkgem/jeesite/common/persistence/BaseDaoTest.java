@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.thinkgem.jeesite.common.test.SpringTransactionalContextTests;
+import com.thinkgem.jeesite.modules.finance.dao.RentDao;
+import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.sys.dao.UserDao;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 
@@ -19,6 +21,9 @@ public class BaseDaoTest extends SpringTransactionalContextTests {
 	@Autowired
 	private UserDao userDao;
 
+	@Autowired
+	private RentDao rentDao;
+	
 	@Test
 	public void find(){
 		Page<Object[]> objPage = new Page<Object[]>(1, 3);
@@ -68,6 +73,16 @@ public class BaseDaoTest extends SpringTransactionalContextTests {
 		
 		System.out.print("========================================\n");
 		System.out.print("userDao: "+userDao+"\n");
+	}
+	
+	@Test
+	public void delete(){
+		String id = "0f2b8d353bb94984814a24170cd379a2";//东一国际2402
+		Rent rent = rentDao.get(id);
+		rent.setHouse(null);
+		rent.setDelFlag(BaseEntity.DEL_FLAG_DELETE);
+		rentDao.save(rent);
+		rentDao.deleteById(id);
 	}
 	
 }

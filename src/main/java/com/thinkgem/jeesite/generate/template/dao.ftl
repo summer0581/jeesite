@@ -4,7 +4,7 @@
 package ${packageName}.${moduleName}.dao${subModuleName};
 
 import org.springframework.stereotype.Repository;
-
+import java.util.List;
 import com.thinkgem.jeesite.common.persistence.BaseDao;
 import com.thinkgem.jeesite.common.persistence.Parameter;
 import ${packageName}.${moduleName}.entity${subModuleName}.${ClassName};
@@ -16,5 +16,7 @@ import ${packageName}.${moduleName}.entity${subModuleName}.${ClassName};
  */
 @Repository
 public class ${ClassName}Dao extends BaseDao<${ClassName}> {
-	
+	public List<${ClassName}> findByName(String name){
+		return find("from ${ClassName} where name = :p1", new Parameter(name));
+	}
 }

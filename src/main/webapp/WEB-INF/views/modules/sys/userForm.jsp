@@ -120,6 +120,16 @@
 			</div>
 		</div>
 		<div class="control-group">
+			<label class="control-label">用户业务类型:</label>
+			<div class="controls">
+				<form:select path="userBusitype">
+					<form:option value="" label="请选择"/>
+					<form:options items="${fns:getDictList('user_busitype')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+				</form:select>
+			</div>
+		</div>
+		
+		<div class="control-group">
 			<label class="control-label">用户角色:</label>
 			<div class="controls">
 				<form:checkboxes path="roleIdList" items="${allRoles}" itemLabel="name" itemValue="id" htmlEscape="false" class="required"/>

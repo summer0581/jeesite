@@ -61,6 +61,7 @@ public class User extends IdEntity<User> {
 	private String phone;	// 电话
 	private String mobile;	// 手机
 	private String userType;// 用户类型
+	private String userBusitype;// 用户业务类型
 	private String loginIp;	// 最后登陆IP
 	private Date loginDate;	// 最后登陆日期
 	
@@ -187,12 +188,24 @@ public class User extends IdEntity<User> {
 	public void setUserType(String userType) {
 		this.userType = userType;
 	}
+	
+	@Length(min=0, max=100)
+	@ExcelField(title="用户业务类型", align=2, sort=85, dictType="user_busitype")
+	public String getUserBusitype() {
+		return userBusitype;
+	}
+
+	public void setUserBusitype(String userBusitype) {
+		this.userBusitype = userBusitype;
+	}
 
 	@Transient
 	@ExcelField(title="创建时间", type=0, align=1, sort=90)
 	public Date getCreateDate() {
 		return createDate;
 	}
+
+
 
 	@ExcelField(title="最后登录IP", type=1, align=1, sort=100)
 	public String getLoginIp() {
@@ -220,7 +233,7 @@ public class User extends IdEntity<User> {
 	@NotFound(action = NotFoundAction.IGNORE)
 	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	@JsonIgnore
-	@ExcelField(title="拥有角色", align=1, sort=800, fieldType=RoleListType.class)
+	@ExcelField(title="拥有角色", align=0, sort=800, fieldType=RoleListType.class)
 	public List<Role> getRoleList() {
 		return roleList;
 	}

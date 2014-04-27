@@ -85,6 +85,7 @@ public class LogInterceptor extends BaseService implements HandlerInterceptor {
 				log.setParams(params.toString());
 				log.setException(ex != null ? ex.toString() : "");
 				logDao.save(log);
+				logDao.flush();
 				
 				logger.info("save log {type: {}, loginName: {}, uri: {}}, ", log.getType(), user.getLoginName(), log.getRequestUri());
 				

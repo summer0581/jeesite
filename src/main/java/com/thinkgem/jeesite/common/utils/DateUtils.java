@@ -7,6 +7,7 @@ package com.thinkgem.jeesite.common.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -121,6 +122,25 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 	public static long pastDays(Date date) {
 		long t = new Date().getTime()-date.getTime();
 		return t/(24*60*60*1000);
+	}
+	
+	/**
+	 * 比较两个日期之间的时间，并按指定格式返回。
+	 * @param newdate
+	 * @param olddate
+	 * @param field the field from <code>Calendar</code> 指定的格式
+	 * @return
+	 */
+	public static long compareDates(Date newdate,Date olddate,int field) {
+		if(null == newdate || null == olddate){
+			return 0;
+		}
+		long t = newdate.getTime()-olddate.getTime();
+		long result = 0;
+		if(Calendar.DATE == field ){
+			result = t/(24*60*60*1000);
+		}
+		return result;
 	}
 	
     

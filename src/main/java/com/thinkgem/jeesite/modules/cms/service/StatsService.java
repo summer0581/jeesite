@@ -61,8 +61,8 @@ public class StatsService extends BaseService {
 			pm.put("parentIds", "%,"+categoryId+",%");
 		}
 		
-		Long officeId = StringUtils.toLong(paramMap.get("officeId"));
-		if (officeId > 0){
+		String officeId = (String)paramMap.get("officeId");
+		if (StringUtils.isNotBlank(officeId)){
 			ql.append(" and (o.id = :officeId or o.parentIds like :officeParentIds)");
 			pm.put("officeId", officeId);
 			pm.put("officeParentIds", "%,"+officeId+",%");

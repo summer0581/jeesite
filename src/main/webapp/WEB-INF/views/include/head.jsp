@@ -22,6 +22,7 @@
 <script src="${ctxStatic}/x-editable/js/bootstrap-editable.js" type="text/javascript"></script>
 <link href="${ctxStatic}/fancyBox/source/jquery.fancybox.css" type="text/css" rel="stylesheet" />
 <script src="${ctxStatic}/fancyBox/source/jquery.fancybox.js" type="text/javascript"></script>
-<link href="${ctxStatic}/common/jeesite.min.css" type="text/css" rel="stylesheet" />
+<link href="${ctxStatic}/common/jeesite.css" type="text/css" rel="stylesheet" />
 <script src="${ctxStatic}/common/jeesite.min.js" type="text/javascript"></script>
+<script src="${ctxStatic}/common/jeesite-table.js" type="text/javascript"></script>
 <link rel="shortcut icon" href="${ctxStatic}/favicon.ico">

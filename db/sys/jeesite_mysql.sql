@@ -183,6 +183,7 @@ CREATE TABLE sys_user
 	phone varchar(200) COMMENT '电话',
 	mobile varchar(200) COMMENT '手机',
 	user_type char(1) COMMENT '用户类型',
+	user_busitype varchar(10) COMMENT '用户业务类型',
 	login_ip varchar(100) COMMENT '最后登陆IP',
 	login_date datetime COMMENT '最后登陆时间',
 	create_by varchar(64) COMMENT '创建者',

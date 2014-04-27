@@ -20,7 +20,7 @@
 			url += files[i].getUrl();//</c:if>
 			if (i<files.length-1) url+="|";
 		}//<c:if test="${selectMultiple}">
-		$("#${input}").val($("#${input}").val()+($("#${input}").val(url)==""?url:"|"+url));//</c:if><c:if test="${!selectMultiple}">
+		$("#${input}").val($("#${input}").val()+($("#${input}").val()==""?url:"|"+url));//</c:if><c:if test="${!selectMultiple}">
 		$("#${input}").val(url);//</c:if>
 		${input}Preview();
 		//top.$.jBox.close();
@@ -31,8 +31,8 @@
 			url += files[i].getThumbnailUrl();
 			if (i<files.length-1) url+="|";
 		}//<c:if test="${selectMultiple}">
-		$("#${input}").val($("#${input}").val()+($("#${input}").val(url)==""?url:"|"+url));//</c:if><c:if test="${!selectMultiple}">
-		$("#${input}").val(url);//</c:if>
+		$("#${input}").val($("#${input}").val()+($("#${input}").val()==""?url:"|"+url));//</c:if><c:if test="${!selectMultiple}">
+		$("#${input}").val(url);//</c:if> 
 		${input}Preview();
 		//top.$.jBox.close();
 	}

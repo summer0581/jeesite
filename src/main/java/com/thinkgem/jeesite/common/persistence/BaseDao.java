@@ -263,6 +263,7 @@ public class BaseDao<T> {
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		}
+		getSession().clear();
 		getSession().saveOrUpdate(entity);
 	}
 	

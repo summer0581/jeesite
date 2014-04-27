@@ -52,15 +52,51 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">房东姓名:</label>
+			<label class="control-label">区域:</label>
 			<div class="controls">
-				<form:input path="landlord_name" htmlEscape="false" maxlength="200" class="required"/>
+				<form:select path="area">
+					<form:option value="" label="请选择"/>
+					<form:options items="${fns:getDictList('house_area')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+				</form:select>
+			</div>
+		</div>
+
+		<div class="control-group">
+			<label class="control-label">房东:</label>
+			<div class="controls">
+				<form:hidden id="landlord.id" path="landlord.id" htmlEscape="false" maxlength="64" class="input-xlarge"/>
+				<input id="landlord.name" type="text" value="${house.landlord.name }" maxlength="64" class="input-xlarge" readonly="readonly"/>
+				<a id="relationButton_landlord" href="javascript:" class="btn">选择房东</a>
+				<script type="text/javascript">
+					var landlordSelect = [];
+					function landlordSelectAddOrDel(id,title){
+						landlordSelect = []
+						landlordSelect.push([id,title]);
+						landlordSelectRefresh();
+					}
+					function landlordSelectRefresh(){
+						$("#landlord.id").val("");
+						$("#landlord.name").val("");
+						if(landlordSelect.length > 0){
+							$("#landlord.name").val(landlordSelect[landlordSelect.length-1][1]);
+							$("#landlord.id").val(landlordSelect[landlordSelect.length-1][0]);
+						}
+					}
+					$("#relationButton_landlord").click(function(){
+						top.$.jBox.open("iframe:${ctx}/finance/customer/selectList?pageSize=8", "添加房东",$(top.document).width()-220,$(top.document).height()-180,{
+							buttons:{"确定":true}, loaded:function(h){
+								$(".jbox-content", top.document).css("overflow-y","hidden");
+							}
+						});
+					});
+				</script>
+				
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">房东联系方式:</label>
 			<div class="controls">
-				<form:input path="landlord_telephone" htmlEscape="false" maxlength="64" class="required"/>
+				<form:input path="landlord_telephone" htmlEscape="false" maxlength="64" class="required mobile"/>
 			</div>
 		</div>
 		<div class="control-group">
@@ -70,15 +106,97 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">租户姓名:</label>
+			<label class="control-label">租户:</label>
 			<div class="controls">
-				<form:input path="tenant_name" htmlEscape="false" maxlength="64" />
+				<form:hidden id="tenant.id" path="tenant.id" htmlEscape="false" maxlength="64" class="input-xlarge"/>
+				<input id="tenant.name" type="text" value="${house.tenant.name }" maxlength="64" class="input-xlarge" readonly="readonly"/>
+				<a id="relationButton_tenant" href="javascript:" class="btn">选择房屋</a>
+				<script type="text/javascript">
+					var tenantSelect = [];
+					function tenantSelectAddOrDel(id,title){
+						tenantSelect = []
+						tenantSelect.push([id,title]);
+						tenantSelectRefresh();
+					}
+					function tenantSelectRefresh(){
+						$("#tenant.id").val("");
+						$("#tenant.name").val("");
+						if(tenantSelect.length > 0){
+							$("#tenant.name").val(tenantSelect[tenantSelect.length-1][1]);
+							$("#tenant.id").val(tenantSelect[tenantSelect.length-1][0]);
+						}
+					}
+					$("#relationButton_tenant").click(function(){
+						top.$.jBox.open("iframe:${ctx}/finance/customer/selectList?pageSize=8", "添加租户",$(top.document).width()-220,$(top.document).height()-180,{
+							buttons:{"确定":true}, loaded:function(h){
+								$(".jbox-content", top.document).css("overflow-y","hidden");
+							}
+						});
+					});
+				</script>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">租户联系方式:</label>
 			<div class="controls">
-				<form:input path="tenant_telephone" htmlEscape="false" maxlength="64" />
+				<form:input path="tenant.telephone" htmlEscape="false" maxlength="64" class="required mobile"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">是否可租:</label>
+			<div class="controls">
+				<form:select path="is_canrent">
+					<form:option value="" label="请选择"/>
+					<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+				</form:select>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">是否可卖:</label>
+			<div class="controls">
+				<form:select path="is_cansale">
+					<form:option value="" label="请选择"/>
+					<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+				</form:select>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">价格:</label>
+			<div class="controls">
+				<form:input path="sale_price" htmlEscape="false" maxlength="64" class=""/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">面积:</label>
+			<div class="controls">
+				<form:input path="measure" htmlEscape="false" maxlength="64" class=""/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">朝向:</label>
+			<div class="controls">
+				<form:input path="direction" htmlEscape="false" maxlength="64" class=""/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">年代:</label>
+			<div class="controls">
+				<form:input path="age" htmlEscape="false" maxlength="64" class=""/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">装修:</label>
+			<div class="controls">
+				<form:input path="decorate" htmlEscape="false" maxlength="64" class=""/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">是否需要下定金:</label>
+			<div class="controls">
+				<form:select path="is_needdeposit">
+					<form:option value="" label="请选择"/>
+					<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+				</form:select>
 			</div>
 		</div>
 		<div class="control-group">
@@ -92,6 +210,13 @@
 			<label class="control-label">备注:</label>
 			<div class="controls">
 				<form:textarea path="remarks" htmlEscape="false" rows="4" maxlength="200" class="input-xxlarge"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">户型图:</label>
+			<div class="controls">
+                <input type="hidden" id="image" name="image" value="${house.imageSrc}" />
+				<tags:ckfinder input="image" type="thumb" uploadPath="/finance/house" selectMultiple="true"/>
 			</div>
 		</div>
 		<div class="form-actions">
