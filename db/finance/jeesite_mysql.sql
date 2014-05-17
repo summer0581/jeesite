@@ -4,6 +4,7 @@ SET SESSION FOREIGN_KEY_CHECKS=0;
 DROP TABLE finance_house;
 DROP TABLE finance_rent;
 DROP TABLE finance_customer;
+DROP TABLE finance_vacantperiod;
 
 
 
@@ -100,11 +101,31 @@ CREATE TABLE finance_customer (
 ) COMMENT='客户信息';
 
 
+/* Create Tables */
+CREATE TABLE finance_vacantperiod (
+  id VARCHAR(64) NOT NULL DEFAULT '' COMMENT '编号',
+  name VARCHAR(255) COMMENT '明细名称',
+  rent_id VARCHAR(64) NOT NULL COMMENT '明细id',
+  sdate DATETIME DEFAULT NULL COMMENT '起始时间',
+  edate DATETIME DEFAULT NULL COMMENT '结束时间',
+  sn VARCHAR(64) COMMENT '序号'
+
+  
+  create_by VARCHAR(64)  COMMENT '创建者',
+  create_date DATETIME DEFAULT NULL COMMENT '创建时间',
+  update_by VARCHAR(64)  COMMENT '更新者',
+  update_date DATETIME DEFAULT NULL COMMENT '更新时间',
+  remarks VARCHAR(255)  COMMENT '备注信息',
+  del_flag CHAR(1) DEFAULT '0' NOT NULL COMMENT '删除标志',
+  PRIMARY KEY (id)
+) COMMENT='空置期设置';
+
+
 /* Create Indexes */
 
 CREATE INDEX finance_house_create_by ON finance_house (create_by ASC);
 CREATE INDEX finance_rent_create_by ON finance_rent (create_by ASC);
 CREATE INDEX finance_customer_create_by ON finance_customer (create_by ASC);
-
+CREATE INDEX finance_vacantperiod_create_by ON finance_vacantperiod (create_by ASC);
 
 

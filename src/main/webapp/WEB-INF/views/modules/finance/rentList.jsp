@@ -113,7 +113,7 @@
 			<th>承租时间</th>
 			<th>月租金</th>
 			<th>已付月份</th>
-			<th class="sort rentin_nextpaydate">下次付租时间</th>
+			<th >下次付租时间</th>
 			
 			<th>业务员</th>
 			<th>付款方式</th>
@@ -121,81 +121,35 @@
 			<th>月租金</th>
 			<th>已付月份</th>
 			<th>已收金额</th>
-			<th class="sort rentout_nextpaydate">下次收租时间</th>
+			<th >下次收租时间</th>
 		</tr>
+		
 		</thead>
 		<tbody>
 		<c:forEach items="${page.list}" var="rent">
 			<tr>
 				<td><a href="${ctx}/finance/rent/form?id=${rent.id}">${rent.name}</a></td>
-				<td>${rent.rentin_person.name}</td>
-				<td>${fns:getDictLabel(rent.rentin_paytype, 'finance_rent_paytype', '')}</td>
-				<td><fmt:formatDate value="${rent.rentin_sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentin_edate}" pattern="yyyy-MM-dd"/></td>
-				<td>${rent.rentin_rentmonth}</td>
-				<td><fmt:formatDate value="${rent.rentin_lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentin_lastpayedate}" pattern="yyyy-MM-dd"/></td>
-				<td>
-				<c:if test="${ rent.rentin_lastpayedate < rent.rentin_edate}">
-						<c:choose><%--如果下次付租日期在当前时间之后，则设置相应的样式显示预警状态 --%>
-							<c:when test="${ rent.rentin_nextpaydate >= sysdate}"> 
-								<span class="text-error"><b><fmt:formatDate value="${rent.rentin_nextpaydate}"  pattern="yyyy-MM-dd" /></b></span>
-							</c:when>
-							<c:otherwise>
-								<fmt:formatDate value="${rent.rentin_nextpaydate}"  pattern="yyyy-MM-dd" />
-							</c:otherwise>
-						</c:choose>
-						
-					</c:if>
-					<shiro:hasPermission name="finance:rent:edit">
-						<c:if test="${not empty rent.rentin_sdate && not empty rent.rentin_lastpayedate}">
-							<c:choose>
-						         <c:when test="${ rent.rentin_lastpayedate < rent.rentin_edate}">
-						              	<a href="${ctx}/finance/rent/rentHandle?id=${rent.id}&handletype=payRent" onclick="return confirmx('确认要付给房东租金吗？', this.href)">付租</a>
-						         </c:when>
-						         <c:otherwise>
-						          		已付完
-						         </c:otherwise>
-						     </c:choose>
-					   </c:if>
-					</shiro:hasPermission>
-				<td>${rent.rentout_person.name}</td>
-				<td>${fns:getDictLabel(rent.rentout_paytype, 'finance_rent_paytype', '')}</td>
-				<td><fmt:formatDate value="${rent.rentout_sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentout_edate}" pattern="yyyy-MM-dd"/></td>
-				<td>${rent.rentout_rentmonth}</td>
-				<td><fmt:formatDate value="${rent.rentout_lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentout_lastpayedate}" pattern="yyyy-MM-dd"/></td>
-				<td>${rent.rentout_amountreceived}</td>
-				<td><c:if test="${ rent.rentout_lastpayedate < rent.rentout_edate}">
-						<c:choose><%--如果下次付租日期在当前时间之后，则设置相应的样式显示预警状态 --%>
-							<c:when test="${ rent.rentout_nextpaydate >= sysdate}"> 
-								<span class="text-error"><b><fmt:formatDate value="${rent.rentout_nextpaydate}"  pattern="yyyy-MM-dd" /></b></span>
-							</c:when>
-							<c:otherwise>
-								<fmt:formatDate value="${rent.rentout_nextpaydate}"  pattern="yyyy-MM-dd" />
-							</c:otherwise>
-						</c:choose>
-					</c:if>
-					<shiro:hasPermission name="finance:rent:edit">
-						<c:if test="${not empty rent.rentout_sdate && not empty rent.rentout_lastpayedate}">
-							<c:choose>
-						         <c:when test="${ rent.rentout_lastpayedate < rent.rentout_edate}">
-						              	<a href='${ctx}/finance/rent/rentHandle?id=${rent.id}&handletype=receiveRent' onclick="return confirmx('确认要收取租客租金吗？', this.href)" >收租</a>
-						         </c:when>
-						         <c:otherwise>
-						          		已收完
-						         </c:otherwise>
-						     </c:choose>
-					   </c:if>
-					</shiro:hasPermission>
-					
-				</td>
-				<td>${rent.rentout_rentmonth-rent.rentin_rentmonth}</td>
+				<td>${rent.rentinMonths[0].person.name}</td>
+				<td>${fns:getDictLabel(rent.rentinMonths[0].paytype, 'finance_rent_paytype', '')}</td>
+				<td><fmt:formatDate value="${rent.rentinMonths[0].sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentinMonths[0].edate}" pattern="yyyy-MM-dd"/></td>
+				<td>${rent.rentinMonths[0].rentmonth}</td>
+				<td><fmt:formatDate value="${rent.rentinMonths[0].lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentinMonths[0].lastpayedate}" pattern="yyyy-MM-dd"/></td>
+				<td><fmt:formatDate value="${rent.rentinMonths[0].nextpaydate}"  pattern="yyyy-MM-dd" /></td>
+				<td>${rent.rentoutMonths[0].person.name}</td>
+				<td>${fns:getDictLabel(rent.rentoutMonths[0].paytype, 'finance_rent_paytype', '')}</td>
+				<td><fmt:formatDate value="${rent.rentoutMonths[0].sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentoutMonths[0].edate}" pattern="yyyy-MM-dd"/></td>
+				<td>${rent.rentoutMonths[0].rentmonth}</td>
+				<td><fmt:formatDate value="${rent.rentoutMonths[0].lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentoutMonths[0].lastpayedate}" pattern="yyyy-MM-dd"/></td>
+				<td>${rent.rentoutMonths[0].amountreceived}</td>
+				<td><fmt:formatDate value="${rent.rentoutMonths[0].nextpaydate}"  pattern="yyyy-MM-dd" /></td>
+				<td>${rent.rentoutMonths[0].rentmonth-rent.rentinMonths[0].rentmonth}</td>
 				<shiro:hasPermission name="finance:rent:edit"><td>
     				<a href="${ctx}/finance/rent/form?id=${rent.id}">修改</a>
     				<br/>
 					<a href="${ctx}/finance/rent/delete?id=${rent.id}" onclick="return confirmx('确认要删除该包租明细吗？', this.href)">删除</a>
 				</td></shiro:hasPermission>
 			</tr>
-		</c:forEach>
-		</tbody>
+		</c:forEach>		</tbody>
 	</table>
 	<div class="pagination">${page}</div>
 </body>

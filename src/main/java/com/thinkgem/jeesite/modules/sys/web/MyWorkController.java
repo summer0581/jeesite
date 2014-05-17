@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
+import com.thinkgem.jeesite.modules.finance.service.RentMonthService;
 import com.thinkgem.jeesite.modules.finance.service.RentService;
 import com.thinkgem.jeesite.modules.finance.web.RentController.RentHandleType;
 
@@ -33,13 +34,16 @@ import com.thinkgem.jeesite.modules.finance.web.RentController.RentHandleType;
 @RequestMapping(value = "${adminPath}/sys/mywork")
 public class MyWorkController extends BaseController {
 	@Autowired
+	private RentMonthService rentMonthService;
+	
+	@Autowired
 	private RentService rentService;
 
 	@RequestMapping(value = {"list", ""})
 	public String list( Model model) {
 		model.addAttribute("sysdate", new Date());
-        model.addAttribute("rentinlist", rentService.rentInList(new HashMap()));
-        model.addAttribute("rentoutlist", rentService.rentOutList(new HashMap()));
+        model.addAttribute("rentinlist", rentMonthService.rentInList(new HashMap()));
+        model.addAttribute("rentoutlist", rentMonthService.rentOutList(new HashMap()));
 		return "modules/sys/myWork";
 	}
 	

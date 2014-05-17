@@ -68,25 +68,27 @@
 				<th>空置期天数</th>
 				<th>租进业务员提成</th>
 				<th>租出业务员提成</th>
+				<th>组长提成</th>
 				<th>部长提成</th>
 				<th>部门经理提成</th>
 			</tr>
 		</thead>
 		<tbody>
-		<c:forEach items="${list}" var="rent">
+		<c:forEach items="${list}" var="var">
 			<tr>
-				<td>${rent.house.name}</td>
-				<td>${rent.rentin_person }</td>
-				<td><fmt:formatDate value="${rent.rentin_sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentin_edate}" pattern="yyyy-MM-dd"/></td>
-				<td><fmt:formatDate value="${rent.rentout_sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentout_edate}" pattern="yyyy-MM-dd"/></td>
-				<td>${rent.rentout_rentmonth }</td>
-				<td>${rent.rentout_person }</td>
-				<td>${rent.house.team_leader.name }</td>
-				<td>${rent.vacantperiod }</td>
-				<td>${rent.rentin_cut }</td>
-				<td>${rent.rentout_cut }</td>
-				<td>${rent.teamleader_cut }</td>
-				<td>${rent.manager_cut }</td>
+				<td>${var.rent.house.name}</td>
+				<td>${var.rent.rentin_person.name }</td>
+				<td><fmt:formatDate value="${var.rent.rentin_sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${var.rent.rentin_edate}" pattern="yyyy-MM-dd"/></td>
+				<td><fmt:formatDate value="${var.rent.rentout_sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${var.rent.rentout_edate}" pattern="yyyy-MM-dd"/></td>
+				<td>${var.rent.rentout_rentmonth }</td>
+				<td>${var.rent.rentout_person.name }</td>
+				<td>${var.rent.house.team_leader.name }</td>
+				<td>${var.vacantperiod }</td>
+				<td>${var.rentin_cut }</td>
+				<td>${var.rentout_cut }</td>
+				<td>${var.teamleader_cut }</td>
+				<td>${var.departleader_cut }</td>
+				<td>${var.manager_cut }</td>
 			</tr>
 		</c:forEach>
 		<tr>
@@ -94,6 +96,7 @@
 			<td>${total.rentin_cut_total }</td>
 			<td>${total.rentout_cut_total }</td>
 			<td>${total.teamleader_cut_total }</td>
+			<td>${total.departleader_cut_total }</td>
 			<td>${total.manager_cut_total }</td>
 		</tr>
 		</tbody>

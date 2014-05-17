@@ -38,7 +38,7 @@ public class Site extends IdEntity<Category> {
 	private String keywords;// 关键字，填写有助于搜索引擎优化
 	private String theme;	// 主题
 	private String copyright;// 版权信息
-	private String customIndexView;// 自定义首页视图文件
+	private String customIndexView;// 自定义首页视图文件 
 
 	public Site() {
 		super();

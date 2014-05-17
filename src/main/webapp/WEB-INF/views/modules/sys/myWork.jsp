@@ -26,16 +26,13 @@
                 </tr>
               </thead>
               <tbody>
-              <c:forEach items="${rentinlist}" var="rent">
+              <c:forEach items="${rentinlist}" var="rentMonth">
               	 <tr>
-                  <td>${rent.house.busi_id }</td>
-                  <td>${rent.house.name }</td>
-                  <td><fmt:formatDate value="${rent.rentin_sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentin_edate}" pattern="yyyy-MM-dd"/></td>
-                  <td><fmt:formatDate value="${rent.rentin_lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentin_lastpayedate}" pattern="yyyy-MM-dd"/></td>
-                  <td><fmt:formatDate value="${rent.rentin_nextpaydate}"  pattern="yyyy-MM-dd" />
-	                  <shiro:hasPermission name="finance:rent:edit">
-	                  	<a href="${ctx}/sys/mywork/rentHandle?id=${rent.id}&handletype=payRent" onclick="return confirmx('确认要付给房东租金吗？', this.href)">付租</a>
-	                  </shiro:hasPermission>
+                  <td>${rentMonth.rent.house.busi_id }</td>
+                  <td><a href="${ctx}/finance/rent/form?id=${rentMonth.rent.id}">${rentMonth.rent.house.name }</a></td>
+                  <td><fmt:formatDate value="${rentMonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rentMonth.edate}" pattern="yyyy-MM-dd"/></td>
+                  <td><fmt:formatDate value="${rentMonth.lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rentMonth.lastpayedate}" pattern="yyyy-MM-dd"/></td>
+                  <td><fmt:formatDate value="${rentMonth.nextpaydate}"  pattern="yyyy-MM-dd" />
                   </td>
                 </tr>
               </c:forEach>
@@ -55,16 +52,13 @@
                 </tr>
               </thead>
               <tbody>
-             <c:forEach items="${rentoutlist}" var="rent">
+             <c:forEach items="${rentoutlist}" var="rentMonth">
               	 <tr>
-                  <td>${rent.house.busi_id }</td>
-                  <td>${rent.house.name }</td>
-                  <td><fmt:formatDate value="${rent.rentout_sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentout_edate}" pattern="yyyy-MM-dd"/></td>
-                  <td><fmt:formatDate value="${rent.rentout_lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentout_lastpayedate}" pattern="yyyy-MM-dd"/></td>
-                  <td><fmt:formatDate value="${rent.rentout_nextpaydate}"  pattern="yyyy-MM-dd" />
-                  <shiro:hasPermission name="finance:rent:edit">
-						<a href='${ctx}/sys/mywork/rentHandle?id=${rent.id}&handletype=receiveRent' onclick="return confirmx('确认要收取租客租金吗？', this.href)" >收租</a>
-					</shiro:hasPermission>
+                  <td>${rentMonth.rent.house.busi_id }</td>
+                  <td><a href="${ctx}/finance/rent/form?id=${rentMonth.rent.id}">${rentMonth.rent.house.name }</a></td>
+                  <td><fmt:formatDate value="${rentMonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rentMonth.edate}" pattern="yyyy-MM-dd"/></td>
+                  <td><fmt:formatDate value="${rentMonth.lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rentMonth.lastpayedate}" pattern="yyyy-MM-dd"/></td>
+                  <td><fmt:formatDate value="${rentMonth.nextpaydate}"  pattern="yyyy-MM-dd" />
                   </td>
                 </tr>
               </c:forEach>

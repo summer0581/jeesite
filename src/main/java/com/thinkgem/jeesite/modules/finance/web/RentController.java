@@ -27,11 +27,14 @@ import com.thinkgem.jeesite.common.beanvalidator.BeanValidators;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.utils.DateUtils;
+import com.thinkgem.jeesite.common.utils.IdGen;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.utils.excel.ExportExcel;
 import com.thinkgem.jeesite.common.utils.excel.ImportExcel;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
+import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
+import com.thinkgem.jeesite.modules.finance.entity.VacantPeriod;
 import com.thinkgem.jeesite.modules.finance.service.RentService;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
@@ -99,6 +102,7 @@ public class RentController extends BaseController {
 		if (!beanValidator(model, rent)){
 			return form(rent, model);
 		}
+		
 		rentService.save(rent);
 		addMessage(redirectAttributes, "保存包租明细'" + rent.getName() + "'成功");
 		return "redirect:"+Global.getAdminPath()+"/finance/rent/rentList";
@@ -135,10 +139,10 @@ public class RentController extends BaseController {
 
 	@RequiresPermissions("finance:rent:view")
     @RequestMapping(value = "export", method=RequestMethod.POST)
-    public String exportFile(Rent rent, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
+    public String exportFile(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
 		try {
             String fileName = "包租数据"+DateUtils.getDate("yyyyMMddHHmmss")+".xlsx"; 
-    		Page<Rent> page = rentService.find(new Page<Rent>(request, response, -1), rent); 
+    		Page<Rent> page = rentService.rentList(new Page<Rent>(request, response, -1), paramMap); 
     		new ExportExcel("包租数据", Rent.class).setDataList(page.getList()).write(response, fileName).dispose();
     		return null;
 		} catch (Exception e) {
@@ -161,7 +165,6 @@ public class RentController extends BaseController {
 					Rent temprent = rentService.findByName(rent.getName());
 					if (null == temprent){
 						BeanValidators.validateWithException(validator, rent);
-						successNum++;
 					}else{
 						rent.setId(temprent.getId());
 						failureMsg.append("<br/>包租信息 "+rent.getName()+" 已存在;进行更新; ");

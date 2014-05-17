@@ -19,10 +19,13 @@ import com.thinkgem.jeesite.common.persistence.BaseEntity;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.BaseService;
 import com.thinkgem.jeesite.common.utils.DateUtils;
+import com.thinkgem.jeesite.common.utils.IdGen;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.finance.dao.RentDao;
 import com.thinkgem.jeesite.modules.finance.entity.House;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
+import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
+import com.thinkgem.jeesite.modules.finance.entity.VacantPeriod;
 import com.thinkgem.jeesite.modules.sys.utils.DictUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
@@ -59,6 +62,37 @@ public class RentService extends BaseService {
 	
 	@Transactional(readOnly = false)
 	public void save(Rent rent) {
+		if(null != rent.getSalesman_vacantperiods())
+			for(VacantPeriod vp: rent.getSalesman_vacantperiods()){//批量设置业务员空置期
+				if(StringUtils.isBlank(vp.getId())){
+					vp.setId(IdGen.uuid());
+				}
+				vp.setRent(rent);
+			}
+		if(null != rent.getLandlord_vacantperiods())
+			for(VacantPeriod vp: rent.getLandlord_vacantperiods()){//批量设置房东空置期
+				if(StringUtils.isBlank(vp.getId())){
+					vp.setId(IdGen.uuid());
+				}
+				vp.setRent(rent);
+			}
+		if(null != rent.getRentinMonths())
+			for(RentMonth r: rent.getRentinMonths()){//批量设置承租月明细
+				if(StringUtils.isBlank(r.getId())){
+					r.prePersist();
+				}
+				r.setRent(rent);
+				r.setInfotype("rentin");
+			}
+		if(null != rent.getRentoutMonths())
+			for(RentMonth r: rent.getRentoutMonths()){//批量设置承租月明细
+				if(StringUtils.isBlank(r.getId())){
+					r.prePersist();
+				}
+				r.setRent(rent);
+				r.setInfotype("rentout");
+			}
+
 		rentDao.save(rent);
 	}
 	
@@ -85,44 +119,27 @@ public class RentService extends BaseService {
 		Date rentout_nextpayedate = DateUtils.parseDate(paramMap.get("rentout_nextpayedate"));
 		
 		if (null != rentin_nextpaysdate){
-			dc.add(Restrictions.gt("rentin_nextpaydate", rentin_nextpaysdate));
+			dc.add(Restrictions.gt("rentinMonths.nextpaydate", rentin_nextpaysdate));
 		}
 		if (null != rentin_nextpayedate){
-			dc.add(Restrictions.le("rentin_nextpaydate", rentin_nextpayedate));
+			dc.add(Restrictions.le("rentinMonths.nextpaydate", rentin_nextpayedate));
 		}
 		if (null != rentout_nextpaysdate){
-			dc.add(Restrictions.gt("rentout_nextpaydate", rentout_nextpaysdate));
+			dc.add(Restrictions.gt("rentoutMonths.nextpaydate", rentout_nextpaysdate));
 		}
 		if (null != rentout_nextpayedate){
-			dc.add(Restrictions.le("rentout_nextpaydate", rentout_nextpayedate));
+			dc.add(Restrictions.le("rentoutMonths.nextpaydate", rentout_nextpayedate));
 		}
 
 		dc.createAlias("house", "house", JoinType.LEFT_OUTER_JOIN);
 		dc.add(Restrictions.eq(Rent.FIELD_DEL_FLAG, Rent.DEL_FLAG_NORMAL));
 		if(StringUtils.isBlank(page.getOrderBy())){
-			dc.addOrder(Order.desc("rentin_nextpaydate")).addOrder(Order.desc("rentout_nextpaydate"));
+			//dc.addOrder(Order.desc("rentin_nextpaydate")).addOrder(Order.desc("rentout_nextpaydate"));
 		}
 		
 		return rentDao.find(page, dc);
 	}
 	
-	/**
-	 * 获取租进的包租列表
-	 * @param paramMap
-	 * @return
-	 */
-	public List<Rent> rentInList(Map<String, Object> paramMap) {
-		return rentDao.rentInList();
-	}
-	
-	/**
-	 * 获取租出的包租列表
-	 * @param paramMap
-	 * @return
-	 */
-	public List<Rent> rentOutList(Map<String, Object> paramMap) {
-		return rentDao.rentOutList();
-	}
 
 	
 	/**
@@ -130,26 +147,7 @@ public class RentService extends BaseService {
 	 * @param rent
 	 */
 	public void payRent(Rent rent){
-		if(null == rent.getRentin_sdate()){
-			return;
-		}
-		int payMonthUnit = getPayMonthUnit(rent.getRentin_paytype());
-		if(null == rent.getRentin_nextpaydate()){//如果承租下次付租时间为空
-			rent.setRentin_lastpaysdate(rent.getRentin_sdate());
-			Date lastpayedate = DateUtils.addMonths(rent.getRentin_sdate(), payMonthUnit);
-			if(lastpayedate.after(rent.getRentin_edate()))//如果上期付租时间已经在租凭最终日期之后，则上期付租时间最终点等于租凭最终日期
-				lastpayedate = rent.getRentin_edate();
-			rent.setRentin_lastpayedate(lastpayedate);
-			rent.setRentin_nextpaydate(DateUtils.addDays(DateUtils.addMonths(rent.getRentin_sdate(), payMonthUnit), -7));
-		}else{
-			rent.setRentin_lastpaysdate(DateUtils.addDays(DateUtils.addMonths(rent.getRentin_lastpaysdate(), payMonthUnit),1));
-			Date lastpayedate = DateUtils.addMonths(rent.getRentin_lastpayedate(), payMonthUnit);
-			if(lastpayedate.after(rent.getRentin_edate()))//如果上期付租时间已经在租凭最终日期之后，则上期付租时间最终点等于租凭最终日期
-				lastpayedate = rent.getRentin_edate();
-			rent.setRentin_lastpayedate(lastpayedate);
-			rent.setRentin_nextpaydate(DateUtils.addDays(DateUtils.addMonths(rent.getRentin_lastpaysdate(), payMonthUnit), -7));
-		}
-
+		
 	}
 
 	/**
@@ -157,28 +155,7 @@ public class RentService extends BaseService {
 	 * @param rent
 	 */
 	public void receiveRent(Rent rent){
-		if(null == rent.getRentout_sdate()){
-			return;
-		}
-		int payMonthUnit = getPayMonthUnit(rent.getRentout_paytype());
-		if(null == rent.getRentout_nextpaydate()){//如果收租下次收租时间为空
-			rent.setRentout_lastpaysdate(rent.getRentout_sdate());
-			Date lastpayedate = DateUtils.addMonths(rent.getRentout_sdate(), payMonthUnit);
-			if(lastpayedate.after(rent.getRentout_edate()))//如果上期收租时间已经在租凭最终日期之后，则上期收租时间最终点等于租凭最终日期
-				lastpayedate = rent.getRentout_edate();
-			rent.setRentout_lastpayedate(lastpayedate);
-			rent.setRentout_lastpayedate(lastpayedate);
-			rent.setRentout_nextpaydate(DateUtils.addDays(DateUtils.addMonths(rent.getRentout_sdate(), payMonthUnit), -7));
-		}else{
-			rent.setRentout_lastpaysdate(DateUtils.addDays(DateUtils.addMonths(rent.getRentout_lastpaysdate(), payMonthUnit),1));
-			Date lastpayedate = DateUtils.addMonths(rent.getRentout_lastpayedate(), payMonthUnit);
-			if(lastpayedate.after(rent.getRentout_edate()))
-				lastpayedate = rent.getRentout_edate();
-			rent.setRentout_lastpayedate(lastpayedate);
-			rent.setRentout_nextpaydate(DateUtils.addDays(DateUtils.addMonths(rent.getRentout_lastpaysdate(), payMonthUnit), -7));
-		}
-		int rentout_amountreceived = StringUtils.isBlank(rent.getRentout_amountreceived())?0:Integer.parseInt(rent.getRentout_amountreceived());
-		rent.setRentout_amountreceived(Integer.toString(rentout_amountreceived+Integer.parseInt(rent.getRentout_rentmonth())*payMonthUnit));
+		
 	}
 	
 	/**
@@ -191,22 +168,6 @@ public class RentService extends BaseService {
 		return (rents.size()>0)?rentDao.findByName(name).get(0):null;
 	}
 	
-	/**
-	 * 获取每多少月付款的月份数
-	 * @param paytypevalue
-	 * @return
-	 */
-	private int getPayMonthUnit(String paytypevalue){
-		String paytype = DictUtils.getDictLabel(paytypevalue, "finance_rent_paytype", "");
-		int payMonthUnit = 0;
-		if(StringUtils.isBlank(paytype) || "月付".equals(paytype)){
-			payMonthUnit = 1;
-		}else if("半年付".equals(paytype)){
-			payMonthUnit = 6;
-		}else if("年付".equals(paytype)){
-			payMonthUnit = 12;
-		}
-		return payMonthUnit;
-	}
+
 	
 }

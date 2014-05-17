@@ -42,7 +42,7 @@
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
 		<label>地址 ：</label><form:input path="name" htmlEscape="false" maxlength="50" class="input-small"/>
-		<label>房东姓名 ：</label><form:input path="landlord_name" htmlEscape="false" maxlength="50" class="input-small"/>
+		<label>房东姓名 ：</label><form:input path="landlord.name" htmlEscape="false" maxlength="50" class="input-small"/>
 		&nbsp;<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/>
 	</form:form>
 	<tags:message content="${message}"/>
@@ -65,11 +65,11 @@
 				<td>${house.busi_id}</td>
 				<td><a href="${ctx}/finance/house/form?id=${house.id}">${house.name}</a></td>
 				<td>${house.houses}</td>
-				<td>${house.landlord_name}</td>
-				<td>${house.landlord_telephone}</td>
+				<td>${house.landlord.name}</td>
+				<td>${house.landlord.telephone}</td>
 				<td>${house.debit_card}</td>
-				<td>${house.tenant_name}</td>
-				<td>${house.tenant_telephone}</td>
+				<td>${house.tenant.name}</td>
+				<td>${house.tenant.telephone}</td>
 				<td>${house.team_leader.name}</td>
 				
 			</tr>
