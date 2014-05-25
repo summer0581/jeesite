@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.thinkgem.jeesite.common.persistence.BaseDao;
+import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.persistence.Parameter;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
@@ -20,29 +21,71 @@ import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 @Repository
 public class RentMonthDao extends BaseDao<RentMonth> {
 	
-	public List<RentMonth> rentInList(){
+	public List<RentMonth> rentInListWillNeedPayNextMonth(){
 		StringBuffer sql = new StringBuffer();
 
 		sql.append("select * from (select max(rr.nextpaydate) SS,rr.* ");
 		sql.append("from (select * from finance_rentmonth r order by r.nextpaydate DESC) rr ");
 		sql.append("where rr.del_flag=:del_flag  ");
 		sql.append("and rr.infotype=:infotype  ");
-		sql.append("group by rr.rent_id having  max(rr.nextpaydate)-current_timestamp<7  ) rrr order by rrr.nextpaydate");
+		sql.append("group by rr.rent_id having  datediff(max(rr.nextpaydate),current_timestamp)<7  ) rrr order by rrr.nextpaydate");
 		Parameter pm = new Parameter();
 		pm.put("del_flag", Rent.DEL_FLAG_NORMAL);
 		pm.put("infotype", "rentin");
 		return findBySql(sql.toString(), pm, RentMonth.class);
 	}
-	public List<RentMonth> rentOutList(){
+	
+
+	public List<RentMonth> rentOutListWillNeedPayNextMonth(){
 		StringBuffer sql = new StringBuffer();
 
 		sql.append("select * from (select max(rr.nextpaydate) SS,rr.* ");
 		sql.append("from (select * from finance_rentmonth r order by r.nextpaydate DESC) rr ");
 		sql.append("where rr.del_flag=:del_flag  ");
 		sql.append("and rr.infotype=:infotype  ");
-		sql.append("group by rr.rent_id having  max(rr.nextpaydate)-current_timestamp<7  ) rrr order by rrr.nextpaydate");
+		sql.append("group by rr.rent_id having  datediff(max(rr.nextpaydate),current_timestamp)<7  ) rrr order by rrr.nextpaydate");
 		Parameter pm = new Parameter();
 		pm.put("del_flag", Rent.DEL_FLAG_NORMAL);
+		pm.put("infotype", "rentout");
+		return findBySql(sql.toString(), pm, RentMonth.class);
+	}
+	public List<RentMonth> rentInListWillReachEdate(){
+		StringBuffer sql = new StringBuffer();
+
+		sql.append("select * from (select max(rr.edate) SS,rr.* ");
+		sql.append("from (select * from finance_rentmonth r order by r.edate DESC) rr ");
+		sql.append("where rr.del_flag=:del_flag  ");
+		sql.append("and rr.infotype=:infotype  ");
+		sql.append("group by rr.rent_id having  datediff(max(rr.edate),current_timestamp)<=30  ) rrr order by rrr.edate");
+		Parameter pm = new Parameter();
+		pm.put("del_flag", Rent.DEL_FLAG_NORMAL);
+		pm.put("infotype", "rentin");
+		return findBySql(sql.toString(), pm, RentMonth.class);
+	}
+	public List<RentMonth> rentOutListWillReachEdate(){
+		StringBuffer sql = new StringBuffer();
+
+		sql.append("select * from (select max(rr.edate) SS,rr.* ");
+		sql.append("from (select * from finance_rentmonth r order by r.edate DESC) rr ");
+		sql.append("where rr.del_flag=:del_flag  ");
+		sql.append("and rr.infotype=:infotype  ");
+		sql.append("group by rr.rent_id having  datediff(max(rr.edate),current_timestamp)<=30  ) rrr order by rrr.edate");
+		Parameter pm = new Parameter();
+		pm.put("del_flag", Rent.DEL_FLAG_NORMAL);
+		pm.put("infotype", "rentout");
+		return findBySql(sql.toString(), pm, RentMonth.class);
+	}
+	//已退租的和已到期的
+	public List<RentMonth> rentOutListHasCancel(){
+		StringBuffer sql = new StringBuffer();
+
+		sql.append("select rr.* ");
+		sql.append("from (select * from finance_rentmonth r order by r.nextpaydate DESC) rr ");
+		sql.append("where rr.del_flag=:del_flag  ");
+		sql.append("and rr.infotype=:infotype  ");
+		sql.append("group by rr.rent_id having rr.cancelrentdate is not null or rr.edate < current_timestamp ");
+		Parameter pm = new Parameter();
+		pm.put("del_flag", RentMonth.DEL_FLAG_NORMAL);
 		pm.put("infotype", "rentout");
 		return findBySql(sql.toString(), pm, RentMonth.class);
 	}

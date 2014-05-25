@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
@@ -49,6 +50,10 @@ import com.thinkgem.jeesite.common.utils.excel.fieldtype.RoleListType;
 @DynamicInsert @DynamicUpdate
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class User extends IdEntity<User> {
+	
+	public enum Busi_type{
+		newbusier,oldbusier
+	}
 
 	private static final long serialVersionUID = 1L;
 	private Office company;	// 归属公司
@@ -279,6 +284,64 @@ public class User extends IdEntity<User> {
 	public static boolean isAdmin(String id){
 		return id != null && id.equals("1");
 	}
+	
+	/**
+	 * 是否是经理
+	 * @param user
+	 * @return
+	 */
+	@Transient
+	public static boolean isBoss(User person){
+		if(person.getOffice().getType() == "1" && null != person.getOffice().getMaster() && person.getOffice().getMaster().equals(person))
+			return true;
+		return false;
+	}
+	
+	/**
+	 * 是否是部长
+	 * @param user
+	 * @return
+	 */
+	@Transient
+	public static boolean isDepartleader(User person){
+		if(person.getOffice().getType() == "2" && null != person.getOffice().getMaster() && person.getOffice().getMaster().equals(person))
+			return true;
+		return false;
+	}
+	
+	/**
+	 * 是否是此业务员的部长
+	 * @param person
+	 * @param departleader
+	 * @return
+	 */
+	@Transient
+	public static boolean isDepartleaderOfPerson(User person,User departleader){
+		if(null != person.getOffice().getMaster() && person.getOffice().getMaster().equals(departleader))
+			return true;
+		return false;
+	}
+
+	@Override
+	@Transient
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		if(obj instanceof User){
+			if(StringUtils.isNotBlank(((User)obj).getLoginName()))
+			return ((User)obj).getLoginName().equals(this.getLoginName());
+		}
+		return super.equals(obj);
+	}
+
+	@Override
+	@Transient
+	public int hashCode() {
+		// TODO Auto-generated method stub
+		return super.hashCode();
+	}
+	
+	
+	
 	
 //	@Override
 //	public String toString() {

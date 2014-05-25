@@ -14,4 +14,17 @@ public class MathUtils {
 		}
 		return i;
 	}
+	
+	public static int deNull(Object val){
+		if(null != val){
+			if(val instanceof String){
+				if(StringUtils.isNotBlank((String)val)){
+					return Integer.valueOf((String)val);
+				}
+			}else if(val instanceof Integer){
+				return (Integer)val;
+			}
+		}
+		return 0;
+	}
 }

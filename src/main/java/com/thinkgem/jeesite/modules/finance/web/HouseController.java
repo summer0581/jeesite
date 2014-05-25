@@ -31,12 +31,11 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.utils.excel.ExportExcel;
 import com.thinkgem.jeesite.common.utils.excel.ImportExcel;
 import com.thinkgem.jeesite.common.web.BaseController;
-import com.thinkgem.jeesite.modules.sys.entity.User;
-import com.thinkgem.jeesite.modules.sys.service.SystemService;
-import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 import com.thinkgem.jeesite.modules.finance.entity.House;
-import com.thinkgem.jeesite.modules.finance.entity.Rent;
+import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.finance.service.HouseService;
+import com.thinkgem.jeesite.modules.sys.entity.User;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
 /**
  * 房屋明细Controller
@@ -58,7 +57,6 @@ public class HouseController extends BaseController {
 			return new House();
 		}
 	}
-	
 	@RequiresPermissions("finance:house:view")
 	@RequestMapping(value = {"list", ""})
 	public String list(House house, HttpServletRequest request, HttpServletResponse response, Model model) {
@@ -70,6 +68,20 @@ public class HouseController extends BaseController {
         model.addAttribute("page", page);
 		return "modules/finance/houseList";
 	}
+	
+	@RequiresPermissions("finance:house:view")
+	@RequestMapping(value = {"houseNoRentinlist"})
+	public String houseNoRentinlist(House house, HttpServletRequest request, HttpServletResponse response, Model model) {
+		User user = UserUtils.getUser();
+		if (!user.isAdmin()){
+			house.setCreateBy(user);
+		}
+        Page<House> page = houseService.findNoRelation(new Page<House>(request, response), house); 
+        model.addAttribute("page", page);
+		return "modules/finance/houseNoRentinList";
+	}
+	
+
 
 	@RequiresPermissions("finance:house:view")
 	@RequestMapping(value = "form")
@@ -128,7 +140,9 @@ public class HouseController extends BaseController {
     public String exportFile(House house, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
 		try {
             String fileName = "房屋数据"+DateUtils.getDate("yyyyMMddHHmmss")+".xlsx"; 
-    		Page<House> page = houseService.find(new Page<House>(request, response, -1), house); 
+            Page<House> pages = new Page<House>(request, response, -1);
+            pages.setPageSize(500);
+    		 Page<House> page = houseService.find(pages, house); 
     		new ExportExcel("房屋数据", House.class).setDataList(page.getList()).write(response, fileName).dispose();
     		return null;
 		} catch (Exception e) {
@@ -136,6 +150,23 @@ public class HouseController extends BaseController {
 		}
 		return "redirect:"+Global.getAdminPath()+"/finance/house/?repage";
     }
+	
+	@RequiresPermissions("finance:house:view")
+    @RequestMapping(value = "export4bank", method=RequestMethod.POST)
+    public String exportFile4Bank(House house, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
+		try {
+            String fileName = "房屋数据(为批量导入银行)"+DateUtils.getDate("yyyyMMddHHmmss")+".xlsx"; 
+            Page<House> pages = new Page<House>(request, response, -1);
+            pages.setPageSize(500);
+    		Page<House> page = houseService.find(pages, house); 
+    		new ExportExcel("房屋数据(为批量导入银行)", House.class, 1,1).setDataList(page.getList()).write(response, fileName).dispose();
+    		return null;
+		} catch (Exception e) {
+			addMessage(redirectAttributes, "导出房屋失败！失败信息："+e.getMessage());
+		}
+		return "redirect:"+Global.getAdminPath()+"/finance/house/?repage";
+    }
+
 
 	@RequiresPermissions("finance:house:edit")
     @RequestMapping(value = "import", method=RequestMethod.POST)

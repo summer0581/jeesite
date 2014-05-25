@@ -34,12 +34,6 @@
 		<form:hidden path="id"/>
 		<tags:message content="${message}"/>
 		<div class="control-group">
-			<label class="control-label">业务编号:</label>
-			<div class="controls">
-				<form:input path="busi_id" htmlEscape="false" maxlength="200" class="required"/>
-			</div>
-		</div>
-		<div class="control-group">
 			<label class="control-label">地址:</label>
 			<div class="controls">
 				<form:input path="name" htmlEscape="false" maxlength="200" class="required"/>
@@ -64,8 +58,8 @@
 		<div class="control-group">
 			<label class="control-label">房东:</label>
 			<div class="controls">
-				<form:hidden id="landlord.id" path="landlord.id" htmlEscape="false" maxlength="64" class="input-xlarge"/>
-				<input id="landlord.name" type="text" value="${house.landlord.name }" maxlength="64" class="input-xlarge" readonly="readonly"/>
+				<form:hidden id="landlord_id" path="landlord.id" htmlEscape="false" maxlength="64" class="input-xlarge"/>
+				<input id="landlord_name" type="text" value="${house.landlord.name }" maxlength="64" class="input-xlarge" readonly="readonly"/>
 				<a id="relationButton_landlord" href="javascript:" class="btn">选择房东</a>
 				<script type="text/javascript">
 					var landlordSelect = [];
@@ -75,15 +69,15 @@
 						landlordSelectRefresh();
 					}
 					function landlordSelectRefresh(){
-						$("#landlord.id").val("");
-						$("#landlord.name").val("");
+						$("#landlord_id").val("");
+						$("#landlord_name").val("");
 						if(landlordSelect.length > 0){
-							$("#landlord.name").val(landlordSelect[landlordSelect.length-1][1]);
-							$("#landlord.id").val(landlordSelect[landlordSelect.length-1][0]);
+							$("#landlord_name").val(landlordSelect[landlordSelect.length-1][1]);
+							$("#landlord_id").val(landlordSelect[landlordSelect.length-1][0]);
 						}
 					}
 					$("#relationButton_landlord").click(function(){
-						top.$.jBox.open("iframe:${ctx}/finance/customer/selectList?pageSize=8", "添加房东",$(top.document).width()-220,$(top.document).height()-180,{
+						top.$.jBox.open("iframe:${ctx}/finance/customer/selectList?pageSize=8&listtype=landlord", "添加房东",$(top.document).width()-220,$(top.document).height()-180,{
 							buttons:{"确定":true}, loaded:function(h){
 								$(".jbox-content", top.document).css("overflow-y","hidden");
 							}
@@ -94,22 +88,16 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">房东联系方式:</label>
-			<div class="controls">
-				<form:input path="landlord_telephone" htmlEscape="false" maxlength="64" class="required mobile"/>
-			</div>
-		</div>
-		<div class="control-group">
 			<label class="control-label">转帐卡号:</label>
 			<div class="controls">
-				<form:input path="debit_card" htmlEscape="false" maxlength="64" class="required"/>
+				<form:input path="debit_card" htmlEscape="false" maxlength="64" class=""/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">租户:</label>
 			<div class="controls">
-				<form:hidden id="tenant.id" path="tenant.id" htmlEscape="false" maxlength="64" class="input-xlarge"/>
-				<input id="tenant.name" type="text" value="${house.tenant.name }" maxlength="64" class="input-xlarge" readonly="readonly"/>
+				<form:hidden id="tenant_id" path="tenant.id" htmlEscape="false" maxlength="64" class="input-xlarge"/>
+				<input id="tenant_name" type="text" value="${house.tenant.name }" maxlength="64" class="input-xlarge" readonly="readonly"/>
 				<a id="relationButton_tenant" href="javascript:" class="btn">选择房屋</a>
 				<script type="text/javascript">
 					var tenantSelect = [];
@@ -119,15 +107,15 @@
 						tenantSelectRefresh();
 					}
 					function tenantSelectRefresh(){
-						$("#tenant.id").val("");
-						$("#tenant.name").val("");
+						$("#tenant_id").val("");
+						$("#tenant_name").val("");
 						if(tenantSelect.length > 0){
-							$("#tenant.name").val(tenantSelect[tenantSelect.length-1][1]);
-							$("#tenant.id").val(tenantSelect[tenantSelect.length-1][0]);
+							$("#tenant_name").val(tenantSelect[tenantSelect.length-1][1]);
+							$("#tenant_id").val(tenantSelect[tenantSelect.length-1][0]);
 						}
 					}
 					$("#relationButton_tenant").click(function(){
-						top.$.jBox.open("iframe:${ctx}/finance/customer/selectList?pageSize=8", "添加租户",$(top.document).width()-220,$(top.document).height()-180,{
+						top.$.jBox.open("iframe:${ctx}/finance/customer/selectList?pageSize=8&listtype=tenant", "添加租户",$(top.document).width()-220,$(top.document).height()-180,{
 							buttons:{"确定":true}, loaded:function(h){
 								$(".jbox-content", top.document).css("overflow-y","hidden");
 							}
@@ -137,17 +125,56 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">租户联系方式:</label>
-			<div class="controls">
-				<form:input path="tenant.telephone" htmlEscape="false" maxlength="64" class="required mobile"/>
-			</div>
-		</div>
-		<div class="control-group">
 			<label class="control-label">是否可租:</label>
 			<div class="controls">
 				<form:select path="is_canrent">
 					<form:option value="" label="请选择"/>
 					<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+				</form:select>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">是否为兴业银行:</label>
+			<div class="controls">
+				<form:select path="is_xingyebank">
+					<form:option value="" label="请选择"/>
+					<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+				</form:select>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">收款户名:</label>
+			<div class="controls">
+			<form:input path="receive_username" htmlEscape="false" maxlength="64" class=""/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">收款银行及营业网点:</label>
+			<div class="controls">
+				<form:input path="receive_bank" htmlEscape="false" maxlength="64" class=""/>	
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">是否同城:</label>
+			<div class="controls">
+				<form:select path="is_samecity">
+					<form:option value="" label="请选择"/>
+					<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+				</form:select>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">汇入地址:</label>
+			<div class="controls">
+				<form:input path="remit_address" htmlEscape="false" maxlength="64" class=""/>	
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">房屋来源:</label>
+			<div class="controls"> 
+				<form:select path="house_source">
+					<form:option value="" label="请选择"/>
+					<form:options items="${fns:getDictList('finance_house_source')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 				</form:select>
 			</div>
 		</div>

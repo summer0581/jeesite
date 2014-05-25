@@ -96,6 +96,12 @@
 			</div>
 		</div>		
 		<div class="control-group">
+			<label class="control-label">下次应付金额:</label>
+			<div class="controls">
+			<form:input path="nextshouldamount" htmlEscape="false" maxlength="64" class="digits"/>			
+			</div>
+		</div>	
+		<div class="control-group">
 			<label class="control-label">第几期的头月（如果是头月则填，不是头月则为空）:</label>
 			<div class="controls">
 			<form:input path="firstmonth_num" htmlEscape="false" maxlength="64" class="digits"/>			
@@ -107,6 +113,41 @@
 			<form:input path="agencyfee" htmlEscape="false" maxlength="64" class="digits"/>			
 			</div>
 		</div>	
+		<div class="control-group">
+			<label class="control-label">业务经理:</label>
+			<div class="controls">
+			<tags:treeselect id="busi_manager" name="busi_manager.id" notAllowSelectParent="true" value="${rentMonth.busi_manager.id}" labelName="busi_manager.name" labelValue="${rentMonth.busi_manager.name}"
+					title="人员" url="/sys/user/treeData" />		
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">业务部长:</label>
+			<div class="controls">
+			<tags:treeselect id="busi_departleader" name="busi_departleader.id" notAllowSelectParent="true" value="${rentMonth.busi_departleader.id}" labelName="busi_departleader.name" labelValue="${rentMonth.busi_departleader.name}"
+					title="人员" url="/sys/user/treeData" />		
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">业务组长:</label>
+			<div class="controls">
+			<tags:treeselect id="busi_teamleader" name="busi_teamleader.id" notAllowSelectParent="true" value="${rentMonth.busi_teamleader.id}" labelName="busi_teamleader.name" labelValue="${rentMonth.busi_teamleader.name}"
+					title="人员" url="/sys/user/treeData" />			
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">空置期提成方案:</label>
+			<div class="controls">
+			<form:select id="cut_vacantperiodtype" path="cut_vacantperiodtype" class="">
+			<form:options items="${vacantPeriodCutconfigs}" itemLabel="name" itemValue="cut_code" htmlEscape="false"/></form:select>	
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">业绩提成方案:</label>
+			<div class="controls">
+			<form:select id="cut_businesssaletype" path="cut_businesssaletype" class="">
+			<form:options items="${businessSaleCutconfigs}" itemLabel="name" itemValue="cut_code" htmlEscape="false"/></form:select>	
+			</div>
+		</div>
 
 		<div class="control-group">
 			<label class="control-label">备注:</label>

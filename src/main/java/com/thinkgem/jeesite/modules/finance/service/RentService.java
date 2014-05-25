@@ -15,18 +15,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.thinkgem.jeesite.common.persistence.BaseEntity;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.BaseService;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.IdGen;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.finance.dao.RentDao;
-import com.thinkgem.jeesite.modules.finance.entity.House;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.finance.entity.VacantPeriod;
-import com.thinkgem.jeesite.modules.sys.utils.DictUtils;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
 /**
@@ -134,7 +131,7 @@ public class RentService extends BaseService {
 		dc.createAlias("house", "house", JoinType.LEFT_OUTER_JOIN);
 		dc.add(Restrictions.eq(Rent.FIELD_DEL_FLAG, Rent.DEL_FLAG_NORMAL));
 		if(StringUtils.isBlank(page.getOrderBy())){
-			//dc.addOrder(Order.desc("rentin_nextpaydate")).addOrder(Order.desc("rentout_nextpaydate"));
+			dc.addOrder(Order.asc("business_num"));
 		}
 		
 		return rentDao.find(page, dc);

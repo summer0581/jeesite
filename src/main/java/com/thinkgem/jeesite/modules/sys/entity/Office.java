@@ -26,6 +26,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Where;
+import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
 
 import com.google.common.collect.Lists;
@@ -52,7 +53,7 @@ public class Office extends IdEntity<Office> {
 	private String grade; 	// 机构等级（1：一级；2：二级；3：三级；4：四级）
 	private String address; // 联系地址
 	private String zipCode; // 邮政编码
-	private String master; 	// 负责人
+	private User master; 	// 负责人
 	private String phone; 	// 电话
 	private String fax; 	// 传真
 	private String email; 	// 邮箱
@@ -147,12 +148,15 @@ public class Office extends IdEntity<Office> {
 		this.zipCode = zipCode;
 	}
 
-	@Length(min=0, max=100)
-	public String getMaster() {
+	@ManyToOne
+	@JoinColumn(name="master")
+	@NotFound(action = NotFoundAction.IGNORE) 
+	@IndexedEmbedded
+	public User getMaster() {
 		return master;
 	}
 
-	public void setMaster(String master) {
+	public void setMaster(User master) {
 		this.master = master;
 	}
 

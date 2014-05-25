@@ -14,13 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.BaseService;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
-import com.thinkgem.jeesite.modules.finance.entity.Rent;
-import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
+import com.thinkgem.jeesite.modules.finance.dao.CutconfigDao;
 import com.thinkgem.jeesite.modules.finance.dao.RentMonthDao;
+import com.thinkgem.jeesite.modules.finance.entity.Cutconfig;
+import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.sys.utils.DictUtils;
 
 /**
@@ -34,6 +36,9 @@ public class RentMonthService extends BaseService {
 
 	@Autowired
 	private RentMonthDao rentMonthDao;
+	
+	@Autowired
+	private CutconfigDao cutconfigDao;
 	
 	public RentMonth get(String id) {
 		return rentMonthDao.get(id);
@@ -73,9 +78,46 @@ public class RentMonthService extends BaseService {
 		}
 
 		dc.add(Restrictions.eq(RentMonth.FIELD_DEL_FLAG, RentMonth.DEL_FLAG_NORMAL));
-		dc.addOrder(Order.desc("createDate"));
+		dc.addOrder(Order.desc("lastpayedate"));
 		return rentMonthDao.find(dc);
 	}
+	
+	public List<RentMonth> find(Map<String, Object> paramMap) {
+		DetachedCriteria dc = rentMonthDao.createDetachedCriteria();
+
+		Date sdate_begin = DateUtils.parseDate(paramMap.get("sdate_begin"));
+		Date sdate_end = DateUtils.parseDate(paramMap.get("sdate_end"));
+
+		if (StringUtils.isNotEmpty((String)paramMap.get("infotype"))){
+			dc.add(Restrictions.eq("infotype", (String)paramMap.get("infotype")));
+		}
+		if (null != paramMap.get("rent")){
+			dc.add(Restrictions.eq("rent", paramMap.get("rent")));
+		}
+		
+		dc.add(Restrictions.and(Restrictions.gt("lastpaysdate", sdate_begin),Restrictions.lt("lastpaysdate", sdate_end)));
+		dc.add(Restrictions.eq(RentMonth.FIELD_DEL_FLAG, RentMonth.DEL_FLAG_NORMAL));
+		dc.addOrder(Order.desc("lastpayedate"));
+		return rentMonthDao.find(dc);
+	}
+	
+	public RentMonth findLastRentMonth(RentMonth rentmonth) {
+		DetachedCriteria dc = rentMonthDao.createDetachedCriteria();
+
+		dc.add(Restrictions.eq("infotype", rentmonth.getInfotype()));
+		dc.add(Restrictions.eq("rent", rentmonth.getRent()));
+		
+		dc.add(Restrictions.and(Restrictions.lt("lastpaysdate", rentmonth.getLastpaysdate())));
+		dc.add(Restrictions.eq(RentMonth.FIELD_DEL_FLAG, RentMonth.DEL_FLAG_NORMAL));
+		dc.addOrder(Order.desc("lastpaysdate"));
+		List<RentMonth> tempList = rentMonthDao.find(dc);
+		if(null != tempList && tempList.size() > 0){
+			return tempList.get(0);
+		}
+		return null;
+	}
+	
+	
 	
 	@Transactional(readOnly = false)
 	public void save(RentMonth rentMonth) {
@@ -88,21 +130,55 @@ public class RentMonthService extends BaseService {
 	}
 	
 	/**
-	 * 获取租进的包租列表
+	 * 获取租进的包租列表(即将要支付下个月的钱）
 	 * @param paramMap
 	 * @return
 	 */
-	public List<RentMonth> rentInList(Map<String, Object> paramMap) {
-		return rentMonthDao.rentInList();
+	public List<RentMonth> rentInListWillNeedPayNextMonth() {
+		return rentMonthDao.rentInListWillNeedPayNextMonth();
 	}
 	
 	/**
-	 * 获取租出的包租列表
+	 * 获取租出的包租列表(即将要收取下个月的钱）
 	 * @param paramMap
 	 * @return
 	 */
-	public List<RentMonth> rentOutList(Map<String, Object> paramMap) {
-		return rentMonthDao.rentOutList();
+	public List<RentMonth> rentOutListWillNeedPayNextMonth() {
+		return rentMonthDao.rentOutListWillNeedPayNextMonth();
+	}
+	
+	/**
+	 * 获取租进的包租列表(即将要到达租进的最后时间）
+	 * @param paramMap
+	 * @return
+	 */
+	public List<RentMonth> rentInListWillReachEdate() {
+		return rentMonthDao.rentInListWillReachEdate();
+	}
+	
+	/**
+	 * 获取租出的包租列表(即将要到达租出的最后时间）
+	 * @param paramMap
+	 * @return
+	 */
+	public List<RentMonth> rentOutListWillReachEdate() {
+		return rentMonthDao.rentOutListWillReachEdate();
+	}
+	
+	/**
+	 * 获取空置期提成方案集合
+	 * @return
+	 */
+	public List<Cutconfig> findVacantPeriodCutconfigList(){
+		return cutconfigDao.findCutcodeList("cut_vacantperiod");
+	}
+	
+	/**
+	 * 获取业绩提成方案集合
+	 * @return
+	 */
+	public List<Cutconfig> findBusinessSaleCutconfigList(){
+		return cutconfigDao.findCutcodeList("cut_businesssales");
 	}
 
 	
@@ -162,11 +238,21 @@ public class RentMonthService extends BaseService {
 	}
 	
 	/**
+	 * 获取所有未租出去的房子信息
+	 * @param page
+	 * @param house
+	 * @return
+	 */
+	public List<RentMonth> findNoRentOut() {
+		return rentMonthDao.rentOutListHasCancel();
+	}
+	
+	/**
 	 * 获取每多少月付款的月份数
 	 * @param paytypevalue
 	 * @return
 	 */
-	private int getPayMonthUnit(String paytypevalue){
+	public int getPayMonthUnit(String paytypevalue){
 		String paytype = DictUtils.getDictLabel(paytypevalue, "finance_rent_paytype", "");
 		int payMonthUnit = 0;
 		if(StringUtils.isBlank(paytype) || "月付".equals(paytype)){

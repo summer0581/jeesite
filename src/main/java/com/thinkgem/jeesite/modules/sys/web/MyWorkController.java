@@ -7,6 +7,7 @@ package com.thinkgem.jeesite.modules.sys.web;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
+import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.finance.service.RentMonthService;
 import com.thinkgem.jeesite.modules.finance.service.RentService;
 import com.thinkgem.jeesite.modules.finance.web.RentController.RentHandleType;
@@ -41,9 +43,19 @@ public class MyWorkController extends BaseController {
 
 	@RequestMapping(value = {"list", ""})
 	public String list( Model model) {
+		List<RentMonth> temprentinlist = rentMonthService.rentInListWillNeedPayNextMonth();
+		List<RentMonth> temprentoutlist = rentMonthService.rentOutListWillNeedPayNextMonth();
+		List<RentMonth> temprentinwillreachedatelist = rentMonthService.rentInListWillReachEdate();
+		List<RentMonth> temprentoutwillreachedatelist = rentMonthService.rentOutListWillReachEdate();
 		model.addAttribute("sysdate", new Date());
-        model.addAttribute("rentinlist", rentMonthService.rentInList(new HashMap()));
-        model.addAttribute("rentoutlist", rentMonthService.rentOutList(new HashMap()));
+        model.addAttribute("rentinlistcount", temprentinlist.size());
+        model.addAttribute("rentoutlistcount", temprentoutlist.size());
+        model.addAttribute("rentinWRElistcount", temprentinwillreachedatelist.size());
+        model.addAttribute("rentoutWRElistcount", temprentoutwillreachedatelist.size());
+        model.addAttribute("rentinlist", temprentinlist.subList(0, temprentinlist.size()>5?5:temprentinlist.size()));
+        model.addAttribute("rentoutlist", temprentoutlist.subList(0, temprentoutlist.size()>5?5:temprentoutlist.size()));
+        model.addAttribute("rentinWRElist", temprentinwillreachedatelist.subList(0, temprentinwillreachedatelist.size()>5?5:temprentinwillreachedatelist.size()));
+        model.addAttribute("rentoutWRElist", temprentoutwillreachedatelist.subList(0, temprentoutwillreachedatelist.size()>5?5:temprentoutwillreachedatelist.size()));
 		return "modules/sys/myWork";
 	}
 	

@@ -165,7 +165,9 @@ public class UserController extends BaseController {
     public String exportFile(User user, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
 		try {
             String fileName = "用户数据"+DateUtils.getDate("yyyyMMddHHmmss")+".xlsx"; 
-    		Page<User> page = systemService.findUser(new Page<User>(request, response, -1), user); 
+            Page<User> pages = new Page<User>(request, response, -1);
+            pages.setPageSize(500);
+    		Page<User> page = systemService.findUser(pages, user); 
     		new ExportExcel("用户数据", User.class).setDataList(page.getList()).write(response, fileName).dispose();
     		return null;
 		} catch (Exception e) {

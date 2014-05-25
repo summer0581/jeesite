@@ -4,24 +4,27 @@
 package com.thinkgem.jeesite.modules.finance.entity;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.Where;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
 
-import com.thinkgem.jeesite.common.persistence.DataEntity;
 import com.thinkgem.jeesite.common.persistence.IdEntity;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 
@@ -55,6 +58,15 @@ public class RentMonth extends IdEntity<RentMonth> {
 	private String infotype;//信息类别
 	private String firstmonth_num;//是否一期的头一个月
 	private String agencyfee;//中介费
+	private User busi_manager;//业务经理
+	private User busi_departleader;//业务部长
+	private User busi_teamleader;//业务组长
+	private String cut_vacantperiodtype;//空置期提成方案
+	private String cut_businesssaletype;//业绩提成方案
+	private Date cancelrentdate;//提前退租时间
+	private String nextshouldamount;//下次应收应付金额
+	
+
 	
 
 	public RentMonth() {
@@ -196,9 +208,79 @@ public class RentMonth extends IdEntity<RentMonth> {
 		this.agencyfee = agencyfee;
 	}
 
+	@ManyToOne
+	@JoinColumn(name="busi_manager")
+	@NotFound(action = NotFoundAction.IGNORE)
+	@IndexedEmbedded
+	public User getBusi_manager() {
+		return busi_manager;
+	}
+
+	public void setBusi_manager(User busi_manager) {
+		this.busi_manager = busi_manager;
+	}
+
+	@ManyToOne
+	@JoinColumn(name="busi_departleader")
+	@NotFound(action = NotFoundAction.IGNORE)
+	@IndexedEmbedded
+	public User getBusi_departleader() {
+		return busi_departleader;
+	}
+
+	public void setBusi_departleader(User busi_departleader) {
+		this.busi_departleader = busi_departleader;
+	}
+
+	@ManyToOne
+	@JoinColumn(name="busi_teamleader")
+	@NotFound(action = NotFoundAction.IGNORE)
+	@IndexedEmbedded
+	public User getBusi_teamleader() {
+		return busi_teamleader;
+	}
+
+	public void setBusi_teamleader(User busi_teamleader) {
+		this.busi_teamleader = busi_teamleader;
+	}
+
+	public String getCut_vacantperiodtype() {
+		return cut_vacantperiodtype;
+	}
+
+	public void setCut_vacantperiodtype(String cut_vacantperiodtype) {
+		this.cut_vacantperiodtype = cut_vacantperiodtype;
+	}
+
+	public String getCut_businesssaletype() {
+		return cut_businesssaletype;
+	}
+
+	public void setCut_businesssaletype(String cut_businesssaletype) {
+		this.cut_businesssaletype = cut_businesssaletype;
+	}
+
+	public Date getCancelrentdate() {
+		return cancelrentdate;
+	}
+
+	public void setCancelrentdate(Date cancelrentdate) {
+		this.cancelrentdate = cancelrentdate;
+	}
+
+	public String getNextshouldamount() {
+		return nextshouldamount;
+	}
+
+	public void setNextshouldamount(String nextshouldamount) {
+		this.nextshouldamount = nextshouldamount;
+	}
 
 	
+
+
 	
+
 	
 }
 

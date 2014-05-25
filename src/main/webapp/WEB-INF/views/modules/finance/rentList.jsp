@@ -51,6 +51,15 @@
 			
 		}
 		
+		function openWindow(url,personname){
+			top.$.jBox.open("iframe:"+url, "查看["+personname+"]房屋明细",$(top.document).width()-220,$(top.document).height()-80,{
+				buttons:{"确定":true}, loaded:function(h){
+					$(".jbox-content", top.document).css("overflow-y","hidden");
+					$(".jbox", top.document).css("top","10px");
+				}
+			});
+		}
+		
 		
 	</script>
 </head>
@@ -101,6 +110,7 @@
 	<tags:message content="${message}"/>
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
 		<thead><tr>
+			<th rowspan="2" class="th_center">编号</th>
 			<th rowspan="2" class="th_center">房屋地址</th>
 			<th colspan="6" class="th_center">承租情况</th>
 			<th colspan="7" class="th_center">出租情况</th>
@@ -128,7 +138,8 @@
 		<tbody>
 		<c:forEach items="${page.list}" var="rent">
 			<tr>
-				<td><a href="${ctx}/finance/rent/form?id=${rent.id}">${rent.name}</a></td>
+				<td>${rent.business_num}</td>
+				<td><a href="#" onclick="openWindow('${ctx}/finance/house/form?id=${rent.house.id}','${rent.house.name}')">${rent.name}</a></td>
 				<td>${rent.rentinMonths[0].person.name}</td>
 				<td>${fns:getDictLabel(rent.rentinMonths[0].paytype, 'finance_rent_paytype', '')}</td>
 				<td><fmt:formatDate value="${rent.rentinMonths[0].sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentinMonths[0].edate}" pattern="yyyy-MM-dd"/></td>

@@ -102,8 +102,16 @@ public class CustomerController extends BaseController {
 	@RequestMapping(value = "selectList")
 	public String selectList(Customer customer, HttpServletRequest request, HttpServletResponse response, Model model) {
         list(customer, request, response, model);
+        String listtype = request.getParameter("listtype");
+        if("landlord".equals(listtype)){
+        	return "modules/finance/landlordSelectList";
+        }else if("tenant".equals(listtype)){
+        	return "modules/finance/tenantSelectList";
+        }
 		return "modules/finance/customerSelectList";
 	}
+	
+	
 
 	@RequiresPermissions("finance:customer:view")
     @RequestMapping(value = "export", method=RequestMethod.POST)

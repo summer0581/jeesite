@@ -8,10 +8,10 @@
     <link rel="stylesheet" href="${ctxStatic}/common/typica-login.css">
 	<style type="text/css">
 		.control-group{border-bottom:0px;}
-		body {background: url(${ctxStatic}/images/login_bg.jpg) no-repeat  fixed;}
+		body {background: url(${ctxStatic}/images/login_bg.jpg) no-repeat ;background-position: 50% 0%;background-size:100% 100%; }
 		#title{color:white; font-size:45px; font-weight: bold; text-align: center; }
 		.login-form label {font-size:14px;}
-		.container{width:340px; margin-left: 680px; margin-top: 230px;}
+		.container{width:340px; margin-left: 50%; margin-top: 15%;}
 		.alert{margin-bottom: 0px;position: absolute;top: 200px;}
 	</style>
 
@@ -77,8 +77,8 @@
             </form>
         </div>
     </div>
-    <footer class="white navbar-fixed-bottom">
+     <!-- <footer class="white navbar-fixed-bottom">
 		Copyright &copy; 2012-${fns:getConfig('copyrightYear')} <a href="${pageContext.request.contextPath}${fns:getFrontPath()}">${fns:getConfig('productName')}</a> 
-    </footer>
+    </footer>  -->
   </body>
 </html>

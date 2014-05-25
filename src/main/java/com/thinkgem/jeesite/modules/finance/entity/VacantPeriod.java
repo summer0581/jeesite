@@ -29,6 +29,7 @@ import com.thinkgem.jeesite.common.persistence.IdEntity;
 @Table(name = "finance_vacantperiod")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class VacantPeriod extends IdEntity<VacantPeriod> {
+
 	
 	private static final long serialVersionUID = 1L;
 	private String name; 	// 名称

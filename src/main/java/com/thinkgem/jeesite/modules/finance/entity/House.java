@@ -60,6 +60,13 @@ public class House extends IdEntity<House> {
 	private String age;//'年代',
 	private String decorate;//'装修',
 	private String is_needdeposit;//'是否需要下定金',
+	private String is_xingyebank;//是否兴业银行
+	private String receive_username;//收款户名
+	private String receive_bank;//收款银行及营业网点
+	private String is_samecity;//是否同城
+	private String remit_address;//汇入地址
+	private String house_source;//房屋来源
+	
 	
 	private User team_leader;
 	
@@ -78,7 +85,6 @@ public class House extends IdEntity<House> {
 	
 
 	@Length(min=1, max=64)
-	@ExcelField(title="序号", type=0, align=1, sort=10)
 	public String getBusi_id() {
 		return busi_id;
 	}
@@ -87,7 +93,7 @@ public class House extends IdEntity<House> {
 		this.busi_id = busi_id;
 	}
 	@Length(min=1, max=255)
-	@ExcelField(title="地址", type=0, align=1, sort=20)
+	@ExcelField(title="地址", type=0, align=1, sort=20,groups={1})
 	public String getName() {
 		return name;
 	}
@@ -95,6 +101,13 @@ public class House extends IdEntity<House> {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	@Transient
+	@ExcelField(title="承租租金", type=1, align=1, sort=25,groups={1})
+	public String getRentin_rentmonth() throws Exception {
+		return rent.getRentin_rentmonth();
+	}
+	
 	@Length(min=1, max=64)
 	@ExcelField(title="楼盘", type=0, align=1, sort=30)
 	public String getHouses() {
@@ -304,6 +317,59 @@ public class House extends IdEntity<House> {
 
 	public void setIs_needdeposit(String is_needdeposit) {
 		this.is_needdeposit = is_needdeposit;
+	}
+	@ExcelField(title="是否兴业银行", type=0, align=1, sort=200,groups={1})
+	public String getIs_xingyebank() {
+		return is_xingyebank;
+	}
+
+	public void setIs_xingyebank(String is_xingyebank) {
+		this.is_xingyebank = is_xingyebank;
+	}
+	@ExcelField(title="收款户名", type=0, align=1, sort=210,groups={1})
+	public String getReceive_username() {
+		return receive_username;
+	}
+
+	public void setReceive_username(String receive_username) {
+		this.receive_username = receive_username;
+	}
+	@ExcelField(title="收款银行及", type=0, align=1, sort=220,groups={1})
+	public String getReceive_bank() {
+		return receive_bank;
+	}
+
+	public void setReceive_bank(String receive_bank) {
+		this.receive_bank = receive_bank;
+	}
+	@ExcelField(title="是否同城", type=0, align=1, sort=230,groups={1})
+	public String getIs_samecity() {
+		return is_samecity;
+	}
+
+	public void setIs_samecity(String is_samecity) {
+		this.is_samecity = is_samecity;
+	}
+	@ExcelField(title="汇入地址", type=0, align=1, sort=240,groups={1})
+	public String getRemit_address() {
+		return remit_address;
+	}
+
+	public void setRemit_address(String remit_address) {
+		this.remit_address = remit_address;
+	}
+	@Transient
+	@ExcelField(title="应付金额", type=1, align=1, sort=245,groups={1})
+	public String getRent_nextshouldpay() throws Exception {
+		return rent.getRentin().getNextshouldamount();
+	}
+	@ExcelField(title="房屋来源", type=0, align=1, sort=250)
+	public String getHouse_source() {
+		return house_source;
+	}
+
+	public void setHouse_source(String house_source) {
+		this.house_source = house_source;
 	}
 	
 	

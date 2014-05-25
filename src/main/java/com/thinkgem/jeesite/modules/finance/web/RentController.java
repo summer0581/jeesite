@@ -27,14 +27,11 @@ import com.thinkgem.jeesite.common.beanvalidator.BeanValidators;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.utils.DateUtils;
-import com.thinkgem.jeesite.common.utils.IdGen;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.utils.excel.ExportExcel;
 import com.thinkgem.jeesite.common.utils.excel.ImportExcel;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
-import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
-import com.thinkgem.jeesite.modules.finance.entity.VacantPeriod;
 import com.thinkgem.jeesite.modules.finance.service.RentService;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
@@ -142,7 +139,9 @@ public class RentController extends BaseController {
     public String exportFile(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
 		try {
             String fileName = "包租数据"+DateUtils.getDate("yyyyMMddHHmmss")+".xlsx"; 
-    		Page<Rent> page = rentService.rentList(new Page<Rent>(request, response, -1), paramMap); 
+            Page<Rent> pages = new Page<Rent>(request, response, -1);
+            pages.setPageSize(500);
+    		Page<Rent> page = rentService.rentList(pages, paramMap); 
     		new ExportExcel("包租数据", Rent.class).setDataList(page.getList()).write(response, fileName).dispose();
     		return null;
 		} catch (Exception e) {

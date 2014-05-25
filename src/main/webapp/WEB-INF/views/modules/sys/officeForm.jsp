@@ -90,7 +90,8 @@
 		<div class="control-group">
 			<label class="control-label">负责人:</label>
 			<div class="controls">
-				<form:input path="master" htmlEscape="false" maxlength="50"/>
+				<tags:treeselect id="master" name="master.id" notAllowSelectParent="true" value="${office.master.id}" labelName="master.name" labelValue="${office.master.name}"
+					title="人员" url="/sys/user/treeData" />
 			</div>
 		</div>
 		<div class="control-group">

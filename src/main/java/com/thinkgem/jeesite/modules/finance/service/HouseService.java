@@ -17,9 +17,10 @@ import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.BaseService;
 import com.thinkgem.jeesite.common.utils.StringUtils;
-import com.thinkgem.jeesite.modules.cms.entity.Article;
-import com.thinkgem.jeesite.modules.finance.entity.House;
 import com.thinkgem.jeesite.modules.finance.dao.HouseDao;
+import com.thinkgem.jeesite.modules.finance.dao.RentMonthDao;
+import com.thinkgem.jeesite.modules.finance.entity.House;
+import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
 /**
@@ -33,6 +34,9 @@ public class HouseService extends BaseService {
 
 	@Autowired
 	private HouseDao houseDao;
+	
+	@Autowired
+	private RentMonthDao rentMonthDao;
 	
 	public House get(String id) {
 		return houseDao.get(id);
@@ -77,12 +81,16 @@ public class HouseService extends BaseService {
 		dc.createAlias("tenant", "tenant", JoinType.LEFT_OUTER_JOIN);
 		dc.createAlias("rent", "rent", JoinType.LEFT_OUTER_JOIN);
 		dc.createAlias("team_leader.office", "team_leader_office");
-		dc.add(dataScopeFilter(UserUtils.getUser(), "office", ""));
+		//dc.add(dataScopeFilter(UserUtils.getUser(), "office", "")); 未租出的房子所有人都能看
 		dc.add(Restrictions.eq(House.FIELD_DEL_FLAG, House.DEL_FLAG_NORMAL));
 		dc.add(Restrictions.isNull("rent.house"));
 		dc.addOrder(Order.desc("id"));
 		return houseDao.find(page, dc);
 	}
+	
+
+	
+
 
 	
 	/**

@@ -32,6 +32,7 @@ import com.thinkgem.jeesite.common.utils.excel.ImportExcel;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
+import com.thinkgem.jeesite.modules.finance.entity.House;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.finance.service.RentMonthService;
 
@@ -73,6 +74,19 @@ public class RentMonthController extends BaseController {
         return "modules/finance/rentinMonthList";
 	}
 	
+	@RequiresPermissions("finance:house:view")
+	@RequestMapping(value = {"houseCancelRentlist"})
+	public String houseCancelRentlist(RentMonth rentMonth, HttpServletRequest request, HttpServletResponse response, Model model) {
+		User user = UserUtils.getUser();
+		if (!user.isAdmin()){
+			rentMonth.setCreateBy(user);
+		}
+ 
+        List<RentMonth> page = rentMonthService.findNoRentOut(); 
+        model.addAttribute("page", page);
+		return "modules/finance/houseCancelRentList";
+	}
+	
 
 
 	@RequiresPermissions("finance:rentMonth:view")
@@ -91,15 +105,18 @@ public class RentMonthController extends BaseController {
 			if(rentMonthList.size()>0){
 				rentMonth = rentMonthService.find(rentMonth).get(0);
 				rentMonth.setId("");
+				int addMonth = rentMonthService.getPayMonthUnit(rentMonth.getPaytype());
 				if(null != rentMonth.getLastpaysdate())
-					rentMonth.setLastpaysdate(DateUtils.addMonths(rentMonth.getLastpaysdate(), 1));
+					rentMonth.setLastpaysdate(DateUtils.addMonths(rentMonth.getLastpaysdate(), addMonth));
 				if(null != rentMonth.getLastpayedate())
-					rentMonth.setLastpayedate(DateUtils.addMonths(rentMonth.getLastpayedate(), 1));
+					rentMonth.setLastpayedate(DateUtils.addMonths(rentMonth.getLastpayedate(), addMonth));
 				if(null != rentMonth.getNextpaydate())
-					rentMonth.setNextpaydate(DateUtils.addMonths(rentMonth.getNextpaydate(), 1));
-				
+					rentMonth.setNextpaydate(DateUtils.addMonths(rentMonth.getNextpaydate(), addMonth));
+				rentMonth.setNextshouldamount(String.valueOf(Integer.valueOf(rentMonth.getRentmonth())*addMonth));
 			}
 		}
+		model.addAttribute("vacantPeriodCutconfigs", rentMonthService.findVacantPeriodCutconfigList());
+		model.addAttribute("businessSaleCutconfigs", rentMonthService.findBusinessSaleCutconfigList());
 		model.addAttribute("rentMonth", rentMonth);
 		return "modules/finance/rentinMonthForm";
 	}
@@ -112,20 +129,25 @@ public class RentMonthController extends BaseController {
 			List<RentMonth> rentMonthList = rentMonthService.find(rentMonth);
 			if(rentMonthList.size()>0){
 				rentMonth = rentMonthService.find(rentMonth).get(0);
+				int addMonth = rentMonthService.getPayMonthUnit(rentMonth.getPaytype());
 				rentMonth.setId("");
 				if(null != rentMonth.getLastpaysdate())
-					rentMonth.setLastpaysdate(DateUtils.addMonths(rentMonth.getLastpaysdate(), 1));
+					rentMonth.setLastpaysdate(DateUtils.addMonths(rentMonth.getLastpaysdate(), addMonth));
 				if(null != rentMonth.getLastpayedate())
-					rentMonth.setLastpayedate(DateUtils.addMonths(rentMonth.getLastpayedate(), 1));
+					rentMonth.setLastpayedate(DateUtils.addMonths(rentMonth.getLastpayedate(), addMonth));
 				if(null != rentMonth.getNextpaydate())
-					rentMonth.setNextpaydate(DateUtils.addMonths(rentMonth.getNextpaydate(), 1));
-				rentMonth.setAmountreceived(String.valueOf(MathUtils.sumInt(rentMonth.getAmountreceived(),rentMonth.getRentmonth())));
+					rentMonth.setNextpaydate(DateUtils.addMonths(rentMonth.getNextpaydate(), addMonth));
+				rentMonth.setNextshouldamount(String.valueOf(Integer.valueOf(rentMonth.getRentmonth())*addMonth));
+				rentMonth.setAmountreceived(String.valueOf(MathUtils.sumInt(rentMonth.getAmountreceived(),String.valueOf(Integer.valueOf(rentMonth.getRentmonth())*addMonth))));
 			}
 		}
+		model.addAttribute("vacantPeriodCutconfigs", rentMonthService.findVacantPeriodCutconfigList());
+		model.addAttribute("businessSaleCutconfigs", rentMonthService.findBusinessSaleCutconfigList());
 		model.addAttribute("rentMonth", rentMonth);
 		return "modules/finance/rentoutMonthForm";
-	}
+	} 
 
+	
 
 	@RequiresPermissions("finance:rentMonth:edit")
 	@RequestMapping(value = "save")

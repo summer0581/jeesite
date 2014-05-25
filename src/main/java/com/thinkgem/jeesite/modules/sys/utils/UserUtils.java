@@ -5,6 +5,7 @@
  */
 package com.thinkgem.jeesite.modules.sys.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -181,6 +182,46 @@ public class UserUtils extends BaseService {
 			return null;
 		}
 	}
+	public enum UserLevel{
+		manager,departleader,teamleader,saler
+	}
+	
+	/**
+	 * 根据级别获取相应的用户
+	 * @param userlevel
+	 * @return
+	 */
+	public static List<User>  getListByUserLevel(UserLevel userlevel){
+		List<User> userlist = new ArrayList<User>();
+		if(UserLevel.manager.equals(userlevel)){
+			for(Office office : UserUtils.getOfficeList()){
+				if("1".equals(office.getType()) && null != office.getMaster() && StringUtils.isNotBlank(office.getMaster().getUserBusitype())){
+					userlist.add(office.getMaster());
+				}
+			}
+		}else if(UserLevel.departleader.equals(userlevel)){
+			for(Office office : UserUtils.getOfficeList()){
+				if("2".equals(office.getType()) && null != office.getMaster() && StringUtils.isNotBlank(office.getMaster().getUserBusitype())){
+					userlist.add(office.getMaster());
+				}
+			}
+		}else if(UserLevel.teamleader.equals(userlevel)){
+			for(Office office : UserUtils.getOfficeList()){
+				if("3".equals(office.getType()) && null != office.getMaster() && StringUtils.isNotBlank(office.getMaster().getUserBusitype())){
+					userlist.add(office.getMaster());
+				}
+			}
+		}else{
+			for(Office office : UserUtils.getOfficeList()){
+				for(User usertemp : office.getUserList()){
+					if(!usertemp.equals(office.getMaster()) && StringUtils.isNotBlank(usertemp.getUserBusitype())){
+						userlist.add(usertemp);
+					}	
+				}
+			}
+		}
+		return userlist;
+	}
 	
 	// ============== User Cache ==============
 	
@@ -214,5 +255,7 @@ public class UserUtils extends BaseService {
 		}
 		return map;
 	}
+	
+
 	
 }

@@ -52,7 +52,7 @@
 			<label class="control-label">房屋名称:</label>
 			<div class="controls">
 				<form:hidden id="houseid" path="house.id" htmlEscape="false" maxlength="64" class="input-xlarge"/>
-				<form:input id="name" path="name" htmlEscape="false" maxlength="64" class="input-xlarge" readonly="true"/>
+				<form:input id="name" path="name" htmlEscape="false" maxlength="64" class="required input-xlarge" readonly="true"/>
 				<a id="relationButton" href="javascript:" class="btn">选择房屋</a>
 				<shiro:hasPermission name="finance:rent:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasPermission>
 				<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
@@ -84,7 +84,7 @@
 		    <div class="control-group">
 				<label class="control-label">编号:</label>
 				<div class="controls">
-					<form:input path="business_num" htmlEscape="false" rows="4" maxlength="200" class="input-xxlarge"/>
+					<form:input path="business_num" htmlEscape="false" rows="4" maxlength="200" class="required input-xxlarge"/>
 				</div>
 			</div>
 		
