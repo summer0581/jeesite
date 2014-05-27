@@ -266,7 +266,7 @@ public class StatsRentService extends BaseService {
 				if(VacantPeriodConstant.NOSALE_VACANTPERIOD.equals(recentVacantType) && vacantperiod > 0){//如果空置期为公司提供的，当空置时间大于0 ，无提成；小于0，则扣提成
 					cutlevel = 0.0;
 				}
-				cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentmonth.getCut_vacantperiodtype());
+				cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(sameMonthRentin.getCut_vacantperiodtype());
 				rentin_cut = Math.round(rentout_rentmonth/30 * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
 				rentout_cut = Math.round(rentout_rentmonth/30 * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
 				teamleader_cut = Math.round(rentout_rentmonth/30  * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
@@ -443,7 +443,7 @@ public class StatsRentService extends BaseService {
 				resultMap.put("vacantperiod_type", recentVacantType);//空置期提成类型
 
 
-				cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentmonth.getCut_vacantperiodtype());
+				cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(sameMonthRentin.getCut_vacantperiodtype());
 				if(person.equals(sameMonthRentin.getBusi_manager())){//判断此人是不是经理
 					manager_cut = Math.round(rentout_rentmonth/30 * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel );
 					manager_cut_total += manager_cut;
@@ -531,7 +531,7 @@ public class StatsRentService extends BaseService {
 		for(RentMonth rentmonth : list){
 			
 			Map<String,Object> paramMap1 = new HashMap<String,Object>();
-			paramMap1.put("infotype", "rentin");
+			paramMap1.put("infotype", "rentout");
 			paramMap1.put("rent", rentmonth.getRent());
 			paramMap1.put("sdate_begin", paramMap.get("rentout_sdate_begin"));
 			paramMap1.put("sdate_end", paramMap.get("rentout_sdate_end"));
@@ -555,7 +555,7 @@ public class StatsRentService extends BaseService {
 			teamleader_index = showUserList.indexOf(sameMonthRentin.getBusi_teamleader());
 			rentinsaler_index = showUserList.indexOf(sameMonthRentin.getPerson());
 			rentoutsaler_index = showUserList.indexOf(rentmonth.getPerson());
-			cut_businesssaletypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentmonth.getCut_businesssaletype());
+			cut_businesssaletypeconfigs = cutconfigService.findCutconfiglistByCutcode(sameMonthRentin.getCut_businesssaletype());
 			if(manager_index != -1){
 				tempdouble = resultUserCutList.get(manager_index)+(int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_businesssales);
 				resultUserCutList.remove(manager_index);
@@ -647,7 +647,7 @@ public class StatsRentService extends BaseService {
 
 		for(RentMonth rentmonth : list){
 			Map<String,Object> paramMap1 = new HashMap<String,Object>();
-			paramMap1.put("infotype", "rentin");
+			paramMap1.put("infotype", "rentout");
 			paramMap1.put("rent", rentmonth.getRent());
 			paramMap1.put("sdate_begin", paramMap.get("rentout_sdate_begin"));
 			paramMap1.put("sdate_end", paramMap.get("rentout_sdate_end"));
@@ -658,7 +658,7 @@ public class StatsRentService extends BaseService {
 				sameMonthRentin = null;
 				continue;
 			}
-			cut_businesssaletypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentmonth.getCut_businesssaletype());
+			cut_businesssaletypeconfigs = cutconfigService.findCutconfiglistByCutcode(sameMonthRentin.getCut_businesssaletype());
 			if(null != sameMonthRentin.getBusi_manager()){
 				username_temp = sameMonthRentin.getBusi_manager().getLoginName();
 				tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_businesssales);
@@ -787,7 +787,7 @@ public class StatsRentService extends BaseService {
 		for(RentMonth rentmonth : list){
 			Map<String,Object> paramMap1 = new HashMap<String,Object>();
 			resultMap = new HashMap<String,Object>();
-			paramMap1.put("infotype", "rentin");
+			paramMap1.put("infotype", "rentout");
 			paramMap1.put("rent", rentmonth.getRent());
 			paramMap1.put("sdate_begin", paramMap.get("rentout_sdate_begin"));
 			paramMap1.put("sdate_end", paramMap.get("rentout_sdate_end"));
@@ -802,7 +802,7 @@ public class StatsRentService extends BaseService {
 			resultMap.put("rentinmonth", sameMonthRentin);
 			resultMap.put("rentmonth", rentmonth);
 
-			cut_businesssaletypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentmonth.getCut_businesssaletype());
+			cut_businesssaletypeconfigs = cutconfigService.findCutconfiglistByCutcode(sameMonthRentin.getCut_businesssaletype());
 			if(person.equals(sameMonthRentin.getBusi_manager())){
 				tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_businesssales);
 				resultMap.put("manager_cut",tempdouble);
@@ -916,7 +916,7 @@ public class StatsRentService extends BaseService {
 			rentout_sdate_end = DateUtils.parseDate(Global.getConfig("sys.default_edate"));
 			paramMap.put("rentout_sdate_end", DateUtils.formatDate(rentout_sdate_end, "yyyy-MM-dd"));
 		}
-		dc.add(Restrictions.eq("infotype", "rentout"));
+		dc.add(Restrictions.eq("infotype", "rentin"));
 		dc.add(Restrictions.and(Restrictions.gt("lastpaysdate", rentout_sdate_begin),Restrictions.lt("lastpaysdate", rentout_sdate_end)));
 
 		String name = (String)paramMap.get("name");

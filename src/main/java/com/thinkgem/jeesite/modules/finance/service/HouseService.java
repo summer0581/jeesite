@@ -51,10 +51,10 @@ public class HouseService extends BaseService {
 			dc.add(Restrictions.like("landlord.name", "%"+house.getLandlord().getName()+"%"));
 		}
 		dc.createAlias("office", "office");
-		dc.createAlias("team_leader", "team_leader");
+		
 		dc.createAlias("landlord", "landlord", JoinType.LEFT_OUTER_JOIN);
 		dc.createAlias("tenant", "tenant", JoinType.LEFT_OUTER_JOIN);
-		dc.createAlias("team_leader.office", "team_leader_office");
+
 		dc.add(dataScopeFilter(UserUtils.getUser(), "office", ""));
 		dc.add(Restrictions.eq(House.FIELD_DEL_FLAG, House.DEL_FLAG_NORMAL));
 		dc.addOrder(Order.desc("id"));

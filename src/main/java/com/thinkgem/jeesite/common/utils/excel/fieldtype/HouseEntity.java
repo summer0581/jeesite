@@ -22,7 +22,13 @@ public class HouseEntity {
 	 * 获取对象值（导入）
 	 */
 	public static Object getValue(String val) {
-		return houseService.findByName(val);
+		House house = houseService.findByName(val);
+		if(null == house){
+			house = new House();
+			house.prePersist();
+			house.setName(val);
+		}
+		return house;
 	}
 
 	/**

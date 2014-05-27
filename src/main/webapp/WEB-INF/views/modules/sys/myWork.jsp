@@ -29,7 +29,7 @@
               <tbody>
               <c:forEach items="${rentinlist}" var="rentMonth">
               	 <tr>
-                  <td>${rentMonth.rent.house.busi_id }</td>
+                  <td>${rentMonth.rent.business_num }</td>
                   <td><a href="${ctx}/finance/rent/form?id=${rentMonth.rent.id}">${rentMonth.rent.house.name }</a></td>
                   <td><fmt:formatDate value="${rentMonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rentMonth.edate}" pattern="yyyy-MM-dd"/></td>
                   <td><fmt:formatDate value="${rentMonth.lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rentMonth.lastpayedate}" pattern="yyyy-MM-dd"/></td>
@@ -55,7 +55,7 @@
               <tbody>
              <c:forEach items="${rentoutlist}" var="rentMonth">
               	 <tr>
-                  <td>${rentMonth.rent.house.busi_id }</td>
+                  <td>${rentMonth.rent.business_num }</td>
                   <td><a href="${ctx}/finance/rent/form?id=${rentMonth.rent.id}">${rentMonth.rent.house.name }</a></td>
                   <td><fmt:formatDate value="${rentMonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rentMonth.edate}" pattern="yyyy-MM-dd"/></td>
                   <td><fmt:formatDate value="${rentMonth.lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rentMonth.lastpayedate}" pattern="yyyy-MM-dd"/></td>
@@ -82,7 +82,7 @@
               <tbody>
               <c:forEach items="${rentinWRElist}" var="rentMonth">
               	 <tr>
-                  <td>${rentMonth.rent.house.busi_id }</td>
+                  <td>${rentMonth.rent.business_num }</td>
                   <td><a href="${ctx}/finance/rent/form?id=${rentMonth.rent.id}">${rentMonth.rent.house.name }</a></td>
                   <td><fmt:formatDate value="${rentMonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rentMonth.edate}" pattern="yyyy-MM-dd"/></td>
                   <td><fmt:formatDate value="${rentMonth.lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rentMonth.lastpayedate}" pattern="yyyy-MM-dd"/></td>
@@ -108,7 +108,7 @@
               <tbody>
              <c:forEach items="${rentoutWRElist}" var="rentMonth">
               	 <tr>
-                  <td>${rentMonth.rent.house.busi_id }</td>
+                  <td>${rentMonth.rent.business_num }</td>
                   <td><a href="${ctx}/finance/rent/form?id=${rentMonth.rent.id}">${rentMonth.rent.house.name }</a></td>
                   <td><fmt:formatDate value="${rentMonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rentMonth.edate}" pattern="yyyy-MM-dd"/></td>
                   <td><fmt:formatDate value="${rentMonth.lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rentMonth.lastpayedate}" pattern="yyyy-MM-dd"/></td>

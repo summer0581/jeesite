@@ -22,7 +22,13 @@ public class CustomerEntity {
 	 * 获取对象值（导入）
 	 */
 	public static Object getValue(String val) {
-		return customerService.findByName(val);
+		Customer customer = customerService.findByName(val);
+		if(null == customer){
+			customer = new Customer();
+			customer.prePersist();
+			customer.setName(val);
+		}
+		return customer;
 	}
 
 	/**

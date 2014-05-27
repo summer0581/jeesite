@@ -30,6 +30,8 @@ import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.ListUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.utils.excel.annotation.ExcelField;
+import com.thinkgem.jeesite.common.utils.excel.fieldtype.CustomerEntity;
+import com.thinkgem.jeesite.common.utils.excel.fieldtype.CutconfigEntity;
 import com.thinkgem.jeesite.common.utils.excel.fieldtype.HouseEntity;
 import com.thinkgem.jeesite.common.utils.excel.fieldtype.UserEntity;
 import com.thinkgem.jeesite.modules.sys.entity.User;
@@ -78,7 +80,6 @@ public class Rent extends IdEntity<Rent> {
 	}
 	
 
-	@Length(min=1, max=200)
 	public String getName() {
 		return name;
 	}
@@ -87,7 +88,7 @@ public class Rent extends IdEntity<Rent> {
 		this.name = name;
 	}
 
-	@OneToOne
+	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="house_id")
 	@NotFound(action = NotFoundAction.IGNORE)
 	@NotNull
@@ -291,12 +292,86 @@ public class Rent extends IdEntity<Rent> {
 		getRentin().setNextpaydate(rentin_nextpaydate);
 	}
 	
+	@Transient
+	@ExcelField(title="承租中介费", type=0, align=1, sort=85)
+	public String getRentin_agancyfee() throws Exception {
+		return getRentin().getAgencyfee();
+	}
+
+	public void setRentin_agancyfee(String agencyfee) throws Exception {
+		getRentin().setAgencyfee(agencyfee);
+	}
+	
+	@Transient
+	@ExcelField(title="承租业务经理", type=0, align=1, sort=90, fieldType=UserEntity.class)
+	public User getRentin_busi_manager() throws Exception {
+		return getRentin().getBusi_manager();
+	}
+
+	public void setRentin_busi_manager(User busi_manager) throws Exception {
+		getRentin().setBusi_manager(busi_manager);
+	}
+	
+	@Transient
+	@ExcelField(title="承租业务部长", type=0, align=1, sort=95, fieldType=UserEntity.class)
+	public User getRentin_busi_departleader() throws Exception {
+		return getRentin().getBusi_departleader();
+	}
+
+	public void setRentin_busi_departleader(User busi_departleader) throws Exception {
+		getRentin().setBusi_departleader(busi_departleader);
+		//根据部长来设置房东和租户的所属部门，以及房子的所属部门
+		house.setOffice(busi_departleader.getOffice());
+	}
+	
+	@Transient
+	@ExcelField(title="承租业务组长", type=0, align=1, sort=100, fieldType=UserEntity.class)
+	public User getRentin_busi_teamleader() throws Exception {
+		return getRentin().getBusi_teamleader();
+	}
+
+	public void setRentin_busi_teamleader(User busi_teamleader) throws Exception {
+		getRentin().setBusi_teamleader(busi_teamleader);
+	}
+	
+	@Transient
+	@ExcelField(title="承租空置期方案设置", type=0, align=1, sort=105, fieldType=CutconfigEntity.class)
+	public String getRentin_Cut_vacantperiodtype() throws Exception{
+		return getRentin().getCut_vacantperiodtype();
+	}
+	
+	public void setRentin_Cut_vacantperiodtype(String cut_vacantperiodtype) throws Exception {
+		getRentin().setCut_vacantperiodtype(cut_vacantperiodtype);
+	}
+	
+	@Transient
+	@ExcelField(title="承租业绩提成方案设置", type=0, align=1, sort=110, fieldType=CutconfigEntity.class)
+	public String getRentin_Cut_businesssaletype() throws Exception{
+		return getRentin().getCut_businesssaletype();
+	}
+	
+	public void setRentin_Cut_businesssaletype(String cut_businesssaletype) throws Exception {
+		getRentin().setCut_businesssaletype(cut_businesssaletype);
+	}
+	
+	@Transient
+	@ExcelField(title="承租下次应付金额", type=0, align=1, sort=115)
+	public String getRentin_nextshouldamount() throws Exception {
+		return getRentin().getNextshouldamount();
+	}
+
+	public void setRentin_nextshouldamount(String nextshouldamount) throws Exception {
+		getRentin().setNextshouldamount(nextshouldamount);
+	}
+
+
+	
 	public void setRentout_date(String rentout_date) throws Exception{
 		String[] dates = StringUtils.splitWithTokenIndex(rentout_date, Rent.DATEHODlER, 3);
 		getRentout().setSdate(DateUtils.parseDate(dates[0]));
 		getRentout().setEdate(DateUtils.parseDate(dates[1]));
 	}
-	@ExcelField(title="出租日期", type=0, align=1, sort=85)
+	@ExcelField(title="出租日期", type=0, align=1, sort=185)
 	@Transient
 	public String getRentout_date() throws Exception{
 		Date rentout_sdate = getRentout().getSdate();
@@ -304,7 +379,7 @@ public class Rent extends IdEntity<Rent> {
 		return DateUtils.formatDate(rentout_sdate,"yyyy-MM-dd")+Rent.DATEHODlER+DateUtils.formatDate(rentout_edate,"yyyy-MM-dd");
 	}
 	@Transient
-	@ExcelField(title="出租押金", type=0, align=1, sort=90)
+	@ExcelField(title="出租押金", type=0, align=1, sort=190)
 	public String getRentout_deposit() throws Exception {
 		return getRentout().getDeposit();
 	}
@@ -313,7 +388,7 @@ public class Rent extends IdEntity<Rent> {
 		getRentout().setDeposit(rentout_deposit);
 	}
 	@Transient
-	@ExcelField(title="出租月租金", type=0, align=1, sort=100)
+	@ExcelField(title="出租月租金", type=0, align=1, sort=200)
 	public String getRentout_rentmonth() throws Exception {
 		return getRentout().getRentmonth();
 	}
@@ -343,7 +418,7 @@ public class Rent extends IdEntity<Rent> {
 		getRentout().setLastpaysdate(DateUtils.parseDate(dates[0]));
 		getRentout().setLastpayedate(DateUtils.parseDate(dates[1]));
 	}
-	@ExcelField(title="出租上次付款日期", type=0, align=1, sort=110)
+	@ExcelField(title="出租上次付款日期", type=0, align=1, sort=210)
 	@Transient
 	public String getRentout_lastpaydate() throws Exception{
 		Date rentout_lastpaysdate = getRentout().getLastpaysdate();
@@ -352,7 +427,7 @@ public class Rent extends IdEntity<Rent> {
 	}
 	
 	@Transient
-	@ExcelField(title="出租已收金额", type=0, align=1, sort=130)
+	@ExcelField(title="出租已收金额", type=0, align=1, sort=230)
 	public String getRentout_amountreceived() throws Exception {
 		return getRentout().getAmountreceived();
 	}
@@ -361,7 +436,7 @@ public class Rent extends IdEntity<Rent> {
 		getRentout().setAmountreceived(rentout_amountreceived);
 	}
 	@Transient
-	@ExcelField(title="出租下次收租日期", type=0, align=1, sort=140)
+	@ExcelField(title="出租下次收租日期", type=0, align=1, sort=240)
 	public Date getRentout_nextpaydate() throws Exception {
 		return getRentout().getNextpaydate();
 	}
@@ -370,7 +445,7 @@ public class Rent extends IdEntity<Rent> {
 		getRentout().setNextpaydate(rentout_nextpaydate);
 	}
 	@Transient
-	@ExcelField(title="出租付款方式", type=0, align=1, sort=150, dictType="finance_rent_paytype")
+	@ExcelField(title="出租付款方式", type=0, align=1, sort=250, dictType="finance_rent_paytype")
 	public String getRentout_paytype() throws Exception {
 		return getRentout().getPaytype();
 	}
@@ -379,7 +454,7 @@ public class Rent extends IdEntity<Rent> {
 		getRentout().setPaytype(rentout_paytype);
 	}	
 	@Transient
-	@ExcelField(title="出租人", type=0, align=1, sort=160, fieldType=UserEntity.class)
+	@ExcelField(title="出租人", type=0, align=1, sort=260, fieldType=UserEntity.class)
 	public User getRentout_person() throws Exception {
 		return getRentout().getPerson();
 	}
@@ -398,7 +473,7 @@ public class Rent extends IdEntity<Rent> {
 		return getRentout().getSdate();
 	}
 
-	public void setRentout_sdate(Date rentout_sdate) throws Exception {
+	public void setRentout_sdate(Date rentout_sdate) throws Exception { 
 		getRentout().setSdate(rentout_sdate);
 	}
 	@Transient
@@ -409,6 +484,90 @@ public class Rent extends IdEntity<Rent> {
 	public void setRentout_edate(Date rentout_edate) throws Exception {
 		getRentout().setEdate(rentout_edate);
 	}
+	
+	@Transient
+	@ExcelField(title="出租中介费", type=0, align=1, sort=270)
+	public String getRentout_agancyfee() throws Exception {
+		return getRentout().getAgencyfee();
+	}
+
+	public void setRentout_agancyfee(String agencyfee) throws Exception {
+		getRentout().setAgencyfee(agencyfee);
+	}
+		
+	@Transient
+	@ExcelField(title="出租第几个空置期", type=0, align=1, sort=290)
+	public String getRentout_firstmonth_num() throws Exception{
+		return getRentout().getFirstmonth_num();
+	}
+	
+	public void setRentout_firstmonth_num(String firstmonth_num) throws Exception {
+		getRentout().setFirstmonth_num(firstmonth_num);
+	}
+	@Transient
+	@ExcelField(title="出租下次应收金额", type=0, align=1, sort=295)
+	public String getRentout_nextshouldamount() throws Exception {
+		return getRentout().getNextshouldamount();
+	}
+
+	public void setRentout_nextshouldamount(String nextshouldamount) throws Exception {
+		getRentout().setNextshouldamount(nextshouldamount);
+	}
+
+	@Transient
+	@ExcelField(title="出租提前退租时间", type=0, align=1, sort=300)
+	public Date getRentout_cancelrentdate() throws Exception {
+		return getRentout().getCancelrentdate();
+	}
+
+	public void setRentout_cancelrentdate(Date cancelrentdate) throws Exception {
+		getRentout().setCancelrentdate(cancelrentdate);
+	}	
+	
+	@Transient
+	@ExcelField(title="房东姓名", type=0, align=1, sort=305 ,fieldType= CustomerEntity.class)
+	public Customer getLandlord() throws Exception {
+		return house.getLandlord();
+	}
+
+	public void setLandlord(Customer landlord) throws Exception {
+		house.setLandlord(landlord);
+		landlord.setOffice(getRentin_busi_departleader().getOffice());
+	}
+
+	@Transient
+	@ExcelField(title="房东联系方式", type=0, align=1, sort=310 )
+	public String getLandlord_telephone() throws Exception {
+		return house.getLandlord_telephone();
+	}
+
+	public void setLandlord_telephone(String landlord_telephone) throws Exception {
+		house.setLandlord_telephone(landlord_telephone);
+	}
+
+	@Transient
+	@ExcelField(title="租户姓名", type=0, align=1, sort=315 ,fieldType= CustomerEntity.class)
+	public Customer getTenant() throws Exception {
+		return house.getTenant();
+	}
+
+	public void setTenant(Customer tenant) throws Exception {
+		house.setTenant(tenant);
+		tenant.setOffice(getRentin_busi_departleader().getOffice());
+	}
+
+	@Transient
+	@ExcelField(title="房东联系方式", type=0, align=1, sort=320 )
+	public String getTenant_telephone() throws Exception {
+		return house.getTenant_telephone();
+	}
+
+	public void setTenant_telephone(String tenant_telephone) throws Exception {
+		house.setTenant_telephone(tenant_telephone);
+	}
+
+
+	
 
 	public static void main(String[] args){
 		//String date = "2013-01-04至2014-02-05";

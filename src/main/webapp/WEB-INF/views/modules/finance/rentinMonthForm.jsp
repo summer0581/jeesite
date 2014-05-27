@@ -100,12 +100,6 @@
 			<div class="controls">
 			<form:input path="nextshouldamount" htmlEscape="false" maxlength="64" class="digits"/>			
 			</div>
-		</div>	
-		<div class="control-group">
-			<label class="control-label">第几期的头月（如果是头月则填，不是头月则为空）:</label>
-			<div class="controls">
-			<form:input path="firstmonth_num" htmlEscape="false" maxlength="64" class="digits"/>			
-			</div>
 		</div>		
 		<div class="control-group">
 			<label class="control-label">中介费:</label>

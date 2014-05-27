@@ -24,7 +24,10 @@ public class UserEntity {
 				return e;
 			}
 		}
-		return null;
+		User user = new User();
+		user.prePersist();
+		user.setName(val);
+		return user;
 	}
 
 	/**

@@ -84,7 +84,6 @@ public class House extends IdEntity<House> {
 	}
 	
 
-	@Length(min=1, max=64)
 	public String getBusi_id() {
 		return busi_id;
 	}
@@ -92,7 +91,6 @@ public class House extends IdEntity<House> {
 	public void setBusi_id(String busi_id) {
 		this.busi_id = busi_id;
 	}
-	@Length(min=1, max=255)
 	@ExcelField(title="地址", type=0, align=1, sort=20,groups={1})
 	public String getName() {
 		return name;
@@ -108,7 +106,6 @@ public class House extends IdEntity<House> {
 		return rent.getRentin_rentmonth();
 	}
 	
-	@Length(min=1, max=64)
 	@ExcelField(title="楼盘", type=0, align=1, sort=30)
 	public String getHouses() {
 		return houses;
@@ -117,7 +114,7 @@ public class House extends IdEntity<House> {
 	public void setHouses(String houses) {
 		this.houses = houses;
 	}
-	@OneToOne(cascade={CascadeType.MERGE})
+	@OneToOne(cascade={CascadeType.ALL})
 	@JoinColumn(name="landlord_name")
 	@NotFound(action = NotFoundAction.IGNORE)
 	@IndexedEmbedded
@@ -142,7 +139,6 @@ public class House extends IdEntity<House> {
 		if(null != this.landlord)
 			this.landlord.setTelephone(landlord_telephone);
 	}
-	@Length(min=0, max=64)
 	@ExcelField(title="转帐卡号", type=0, align=1, sort=60)
 	public String getDebit_card() {
 		return debit_card;
@@ -151,7 +147,7 @@ public class House extends IdEntity<House> {
 	public void setDebit_card(String debit_card) {
 		this.debit_card = debit_card;
 	}
-	@OneToOne
+	@OneToOne(cascade={CascadeType.ALL})
 	@JoinColumn(name="tenant_name")
 	@NotFound(action = NotFoundAction.IGNORE)
 	@IndexedEmbedded
@@ -214,7 +210,6 @@ public class House extends IdEntity<House> {
 	public void setOffice(Office office) {
 		this.office = office;
 	}
-	@Length(min=0, max=2000)
 	public String getImage() {
 		return image;
 	}
@@ -237,7 +232,6 @@ public class House extends IdEntity<House> {
 	public void setRent(Rent rent) {
 		this.rent = rent;
 	}
-	@Length(min=0, max=1)
 	@ExcelField(title="是否可租", type=0, align=1, sort=110)
 	public String getIs_canrent() {
 		return is_canrent;
@@ -246,7 +240,6 @@ public class House extends IdEntity<House> {
 	public void setIs_canrent(String is_canrent) {
 		this.is_canrent = is_canrent;
 	}
-	@Length(min=0, max=1)
 	@ExcelField(title="是否可卖", type=0, align=1, sort=120)
 	public String getIs_cansale() {
 		return is_cansale;
@@ -255,7 +248,7 @@ public class House extends IdEntity<House> {
 	public void setIs_cansale(String is_cansale) {
 		this.is_cansale = is_cansale;
 	}
-	@Length(min=0, max=2)
+
 	@ExcelField(title="区域", type=0, align=1, sort=130, dictType="house_area")
 	public String getArea() {
 		return area;
@@ -264,7 +257,7 @@ public class House extends IdEntity<House> {
 	public void setArea(String area) {
 		this.area = area;
 	}
-	@Length(min=0, max=64)
+
 	@ExcelField(title="价格", type=0, align=1, sort=140)
 	public String getSale_price() {
 		return sale_price;
@@ -273,7 +266,7 @@ public class House extends IdEntity<House> {
 	public void setSale_price(String sale_price) {
 		this.sale_price = sale_price;
 	}
-	@Length(min=0, max=64)
+
 	@ExcelField(title="面积", type=0, align=1, sort=150)
 	public String getMeasure() {
 		return measure;
@@ -282,7 +275,7 @@ public class House extends IdEntity<House> {
 	public void setMeasure(String measure) {
 		this.measure = measure;
 	}
-	@Length(min=0, max=64)
+
 	@ExcelField(title="朝向", type=0, align=1, sort=160)
 	public String getDirection() {
 		return direction;
@@ -291,7 +284,7 @@ public class House extends IdEntity<House> {
 	public void setDirection(String direction) {
 		this.direction = direction;
 	}
-	@Length(min=0, max=64)
+
 	@ExcelField(title="年代", type=0, align=1, sort=170)
 	public String getAge() {
 		return age;
@@ -300,7 +293,7 @@ public class House extends IdEntity<House> {
 	public void setAge(String age) {
 		this.age = age;
 	}
-	@Length(min=0, max=64)
+
 	@ExcelField(title="装修", type=0, align=1, sort=180)
 	public String getDecorate() {
 		return decorate;
@@ -309,7 +302,7 @@ public class House extends IdEntity<House> {
 	public void setDecorate(String decorate) {
 		this.decorate = decorate;
 	}
-	@Length(min=0, max=1)
+
 	@ExcelField(title="是否需要定金", type=0, align=1, sort=190)
 	public String getIs_needdeposit() {
 		return is_needdeposit;
@@ -334,7 +327,7 @@ public class House extends IdEntity<House> {
 	public void setReceive_username(String receive_username) {
 		this.receive_username = receive_username;
 	}
-	@ExcelField(title="收款银行及", type=0, align=1, sort=220,groups={1})
+	@ExcelField(title="收款银行及营业网点", type=0, align=1, sort=220,groups={1})
 	public String getReceive_bank() {
 		return receive_bank;
 	}

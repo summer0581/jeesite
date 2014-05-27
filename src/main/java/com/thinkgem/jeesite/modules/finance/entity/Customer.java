@@ -110,7 +110,7 @@ public class Customer extends IdEntity<Customer> {
 	@JoinColumn(name="office_id")
 	@NotFound(action = NotFoundAction.IGNORE)
 	@IndexedEmbedded
-	@NotNull(message="归属部门不能为空")
+	@NotNull(message="房东(或租户)归属部门不能为空")
 	@ExcelField(title="归属部门", type=0, align=1, sort=70, fieldType=OfficeType.class)
 	public Office getOffice() {
 		return office;

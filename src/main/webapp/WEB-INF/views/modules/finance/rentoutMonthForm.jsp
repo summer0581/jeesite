@@ -121,20 +121,6 @@
 					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
 			</div>
 		</div>	
-		<div class="control-group">
-			<label class="control-label">空置期提成方案:</label>
-			<div class="controls">
-			<form:select id="cut_vacantperiodtype" path="cut_vacantperiodtype" class="">
-			<form:options items="${vacantPeriodCutconfigs}" itemLabel="name" itemValue="cut_code" htmlEscape="false"/></form:select>	
-			</div>
-		</div>
-		<div class="control-group">
-			<label class="control-label">业绩提成方案:</label>
-			<div class="controls">
-			<form:select id="cut_businesssaletype" path="cut_businesssaletype" class="">
-			<form:options items="${businessSaleCutconfigs}" itemLabel="name" itemValue="cut_code" htmlEscape="false"/></form:select>	
-			</div>
-		</div>
 		
 	
 		<div class="control-group">

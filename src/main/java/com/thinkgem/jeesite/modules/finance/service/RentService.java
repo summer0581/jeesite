@@ -62,14 +62,14 @@ public class RentService extends BaseService {
 		if(null != rent.getSalesman_vacantperiods())
 			for(VacantPeriod vp: rent.getSalesman_vacantperiods()){//批量设置业务员空置期
 				if(StringUtils.isBlank(vp.getId())){
-					vp.setId(IdGen.uuid());
+					vp.prePersist();
 				}
 				vp.setRent(rent);
 			}
 		if(null != rent.getLandlord_vacantperiods())
 			for(VacantPeriod vp: rent.getLandlord_vacantperiods()){//批量设置房东空置期
 				if(StringUtils.isBlank(vp.getId())){
-					vp.setId(IdGen.uuid());
+					vp.prePersist();
 				}
 				vp.setRent(rent);
 			}
