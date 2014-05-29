@@ -136,7 +136,7 @@ public class StatsRentService extends BaseService {
 			if(VacantPeriodConstant.NOSALE_VACANTPERIOD.equals(recentVacantType) && vacantperiod > 0){//如果空置期为公司提供的，当空置时间大于0 ，无提成；小于0，则扣提成
 				cutlevel = 0.0;
 			}
-			cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentmonth.getCut_vacantperiodtype());
+			cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(sameMonthRentin.getCut_vacantperiodtype());
 			rentin_cut = Math.round(rentout_rentmonth/30 * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
 			rentout_cut = Math.round(rentout_rentmonth/30 * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
 			teamleader_cut = Math.round(rentout_rentmonth/30  * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);

@@ -45,6 +45,12 @@
 			<a href="${ctx}/finance/rentMonth/import/template">下载模板</a>
 		</form>
 	</div>
+		<form:form id="searchForm" modelAttribute="rentmonth" action="${ctx}/finance/rentMonth/?infotype=rentin&rent.id=${rent.id} " method="post" class="breadcrumb form-search">
+		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
+		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
+		<input id="orderBy" name="orderBy" type="hidden" value="${page.orderBy}"/>
+		</form:form>
+	
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="${ctx}/finance/rentMonth/">承租月记录列表</a></li>
 		<shiro:hasPermission name="finance:rentMonth:edit"><li><a href="${ctx}/finance/rentMonth/rentinform?rent.id=${rentMonth.rent.id}">承租月记录添加</a></li></shiro:hasPermission>

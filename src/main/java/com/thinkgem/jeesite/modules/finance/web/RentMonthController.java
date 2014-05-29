@@ -66,6 +66,7 @@ public class RentMonthController extends BaseController {
 		}
         Page<RentMonth> page = rentMonthService.find(new Page<RentMonth>(request, response), rentMonth); 
         model.addAttribute("page", page);
+        model.addAttribute("rent", rentMonth.getRent());
         if(RentMonth.INFOTYPE.rentin.toString().equals(rentMonth.getInfotype())){
         	return "modules/finance/rentinMonthList";
         }else if(RentMonth.INFOTYPE.rentout.toString().equals(rentMonth.getInfotype())){
