@@ -80,15 +80,29 @@ public class CutconfigService extends BaseService {
 	}
 	
 	public double getCutpercentByPersonAndType(List<Cutconfig> cutconfigs,CutConfigPersonConstant person,CutConfigTypeConstant type){
+		double new_cut = 0.0;
+		String personstring = person.toString().replace("_old", "");
 		if(null != cutconfigs)
 			for(Cutconfig cutconfig : cutconfigs){
-				if(person.toString().equals(cutconfig.getPerson()) && type.toString().equals(cutconfig.getCut_type()))
+				if(person.toString().equals(cutconfig.getPerson()) && type.toString().equals(cutconfig.getCut_type())){
 					if(type.equals(CutConfigTypeConstant.cut_vacantperiod))
 						return Integer.valueOf(cutconfig.getCut_num())*0.01;
 					else if(type.equals(CutConfigTypeConstant.cut_businesssales)){
 						return Integer.valueOf(cutconfig.getCut_num());
 					}
+				}
+				if(personstring.equals(cutconfig.getPerson()) && type.toString().equals(cutconfig.getCut_type())){
+					if(type.equals(CutConfigTypeConstant.cut_vacantperiod))
+						new_cut = Integer.valueOf(cutconfig.getCut_num())*0.01;
+					else if(type.equals(CutConfigTypeConstant.cut_businesssales)){
+						new_cut = Integer.valueOf(cutconfig.getCut_num());
+					}
+				}
 			}
+		
+		if(person.equals(CutConfigPersonConstant.rentinsaler_old) || person.equals(CutConfigPersonConstant.rentoutsaler_old)){//如果是老业务员提成，搜索完后没有找到任意提成记录，则按新业务员提成计算
+			return new_cut;
+		}
 		return 0;
 	}
 	

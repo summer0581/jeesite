@@ -5,6 +5,8 @@
  */
 package com.thinkgem.jeesite.common.utils.excel.fieldtype;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.thinkgem.jeesite.common.utils.SpringContextHolder;
 import com.thinkgem.jeesite.modules.finance.entity.Customer;
 import com.thinkgem.jeesite.modules.finance.service.CustomerService;
@@ -23,7 +25,7 @@ public class CustomerEntity {
 	 */
 	public static Object getValue(String val) {
 		Customer customer = customerService.findByName(val);
-		if(null == customer){
+		if(null == customer && StringUtils.isNotBlank(val)){
 			customer = new Customer();
 			customer.prePersist();
 			customer.setName(val);

@@ -6,6 +6,7 @@
 package com.thinkgem.jeesite.common.utils.excel.fieldtype;
 
 import com.thinkgem.jeesite.common.utils.SpringContextHolder;
+import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.finance.entity.House;
 import com.thinkgem.jeesite.modules.finance.service.HouseService;
 
@@ -23,7 +24,7 @@ public class HouseEntity {
 	 */
 	public static Object getValue(String val) {
 		House house = houseService.findByName(val);
-		if(null == house){
+		if(null == house && StringUtils.isNotBlank(val)){
 			house = new House();
 			house.prePersist();
 			house.setName(val);

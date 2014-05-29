@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -53,7 +54,7 @@ public class Rent extends IdEntity<Rent> {
 	
 	private static final long serialVersionUID = 1L;
 	private String name; 	//房屋地址
-	private String business_num; // 业务编号
+	private int business_num; // 业务编号
 	private House house; //房屋
 	
 	private List<VacantPeriod> salesman_vacantperiods;//业务员空置期设置
@@ -109,11 +110,11 @@ public class Rent extends IdEntity<Rent> {
 	}
 	
 	@ExcelField(title="编号", type=0, align=1, sort=15)
-	public String getBusiness_num() {
+	public int getBusiness_num() {
 		return business_num;
 	}
 
-	public void setBusiness_num(String business_num) {
+	public void setBusiness_num(int business_num) {
 		this.business_num = business_num;
 	}
 
@@ -321,6 +322,7 @@ public class Rent extends IdEntity<Rent> {
 	public void setRentin_busi_departleader(User busi_departleader) throws Exception {
 		getRentin().setBusi_departleader(busi_departleader);
 		//根据部长来设置房东和租户的所属部门，以及房子的所属部门
+		if(null != house)
 		house.setOffice(busi_departleader.getOffice());
 	}
 	
@@ -532,6 +534,7 @@ public class Rent extends IdEntity<Rent> {
 
 	public void setLandlord(Customer landlord) throws Exception {
 		house.setLandlord(landlord);
+		if(null != landlord)
 		landlord.setOffice(getRentin_busi_departleader().getOffice());
 	}
 
@@ -553,11 +556,12 @@ public class Rent extends IdEntity<Rent> {
 
 	public void setTenant(Customer tenant) throws Exception {
 		house.setTenant(tenant);
+		if(null != tenant)
 		tenant.setOffice(getRentin_busi_departleader().getOffice());
 	}
 
 	@Transient
-	@ExcelField(title="房东联系方式", type=0, align=1, sort=320 )
+	@ExcelField(title="租户联系方式", type=0, align=1, sort=320 )
 	public String getTenant_telephone() throws Exception {
 		return house.getTenant_telephone();
 	}

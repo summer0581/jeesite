@@ -34,9 +34,9 @@
 				<td>${var.rentinmonth.rent.house.name}</td>
 				<td>${var.rentinmonth.person.name }</td>
 				<td><fmt:formatDate value="${var.rentinmonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${var.rentinmonth.edate}" pattern="yyyy-MM-dd"/></td>
-				<td><fmt:formatDate value="${var.rentmonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${var.rentmonth.edate}" pattern="yyyy-MM-dd"/></td>
-				<td>${var.rentmonth.rentmonth }</td>
-				<td>${var.rentmonth.person.name }</td>
+				<td><fmt:formatDate value="${var.rentoutmonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${var.rentoutmonth.edate}" pattern="yyyy-MM-dd"/></td>
+				<td>${var.rentoutmonth.rentmonth }</td>
+				<td>${var.rentoutmonth.person.name }</td>
 				<td>${var.rentinmonth.busi_departleader.name }</td>
 				<td>${var.rentin_cut }</td>
 				<td>${var.teamleader_cut }</td>
@@ -73,9 +73,9 @@
 				<td>${var.rentinmonth.rent.house.name}</td>
 				<td>${var.rentinmonth.person.name }</td> 
 				<td><fmt:formatDate value="${var.rentinmonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${var.rentinmonth.edate}" pattern="yyyy-MM-dd"/></td>
-				<td><fmt:formatDate value="${var.rentmonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${var.rentmonth.edate}" pattern="yyyy-MM-dd"/></td>
-				<td>${var.rentmonth.rentmonth }</td>
-				<td>${var.rentmonth.person.name }</td>
+				<td><fmt:formatDate value="${var.rentoutmonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${var.rentoutmonth.edate}" pattern="yyyy-MM-dd"/></td>
+				<td>${var.rentoutmonth.rentmonth }</td>
+				<td>${var.rentoutmonth.person.name }</td>
 				<td>${var.rentinmonth.busi_departleader.name }</td>
 				<td>${var.rentout_cut }</td>
 			</tr>		

@@ -85,6 +85,7 @@ public class HouseService extends BaseService {
 		dc.add(Restrictions.eq(House.FIELD_DEL_FLAG, House.DEL_FLAG_NORMAL));
 		dc.add(Restrictions.isNull("rent.house"));
 		dc.addOrder(Order.desc("id"));
+		Page<House> pages = houseDao.find(page, dc);
 		return houseDao.find(page, dc);
 	}
 	

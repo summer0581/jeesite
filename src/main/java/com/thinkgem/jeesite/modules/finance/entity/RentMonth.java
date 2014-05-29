@@ -78,7 +78,7 @@ public class RentMonth extends IdEntity<RentMonth> {
 		this.id = id;
 	}
 
-	@Length(min=1, max=200)
+	
 	public String getName() {
 		return name;
 	}

@@ -61,44 +61,51 @@
 	</div>
 	</form:form>
 	<tags:message content="${message}"/>
-	<table id="contentTable" class="table table-striped table-bordered table-condensed">
-		<thead>
+		<table id="contentTable" class="table table-striped table-bordered table-condensed"style="overflow-x:auto;overflow-y:hidden;">
+			<thead>
+				<tr>
+					<th rowspan="2">物业名称</th>
+					<th rowspan="2">租进业务员</th>
+					<th rowspan="2">部长</th>
+					<th rowspan="2">租进时间</th>
+					<th rowspan="2">租出业务员</th>
+					<th rowspan="2">租出时间</th>
+					<th colspan="2">中介费</th>
+					<c:forEach items="${showUserList}" var="user">
+						<th rowspan="2">${user.name }</th>
+					</c:forEach>
+				</tr>
+				<tr>
+					<th>进</th>
+					<th>出</th>
+				</tr>
+			</thead>
+			<tbody>
+			<c:forEach items="${resultList}" var="var">
+				<tr>
+					<td><a href="#" onclick="openWindow('${ctx}/finance/rent/form?id=${var.rentinmonth.rent.id}','查看[${var.rentinmonth.rent.house.name}]房屋包租明细')">${var.rentinmonth.rent.house.name}</a></td>
+					<td><a href="#" onclick="openWindow('${ctx}/finance/stats/businessCutDetail4Person?personid=${var.rentinmonth.person.id}&rentout_sdate_begin=${paramMap.rentout_sdate_begin}&rentout_sdate_end=${paramMap.rentout_sdate_end}','查看[${var.rentinmonth.person.name}]个人业绩提成明细')">${var.rentinmonth.person.name }</a></td>
+					<td><a href="#" onclick="openWindow('${ctx}/finance/stats/businessCutDetail4Person?personid=${var.rentinmonth.busi_departleader.id}&rentout_sdate_begin=${paramMap.rentout_sdate_begin}&rentout_sdate_end=${paramMap.rentout_sdate_end}','查看[${var.rentinmonth.busi_departleader.name}]个人业绩提成明细')">${var.rentinmonth.busi_departleader.name}</a></td>
+					<td><fmt:formatDate value="${var.rentinmonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${var.rentinmonth.edate}" pattern="yyyy-MM-dd"/></td>
+					<td><a href="#" onclick="openWindow('${ctx}/finance/stats/businessCutDetail4Person?personid=${var.rentoutmonth.person.id}&rentout_sdate_begin=${paramMap.rentout_sdate_begin}&rentout_sdate_end=${paramMap.rentout_sdate_end}','查看[${var.rentoutmonth.person.name}]个人业绩提成明细')">${var.rentoutmonth.person.name }</a></td>
+					<td><fmt:formatDate value="${var.rentoutmonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${var.rentoutmonth.edate}" pattern="yyyy-MM-dd"/></td>
+					<td>${var.rentinmonth.agencyfee}</td>
+					<td>${var.rentoutmonth.agencyfee}</td>
+					<c:forEach items="${var.resultUserCutList}" var="usercut">
+						<td>${usercut}</td>
+					</c:forEach>
+				</tr> 
+			</c:forEach>
 			<tr>
-				<th rowspan="2">物业名称</th>
-				<th rowspan="2">租进业务员</th>
-				<th rowspan="2">部长</th>
-				<th rowspan="2">租进时间</th>
-				<th rowspan="2">租出业务员</th>
-				<th rowspan="2">租出时间</th>
-				<th colspan="2">中介费</th>
-				<c:forEach items="${showUserList}" var="user">
-					<th rowspan="2">${user.name }</th>
+				<td colspan="8">合计</td>
+				<c:forEach items="${resultUserCutTotalList}" var="usercut1">
+						<td>${usercut1}</td>
 				</c:forEach>
 			</tr>
-			<tr>
-				<th>进</th>
-				<th>出</th>
-			</tr>
-		</thead>
-		<tbody>
-		<c:forEach items="${resultList}" var="var">
-			<tr>
-				<td><a href="#" onclick="openWindow('${ctx}/finance/rent/form?id=${var.rentinmonth.rent.id}','查看[${var.rentinmonth.rent.house.name}]房屋包租明细')">${var.rentinmonth.rent.house.name}</a></td>
-				<td><a href="#" onclick="openWindow('${ctx}/finance/stats/businessCutDetail4Person?personid=${var.rentinmonth.person.id}&rentout_sdate_begin=${paramMap.rentout_sdate_begin}&rentout_sdate_end=${paramMap.rentout_sdate_end}','查看[${var.rentinmonth.person.name}]个人业绩提成明细')">${var.rentinmonth.person.name }</a></td>
-				<td><a href="#" onclick="openWindow('${ctx}/finance/stats/businessCutDetail4Person?personid=${var.rentinmonth.busi_departleader.id}&rentout_sdate_begin=${paramMap.rentout_sdate_begin}&rentout_sdate_end=${paramMap.rentout_sdate_end}','查看[${var.rentinmonth.busi_departleader.name}]个人业绩提成明细')">${var.rentinmonth.busi_departleader.name}</a></td>
-				<td><fmt:formatDate value="${var.rentinmonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${var.rentinmonth.edate}" pattern="yyyy-MM-dd"/></td>
-				<td><a href="#" onclick="openWindow('${ctx}/finance/stats/businessCutDetail4Person?personid=${var.rentmonth.person.id}&rentout_sdate_begin=${paramMap.rentout_sdate_begin}&rentout_sdate_end=${paramMap.rentout_sdate_end}','查看[${var.rentmonth.person.name}]个人业绩提成明细')">${var.rentmonth.person.name }</a></td>
-				<td><fmt:formatDate value="${var.rentmonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${var.rentmonth.edate}" pattern="yyyy-MM-dd"/></td>
-				<td>${var.rentinmonth.agencyfee}</td>
-				<td>${var.rentmonth.agencyfee}</td>
-				<c:forEach items="${var.resultUserCutList}" var="usercut">
-					<td>${usercut}</td>
-				</c:forEach>
-			</tr> 
-		</c:forEach>
-
-		</tbody>
-	</table>
+			
 	
+			</tbody>
+		</table>
+
 </body>
 </html>

@@ -503,7 +503,7 @@ public class StatsRentService extends BaseService {
 		List<RentMonth> list = getBusinesscutBaseList(paramMap); 
 		
 		/*******************以下开始生成提成列表数据***********************/
-		Map<String,LinkedHashSet<User>> map = getLevelUsersWithRentMonths(list,paramMap);
+		Map<String,LinkedHashSet<User>> map = getLevelUsersWithRentinMonths(list,paramMap);
 		LinkedHashSet<User> managers = map.get("managers");
 		LinkedHashSet<User> departleaders = map.get("departleaders");
 		LinkedHashSet<User> teamleaders = map.get("teamleaders");
@@ -518,6 +518,10 @@ public class StatsRentService extends BaseService {
 		List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
 		Map<String,Object> resultMap = null;
 		List<Integer> resultUserCutList = new ArrayList<Integer>();
+		List<Integer> resultUserCutTotalList = new ArrayList<Integer>();
+		for(int i = 0 ; i < showUserList.size(); i++){
+			resultUserCutTotalList.add(0);
+		}
 
 		int manager_index = 0;
 		int departleader_index = 0;
@@ -527,19 +531,19 @@ public class StatsRentService extends BaseService {
 		int tempdouble = 0;
 		int tempcut = 0;
 		List<Cutconfig> cut_businesssaletypeconfigs = null;
-		RentMonth sameMonthRentin = null;//同期的租进月记录
-		for(RentMonth rentmonth : list){
+		RentMonth sameMonthRentout = null;//同期的租进月记录
+		for(RentMonth rentinmonth : list){
 			
 			Map<String,Object> paramMap1 = new HashMap<String,Object>();
 			paramMap1.put("infotype", "rentout");
-			paramMap1.put("rent", rentmonth.getRent());
+			paramMap1.put("rent", rentinmonth.getRent());
 			paramMap1.put("sdate_begin", paramMap.get("rentout_sdate_begin"));
 			paramMap1.put("sdate_end", paramMap.get("rentout_sdate_end"));
 			List<RentMonth> tempList = rentMonthService.find(paramMap1);
 			if(null != tempList && tempList.size() > 0){
-				sameMonthRentin = tempList.get(0);
+				sameMonthRentout = tempList.get(0);
 			}else{
-				sameMonthRentin = null;
+				sameMonthRentout = null;
 				continue;
 			}
 			
@@ -548,50 +552,55 @@ public class StatsRentService extends BaseService {
 				resultUserCutList.add(0);
 			}
 			resultMap = new HashMap<String,Object>();
-			resultMap.put("rentmonth",rentmonth);
-			resultMap.put("rentinmonth",sameMonthRentin);
-			manager_index = showUserList.indexOf(sameMonthRentin.getBusi_manager());
-			departleader_index = showUserList.indexOf(sameMonthRentin.getBusi_departleader());
-			teamleader_index = showUserList.indexOf(sameMonthRentin.getBusi_teamleader());
-			rentinsaler_index = showUserList.indexOf(sameMonthRentin.getPerson());
-			rentoutsaler_index = showUserList.indexOf(rentmonth.getPerson());
-			cut_businesssaletypeconfigs = cutconfigService.findCutconfiglistByCutcode(sameMonthRentin.getCut_businesssaletype());
+			resultMap.put("rentinmonth",rentinmonth);
+			resultMap.put("rentoutmonth",sameMonthRentout);
+			manager_index = showUserList.indexOf(rentinmonth.getBusi_manager());
+			departleader_index = showUserList.indexOf(rentinmonth.getBusi_departleader());
+			teamleader_index = showUserList.indexOf(rentinmonth.getBusi_teamleader());
+			rentinsaler_index = showUserList.indexOf(rentinmonth.getPerson());
+			rentoutsaler_index = showUserList.indexOf(sameMonthRentout.getPerson());
+			cut_businesssaletypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentinmonth.getCut_businesssaletype());
 			if(manager_index != -1){
 				tempdouble = resultUserCutList.get(manager_index)+(int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_businesssales);
 				resultUserCutList.remove(manager_index);
 				resultUserCutList.add(manager_index, tempdouble);
+				resultUserCutTotalList.set(manager_index, tempdouble+resultUserCutTotalList.get(manager_index));
 			}
 			if(departleader_index != -1){
 				tempdouble = resultUserCutList.get(departleader_index)+(int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.departleader, CutConfigTypeConstant.cut_businesssales);
 				resultUserCutList.remove(departleader_index);
 				resultUserCutList.add(departleader_index, tempdouble);
+				resultUserCutTotalList.set(departleader_index, tempdouble+resultUserCutTotalList.get(departleader_index));
 			}
 			if(teamleader_index != -1){
 				tempdouble = resultUserCutList.get(teamleader_index)+(int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_businesssales);
 				resultUserCutList.remove(teamleader_index);
 				resultUserCutList.add(teamleader_index, tempdouble);
+				resultUserCutTotalList.set(teamleader_index, tempdouble+resultUserCutTotalList.get(teamleader_index));
 			}
 			if(rentinsaler_index != -1){
-				if(User.Busi_type.oldbusier.toString().equals(sameMonthRentin.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
+				if(User.Busi_type.oldbusier.toString().equals(rentinmonth.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
 					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler_old, CutConfigTypeConstant.cut_businesssales);
 				}else{
 					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_businesssales);
 				}
 
-				tempdouble = resultUserCutList.get(rentinsaler_index)+(tempcut*12-MathUtils.deNull(sameMonthRentin.getAgencyfee()))/12;
+				tempdouble = resultUserCutList.get(rentinsaler_index)+(tempcut*12-MathUtils.deNull(rentinmonth.getAgencyfee()))/12;
 				resultUserCutList.remove(rentinsaler_index);
 				resultUserCutList.add(rentinsaler_index, tempdouble);
+				resultUserCutTotalList.set(rentinsaler_index, tempdouble+resultUserCutTotalList.get(rentinsaler_index));
 			}
 			if(rentoutsaler_index != -1){
 				
-				if(User.Busi_type.oldbusier.toString().equals(rentmonth.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
+				if(User.Busi_type.oldbusier.toString().equals(sameMonthRentout.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
 					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler_old, CutConfigTypeConstant.cut_businesssales);
 				}else{
 					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_businesssales);
 				}
-				tempdouble = resultUserCutList.get(rentoutsaler_index)+(tempcut*12-MathUtils.deNull(rentmonth.getAgencyfee()))/12;
+				tempdouble = resultUserCutList.get(rentoutsaler_index)+(tempcut*12-MathUtils.deNull(sameMonthRentout.getAgencyfee()))/12;
 				resultUserCutList.remove(rentoutsaler_index);
 				resultUserCutList.add(rentoutsaler_index, tempdouble);
+				resultUserCutTotalList.set(rentoutsaler_index, tempdouble+resultUserCutTotalList.get(rentoutsaler_index));
 			}
 			resultMap.put("resultUserCutList",resultUserCutList);
 			resultList.add(resultMap);
@@ -600,6 +609,7 @@ public class StatsRentService extends BaseService {
 		Map<String,Object> result = new HashMap<String,Object>();
 		result.put("showUserList", showUserList);
 		result.put("resultList", resultList);
+		result.put("resultUserCutTotalList", resultUserCutTotalList);
 		
 		return result;
 
@@ -616,7 +626,7 @@ public class StatsRentService extends BaseService {
 		List<RentMonth> list = getBusinesscutBaseList(paramMap); 
 		
 		/*******************以下开始生成提成列表数据***********************/
-		Map<String,LinkedHashSet<User>> map = getLevelUsersWithRentMonths(list,paramMap);
+		Map<String,LinkedHashSet<User>> map = getLevelUsersWithRentinMonths(list,paramMap);
 		LinkedHashSet<User> managers = map.get("managers");
 		LinkedHashSet<User> departleaders = map.get("departleaders");
 		LinkedHashSet<User> teamleaders = map.get("teamleaders");
@@ -641,57 +651,57 @@ public class StatsRentService extends BaseService {
 		int tempdouble = 0;
 
 		List<Cutconfig> cut_businesssaletypeconfigs = null;
-		RentMonth sameMonthRentin = null;//同期的租进月记录
+		RentMonth sameMonthRentout = null;//同期的租进月记录
 		String username_temp = "";
 		
 
-		for(RentMonth rentmonth : list){
+		for(RentMonth rentinmonth : list){
 			Map<String,Object> paramMap1 = new HashMap<String,Object>();
 			paramMap1.put("infotype", "rentout");
-			paramMap1.put("rent", rentmonth.getRent());
+			paramMap1.put("rent", rentinmonth.getRent());
 			paramMap1.put("sdate_begin", paramMap.get("rentout_sdate_begin"));
 			paramMap1.put("sdate_end", paramMap.get("rentout_sdate_end"));
 			List<RentMonth> tempList = rentMonthService.find(paramMap1);
 			if(null != tempList && tempList.size() > 0){
-				sameMonthRentin = tempList.get(0);
+				sameMonthRentout = tempList.get(0);
 			}else{
-				sameMonthRentin = null;
+				sameMonthRentout = null;
 				continue;
 			}
-			cut_businesssaletypeconfigs = cutconfigService.findCutconfiglistByCutcode(sameMonthRentin.getCut_businesssaletype());
-			if(null != sameMonthRentin.getBusi_manager()){
-				username_temp = sameMonthRentin.getBusi_manager().getLoginName();
+			cut_businesssaletypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentinmonth.getCut_businesssaletype());
+			if(null != rentinmonth.getBusi_manager()){
+				username_temp = rentinmonth.getBusi_manager().getLoginName();
 				tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_businesssales);
 				managerCutMap.put(username_temp, MathUtils.deNull(managerCutMap.get(username_temp))+tempdouble);
 			}
-			if(null != sameMonthRentin.getBusi_departleader()){
-				username_temp = sameMonthRentin.getBusi_departleader().getLoginName();
+			if(null != rentinmonth.getBusi_departleader()){
+				username_temp = rentinmonth.getBusi_departleader().getLoginName();
 				tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.departleader, CutConfigTypeConstant.cut_businesssales);
 				departleaderCutMap.put(username_temp, MathUtils.deNull(departleaderCutMap.get(username_temp))+tempdouble);
 			}
-			if(null != sameMonthRentin.getBusi_teamleader()){
-				username_temp = sameMonthRentin.getBusi_teamleader().getLoginName();
+			if(null != rentinmonth.getBusi_teamleader()){
+				username_temp = rentinmonth.getBusi_teamleader().getLoginName();
 				tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_businesssales);
 				teamleaderCutMap.put(username_temp, MathUtils.deNull(teamleaderCutMap.get(username_temp))+tempdouble);
 			}
-			if(null != sameMonthRentin.getPerson()){
-				username_temp = sameMonthRentin.getPerson().getLoginName();
-				if(User.Busi_type.oldbusier.toString().equals(sameMonthRentin.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
+			if(null != rentinmonth.getPerson()){
+				username_temp = rentinmonth.getPerson().getLoginName();
+				if(User.Busi_type.oldbusier.toString().equals(rentinmonth.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
 					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler_old, CutConfigTypeConstant.cut_businesssales);
 				}else{
 					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_businesssales);
 				}
-				tempdouble = (tempcut*12-MathUtils.deNull(sameMonthRentin.getAgencyfee()))/12;
+				tempdouble = (tempcut*12-MathUtils.deNull(rentinmonth.getAgencyfee()))/12;
 				rentinCutMap.put(username_temp, MathUtils.deNull(rentinCutMap.get(username_temp))+tempdouble);
 			}
-			if(null != rentmonth.getPerson()){
-				username_temp = rentmonth.getPerson().getLoginName();
-				if(User.Busi_type.oldbusier.toString().equals(rentmonth.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
+			if(null != sameMonthRentout.getPerson()){
+				username_temp = sameMonthRentout.getPerson().getLoginName();
+				if(User.Busi_type.oldbusier.toString().equals(sameMonthRentout.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
 					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler_old, CutConfigTypeConstant.cut_businesssales);
 				}else{
 					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_businesssales);
 				}
-				tempdouble = (tempcut*12-MathUtils.deNull(rentmonth.getAgencyfee()))/12;
+				tempdouble = (tempcut*12-MathUtils.deNull(sameMonthRentout.getAgencyfee()))/12;
 				rentoutCutMap.put(username_temp, MathUtils.deNull(rentoutCutMap.get(username_temp))+tempdouble);
 			}
 		}
@@ -775,7 +785,7 @@ public class StatsRentService extends BaseService {
 		int tempdouble = 0;
 
 		List<Cutconfig> cut_businesssaletypeconfigs = null;
-		RentMonth sameMonthRentin = null;//同期的租进月记录
+		RentMonth sameMonthRentout = null;//同期的租进月记录
 		int rentin_total = 0;
 		int rentout_total = 0;
 		int manager_total = 0;
@@ -784,61 +794,61 @@ public class StatsRentService extends BaseService {
 		Map<String,Object> resultMap = new HashMap<String,Object>();
 		
 
-		for(RentMonth rentmonth : list){
+		for(RentMonth rentinmonth : list){
 			Map<String,Object> paramMap1 = new HashMap<String,Object>();
 			resultMap = new HashMap<String,Object>();
 			paramMap1.put("infotype", "rentout");
-			paramMap1.put("rent", rentmonth.getRent());
+			paramMap1.put("rent", rentinmonth.getRent());
 			paramMap1.put("sdate_begin", paramMap.get("rentout_sdate_begin"));
 			paramMap1.put("sdate_end", paramMap.get("rentout_sdate_end"));
 			List<RentMonth> tempList = rentMonthService.find(paramMap1);
 			if(null != tempList && tempList.size() > 0){
-				sameMonthRentin = tempList.get(0);
+				sameMonthRentout = tempList.get(0);
 			}else{
-				sameMonthRentin = null;
+				sameMonthRentout = null;
 				continue;
 			}
 			
-			resultMap.put("rentinmonth", sameMonthRentin);
-			resultMap.put("rentmonth", rentmonth);
+			resultMap.put("rentinmonth", rentinmonth);
+			resultMap.put("rentoutmonth", sameMonthRentout);
 
-			cut_businesssaletypeconfigs = cutconfigService.findCutconfiglistByCutcode(sameMonthRentin.getCut_businesssaletype());
-			if(person.equals(sameMonthRentin.getBusi_manager())){
+			cut_businesssaletypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentinmonth.getCut_businesssaletype());
+			if(person.equals(rentinmonth.getBusi_manager())){
 				tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_businesssales);
 				resultMap.put("manager_cut",tempdouble);
 				manager_total += tempdouble;
 				rentinRentMonths.add(resultMap);
 			}
-			if(person.equals(sameMonthRentin.getBusi_departleader())){
+			if(person.equals(rentinmonth.getBusi_departleader())){
 				tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.departleader, CutConfigTypeConstant.cut_businesssales);
 				resultMap.put("departleader_cut",tempdouble);
 				departleader_total += tempdouble;
 				rentinRentMonths.add(resultMap);
 			}
-			if(person.equals(sameMonthRentin.getBusi_teamleader())){
+			if(person.equals(rentinmonth.getBusi_teamleader())){
 				tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_businesssales);
 				resultMap.put("teamleader_cut",tempdouble);
 				teamleader_total += tempdouble;
 				rentinRentMonths.add(resultMap);
 			}
-			if(person.equals(sameMonthRentin.getPerson())){
-				if(User.Busi_type.oldbusier.toString().equals(sameMonthRentin.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
+			if(person.equals(rentinmonth.getPerson())){
+				if(User.Busi_type.oldbusier.toString().equals(rentinmonth.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
 					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler_old, CutConfigTypeConstant.cut_businesssales);
 				}else{
 					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_businesssales);
 				}
-				tempdouble = (tempcut*12-MathUtils.deNull(sameMonthRentin.getAgencyfee()))/12;
+				tempdouble = (tempcut*12-MathUtils.deNull(rentinmonth.getAgencyfee()))/12;
 				resultMap.put("rentin_cut",tempdouble);
 				rentin_total += tempdouble;
 				rentinRentMonths.add(resultMap);
 			}
-			if(person.equals(rentmonth.getPerson())){
-				if(User.Busi_type.oldbusier.toString().equals(rentmonth.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
+			if(person.equals(sameMonthRentout.getPerson())){
+				if(User.Busi_type.oldbusier.toString().equals(sameMonthRentout.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
 					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler_old, CutConfigTypeConstant.cut_businesssales);
 				}else{
 					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_businesssales);
 				}
-				tempdouble = (tempcut*12-MathUtils.deNull(rentmonth.getAgencyfee()))/12;
+				tempdouble = (tempcut*12-MathUtils.deNull(sameMonthRentout.getAgencyfee()))/12;
 				resultMap.put("rentout_cut",tempdouble);
 				rentout_total += tempdouble;
 				rentoutRentMonths.add(resultMap);
@@ -966,6 +976,58 @@ public class StatsRentService extends BaseService {
 			}
 			if(null != sameMonthRentin.getPerson() && !managers.contains(sameMonthRentin.getPerson()) && !departleaders.contains(sameMonthRentin.getPerson()) && !teamleaders.contains(sameMonthRentin.getPerson())){
 				salers.add(sameMonthRentin.getPerson());
+			}
+		}
+		
+		Map<String,LinkedHashSet<User>> resultMap = new HashMap<String,LinkedHashSet<User>>();
+		resultMap.put("managers", managers);
+		resultMap.put("departleaders", departleaders);
+		resultMap.put("teamleaders", teamleaders);
+		resultMap.put("salers", salers);
+		return resultMap;
+	}
+
+	
+	/**
+	 * 获取各级别的人员list
+	 * @param list
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String,LinkedHashSet<User>> getLevelUsersWithRentinMonths(List<RentMonth> list,Map<String,Object> paramMap) throws Exception{
+		LinkedHashSet<User> managers = new LinkedHashSet<User>();
+		LinkedHashSet<User> departleaders = new LinkedHashSet<User>();
+		LinkedHashSet<User> teamleaders = new LinkedHashSet<User>();
+		LinkedHashSet<User> salers = new LinkedHashSet<User>();//普通业务员
+		
+		RentMonth sameMonthRentout = null;//同期的租进月记录
+		for(RentMonth rentmonth : list){
+			Map<String,Object> paramMap1 = new HashMap<String,Object>();
+			paramMap1.put("infotype", "rentout");
+			paramMap1.put("rent", rentmonth.getRent());
+			paramMap1.put("sdate_begin", paramMap.get("rentout_sdate_begin"));
+			paramMap1.put("sdate_end", paramMap.get("rentout_sdate_end"));
+			List<RentMonth> tempList = rentMonthService.find(paramMap1);
+			if(null != tempList && tempList.size() > 0){
+				sameMonthRentout = tempList.get(0);
+			}
+
+
+			if(null != rentmonth.getBusi_manager()){
+				managers.add(rentmonth.getBusi_manager());
+			}
+			if(null != rentmonth.getBusi_departleader()){
+				departleaders.add(rentmonth.getBusi_departleader());
+			}
+			if(null != rentmonth.getBusi_teamleader()){
+				teamleaders.add(rentmonth.getBusi_teamleader());
+			}
+			
+			if(null != rentmonth.getPerson() && !managers.contains(rentmonth.getPerson()) && !departleaders.contains(rentmonth.getPerson()) && !teamleaders.contains(rentmonth.getPerson())){
+				salers.add(rentmonth.getPerson());
+			}
+			if(null != sameMonthRentout.getPerson() && !managers.contains(sameMonthRentout.getPerson()) && !departleaders.contains(sameMonthRentout.getPerson()) && !teamleaders.contains(sameMonthRentout.getPerson())){
+				salers.add(sameMonthRentout.getPerson());
 			}
 		}
 		
