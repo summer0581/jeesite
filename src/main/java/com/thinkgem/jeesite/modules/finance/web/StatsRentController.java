@@ -345,7 +345,7 @@ public class StatsRentController extends BaseController {
 		try {
             String fileName = "房屋包租业绩提成导入模板.xlsx";
             int curnum = 2;//模板中已存在两行，故从2开始计算
-           String ss = FileUtils.getPathByCLassPath("com/thinkgem/jeesite/modules/finance/excel/yeji1.xlsx");
+           String ss = FileUtils.getPathByCLassPath("com/thinkgem/jeesite/modules/finance/excel/yj1.xlsx");
 
            ExportTemplateExcel ete = new ExportTemplateExcel((String)paramMap.get("rentout_sdate_begin")+"-"+(String)paramMap.get("rentout_sdate_end")+"业绩提成",ss,curnum);
 
@@ -406,7 +406,7 @@ public class StatsRentController extends BaseController {
 		try {
             String fileName = "房屋包租业绩提成个人总计.xlsx";
             int curnum = 2;//模板中已存在两行，故从2开始计算
-            String ss = FileUtils.getPathByCLassPath("com/thinkgem/jeesite/modules/finance/excel/yeji2.xlsx");
+            String ss = FileUtils.getPathByCLassPath("com/thinkgem/jeesite/modules/finance/excel/yj2.xlsx");
             ExportTemplateExcel ete = new ExportTemplateExcel((String)paramMap.get("rentout_sdate_begin")+"-"+(String)paramMap.get("rentout_sdate_end")+"业绩提成(个人总计)",ss,curnum);
 
             Map<String,Object> result = getCurruserMap(businessCut4PersonMap);
@@ -465,7 +465,7 @@ public class StatsRentController extends BaseController {
 		try {
             String fileName = "房屋包租业绩提成个人明细.xlsx";
             int curnum = 1;//模板中已存在一行，故从0开始计算
-            String ss = FileUtils.getPathByCLassPath("com/thinkgem/jeesite/modules/finance/excel/yeji3.xlsx");
+            String ss = FileUtils.getPathByCLassPath("com/thinkgem/jeesite/modules/finance/excel/yj3.xlsx");
             ExportTemplateExcel ete = new ExportTemplateExcel("业绩提成("+person.getName()+")个人明细",ss,curnum);
 
             Map<String,Object> result = getCurruserMap(businessCutDetail4PersonMap);

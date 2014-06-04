@@ -109,7 +109,6 @@ public class Rent extends IdEntity<Rent> {
 		
 	}
 	
-	@ExcelField(title="编号", type=0, align=1, sort=15)
 	public int getBusiness_num() {
 		return business_num;
 	}
@@ -117,6 +116,8 @@ public class Rent extends IdEntity<Rent> {
 	public void setBusiness_num(int business_num) {
 		this.business_num = business_num;
 	}
+	
+
 
 	@OneToMany(mappedBy="rent",cascade=CascadeType.ALL)
 	@NotFound(action = NotFoundAction.IGNORE)
@@ -168,6 +169,16 @@ public class Rent extends IdEntity<Rent> {
 	}
 	
 	/*以下是非持久变量*/
+	@Transient
+	@ExcelField(title="编号", type=0, align=1, sort=15)
+	public String getBusiness_num_str() {
+		return String.valueOf(business_num);
+	}
+
+	public void setBusiness_num_str(String business_num) {
+		this.business_num = Integer.parseInt(business_num);
+	}
+	
 	@Transient
 	public RentMonth getRentin()  throws Exception{
 		if(null == rentinMonths){

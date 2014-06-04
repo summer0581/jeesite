@@ -34,8 +34,9 @@
 	</div>
 
 	<ul class="nav nav-tabs">
-		<li class=""><a href="${ctx}/finance/house/houseNoRentinlist">未租进的房屋明细列表</a></li>
+		
 		<li class="active"><a href="#">退租或已停租房屋明细列表</a></li>
+		<li class=""><a href="${ctx}/finance/house/houseNoRentinlist">未租进的房屋明细列表</a></li>
 	</ul>
 	<form:form id="searchForm" modelAttribute="house" action="${ctx}/finance/house/houseCancelRentlist" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>

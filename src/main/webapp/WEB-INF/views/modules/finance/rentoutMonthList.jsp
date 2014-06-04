@@ -61,10 +61,10 @@
 		<tr>
 		<th>业务员</th>
 		<th>付款方式</th>
-		<th>承租时间</th>
+		<th>出租时间</th>
 		<th>月租金</th>
-		<th>已付月份</th>
-		<th class="sort nextpaydate">下次付租时间</th>
+		<th>已收月份</th>
+		<th class="sort nextpaydate">下次收租时间</th>
 		<th>下次应收金额</th>
 		<th>已收金额</th>
 		<shiro:hasPermission name="finance:rentMonth:edit"><th>操作</th></shiro:hasPermission></tr></thead>

@@ -43,6 +43,7 @@
 	<!-- 定义事务 -->
 	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">  
         <property name="sessionFactory" ref="sessionFactory" />  
+        <property name="globalRollbackOnParticipationFailure" value="false" /> 
     </bean>
     
 	<!-- 配置 Annotation 驱动，扫描@Transactional注解的类定义事务  -->

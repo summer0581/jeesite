@@ -75,20 +75,7 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 		pm.put("infotype", "rentout");
 		return findBySql(sql.toString(), pm, RentMonth.class);
 	}
-	//已退租的和已到期的
-	public List<RentMonth> rentOutListHasCancel(){
-		StringBuffer sql = new StringBuffer();
 
-		sql.append("select rr.* ");
-		sql.append("from (select * from finance_rentmonth r order by r.nextpaydate DESC) rr ");
-		sql.append("where rr.del_flag=:del_flag  ");
-		sql.append("and rr.infotype=:infotype  ");
-		sql.append("group by rr.rent_id having rr.cancelrentdate is not null or rr.edate < current_timestamp ");
-		Parameter pm = new Parameter();
-		pm.put("del_flag", RentMonth.DEL_FLAG_NORMAL);
-		pm.put("infotype", "rentout");
-		return findBySql(sql.toString(), pm, RentMonth.class);
-	}
 
 	public List<RentMonth> findByName(String name){
 		return find("from Rentmonth where name = :p1", new Parameter(name));

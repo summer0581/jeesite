@@ -32,6 +32,7 @@ import com.thinkgem.jeesite.common.utils.excel.ExportExcel;
 import com.thinkgem.jeesite.common.utils.excel.ImportExcel;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
+import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.finance.service.RentService;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
@@ -47,6 +48,7 @@ public class RentController extends BaseController {
 
 	@Autowired
 	private RentService rentService;
+	
 	
 	@ModelAttribute
 	public Rent get(@RequestParam(required=false) String id) {
@@ -85,7 +87,48 @@ public class RentController extends BaseController {
 		model.addAttribute("paramMap", paramMap);
 		return "modules/finance/rentList";
 	}
+	
+	/**
+	 * 即将要付租的房子列表
+	 * @param paramMap
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions("finance:rent:view")
+	@RequestMapping(value = "rentList4WillRentinPayfor")
+	public String rentList4WillRentinPayfor(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, Model model) {
+		paramMap.put("rentin_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 7), "yyyy-MM-dd"));
+		paramMap.put("order", "rms.nextpaydate");
+		paramMap.put("desc", "desc");
+		Page<Rent> pages = new Page<Rent>(request, response);
+		pages.setPageSize(200);
+		Page<Rent> page = rentService.rentList(pages,paramMap);
+		model.addAttribute("page", page);
+		model.addAttribute("sysdate", new Date());
+		model.addAttribute("paramMap", paramMap);
+		return "modules/finance/rentList4willrentinpayfor";
+	}
 
+	/**
+	 * 即将要收租的房子列表
+	 * @param paramMap
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions("finance:rent:view")
+	@RequestMapping(value = "rentList4WillRentoutReceive")
+	public String rentList4WillRentoutReceive(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, Model model) {
+		paramMap.put("rentout_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 7), "yyyy-MM-dd"));
+		paramMap.put("order", "rms2.nextpaydate");
+		paramMap.put("desc", "desc");
+		Page<Rent> pages = new Page<Rent>(request, response);
+		pages.setPageSize(200);
+		Page<Rent> page = rentService.rentList(pages,paramMap);
+		model.addAttribute("page", page);
+		model.addAttribute("sysdate", new Date());
+		model.addAttribute("paramMap", paramMap);
+		return "modules/finance/rentList4willrentoutreceive";
+	}
 	@RequiresPermissions("finance:rent:view")
 	@RequestMapping(value = "form")
 	public String form(Rent rent, Model model) {
@@ -112,26 +155,23 @@ public class RentController extends BaseController {
 		addMessage(redirectAttributes, "删除包租明细成功");
 		return "redirect:"+Global.getAdminPath()+"/finance/rent/rentList";
 	}
-	/**
-	 * 租金处理类别
-	 * @author summer
-	 *
-	 */
-	public enum RentHandleType{
-		payRent,receiveRent
-	}
+	
 	@RequiresPermissions("finance:rent:edit")
-	@RequestMapping(value = "rentHandle")
-	public String rentHandle(Rent rent, HttpServletRequest request,RedirectAttributes redirectAttributes) {
-		String handletype = request.getParameter("handletype");
-		if(RentHandleType.payRent.equals(RentHandleType.valueOf(handletype))){
-			rentService.payRent(rent);
-		}else if(RentHandleType.receiveRent.equals(RentHandleType.valueOf(handletype))){
-			rentService.receiveRent(rent);
-		}
-		rentService.save(rent);
+	@RequestMapping(value = "batchProcessRentMonth")
+	public String batchProcessRentMonth(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, Model model,RedirectAttributes redirectAttributes){
+		String rentids = (String)paramMap.get("rentids");
+		String infotype = (String)paramMap.get("infotype");
+
+		rentService.batchProcessRentMonth(rentids, infotype);
+		model.addAttribute("paramMap", paramMap);
 		addMessage(redirectAttributes, "租金处理成功");
-		return "redirect:"+Global.getAdminPath()+"/finance/rent/rentList";
+		if(RentMonth.INFOTYPE.rentout.equals(RentMonth.INFOTYPE.valueOf(infotype))){
+			return "redirect:"+Global.getAdminPath()+"/finance/rent/rentList4WillRentoutReceive";
+		}else{
+			return "redirect:"+Global.getAdminPath()+"/finance/rent/rentList4WillRentinPayfor";
+		}
+		
+		
 	}
 
 	@RequiresPermissions("finance:rent:view")

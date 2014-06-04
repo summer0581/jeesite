@@ -520,6 +520,7 @@ public class StatsRentService extends BaseService {
 		long departleader_cut_total = 0;//部长总数
 		long manager_cut_total = 0;//经理总数
 		int tempcut = 0;
+		int monthnumper = 0;
 		List<Cutconfig> cut_businesssaletypeconfigs = null;
 		RentMonth sameMonthRentout = null;//同期的租进月记录
 		for(RentMonth rentinmonth : list){
@@ -546,6 +547,8 @@ public class StatsRentService extends BaseService {
 			resultMap = new HashMap<String,Object>();
 			resultMap.put("rentinmonth",rentinmonth);
 			resultMap.put("rentoutmonth",sameMonthRentout);
+			
+			monthnumper = rentMonthService.getPayMonthUnit(sameMonthRentout.getPaytype());
 			cut_businesssaletypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentinmonth.getCut_businesssaletype());
 			if(null != rentinmonth.getPerson()){
 				if(User.Busi_type.oldbusier.toString().equals(rentinmonth.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
@@ -553,6 +556,7 @@ public class StatsRentService extends BaseService {
 				}else{
 					rentin_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_businesssales));
 				}
+				rentin_cut = (rentin_cut*monthnumper-MathUtils.deNull(rentinmonth.getAgencyfee()))/monthnumper;
 			}
 			if(null != sameMonthRentout.getPerson()){
 				if(User.Busi_type.oldbusier.toString().equals(sameMonthRentout.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
@@ -560,6 +564,7 @@ public class StatsRentService extends BaseService {
 				}else{
 					rentout_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_businesssales));
 				}
+				rentout_cut = (rentout_cut*monthnumper-MathUtils.deNull(sameMonthRentout.getAgencyfee()))/monthnumper;
 			}
 			if(null != rentinmonth.getBusi_teamleader()){
 				teamleader_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_businesssales));				
@@ -632,7 +637,8 @@ public class StatsRentService extends BaseService {
 		
 		int tempcut = 0;
 		int tempdouble = 0;
-
+		int monthnumper = 0;
+		
 		List<Cutconfig> cut_businesssaletypeconfigs = null;
 		RentMonth sameMonthRentout = null;//同期的租进月记录
 		String username_temp = "";
@@ -651,6 +657,7 @@ public class StatsRentService extends BaseService {
 				sameMonthRentout = null;
 				continue;
 			}
+			monthnumper = rentMonthService.getPayMonthUnit(sameMonthRentout.getPaytype());
 			cut_businesssaletypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentinmonth.getCut_businesssaletype());
 			if(null != rentinmonth.getBusi_manager()){
 				username_temp = rentinmonth.getBusi_manager().getLoginName();
@@ -674,7 +681,7 @@ public class StatsRentService extends BaseService {
 				}else{
 					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_businesssales);
 				}
-				tempdouble = (tempcut*12-MathUtils.deNull(rentinmonth.getAgencyfee()))/12;
+				tempdouble = (tempcut*monthnumper-MathUtils.deNull(rentinmonth.getAgencyfee()))/monthnumper;
 				rentinCutMap.put(username_temp, MathUtils.deNull(rentinCutMap.get(username_temp))+tempdouble);
 			}
 			if(null != sameMonthRentout.getPerson()){
@@ -684,7 +691,7 @@ public class StatsRentService extends BaseService {
 				}else{
 					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_businesssales);
 				}
-				tempdouble = (tempcut*12-MathUtils.deNull(sameMonthRentout.getAgencyfee()))/12;
+				tempdouble = (tempcut*monthnumper-MathUtils.deNull(sameMonthRentout.getAgencyfee()))/monthnumper;
 				rentoutCutMap.put(username_temp, MathUtils.deNull(rentoutCutMap.get(username_temp))+tempdouble);
 			}
 		}
@@ -766,6 +773,7 @@ public class StatsRentService extends BaseService {
 		
 		int tempcut = 0;
 		int tempdouble = 0;
+		int monthnumper = 0;
 
 		List<Cutconfig> cut_businesssaletypeconfigs = null;
 		RentMonth sameMonthRentout = null;//同期的租进月记录
@@ -795,6 +803,7 @@ public class StatsRentService extends BaseService {
 			resultMap.put("rentinmonth", rentinmonth);
 			resultMap.put("rentoutmonth", sameMonthRentout);
 
+			monthnumper = rentMonthService.getPayMonthUnit(sameMonthRentout.getPaytype());
 			cut_businesssaletypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentinmonth.getCut_businesssaletype());
 			if(person.equals(rentinmonth.getBusi_manager())){
 				tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_businesssales);
@@ -820,7 +829,7 @@ public class StatsRentService extends BaseService {
 				}else{
 					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_businesssales);
 				}
-				tempdouble = (tempcut*12-MathUtils.deNull(rentinmonth.getAgencyfee()))/12;
+				tempdouble = (tempcut*monthnumper-MathUtils.deNull(rentinmonth.getAgencyfee()))/monthnumper;
 				resultMap.put("rentin_cut",tempdouble);
 				rentin_total += tempdouble;
 				rentinRentMonths.add(resultMap);
@@ -831,7 +840,7 @@ public class StatsRentService extends BaseService {
 				}else{
 					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_businesssales);
 				}
-				tempdouble = (tempcut*12-MathUtils.deNull(sameMonthRentout.getAgencyfee()))/12;
+				tempdouble = (tempcut*monthnumper-MathUtils.deNull(sameMonthRentout.getAgencyfee()))/monthnumper;
 				resultMap.put("rentout_cut",tempdouble);
 				rentout_total += tempdouble;
 				rentoutRentMonths.add(resultMap);

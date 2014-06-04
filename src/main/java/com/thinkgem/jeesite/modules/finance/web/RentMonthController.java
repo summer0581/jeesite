@@ -75,19 +75,6 @@ public class RentMonthController extends BaseController {
         return "modules/finance/rentinMonthList";
 	}
 	
-	@RequiresPermissions("finance:house:view")
-	@RequestMapping(value = {"houseCancelRentlist"})
-	public String houseCancelRentlist(RentMonth rentMonth, HttpServletRequest request, HttpServletResponse response, Model model) {
-		User user = UserUtils.getUser();
-		if (!user.isAdmin()){
-			rentMonth.setCreateBy(user);
-		}
- 
-        List<RentMonth> page = rentMonthService.findNoRentOut(); 
-        model.addAttribute("page", page);
-		return "modules/finance/houseCancelRentList";
-	}
-	
 
 
 	@RequiresPermissions("finance:rentMonth:view")
@@ -100,22 +87,7 @@ public class RentMonthController extends BaseController {
 	@RequiresPermissions("finance:rentMonth:view")
 	@RequestMapping(value = "rentinform")
 	public String rentinform(RentMonth rentMonth, Model model) {
-		if(StringUtils.isBlank(rentMonth.getId())){//如果id为空则表示为新增，则取最新一条的相关数据
-			rentMonth.setInfotype(RentMonth.INFOTYPE.rentin.toString());
-			List<RentMonth> rentMonthList = rentMonthService.find(rentMonth);
-			if(rentMonthList.size()>0){
-				rentMonth = rentMonthService.find(rentMonth).get(0);
-				rentMonth.setId("");
-				int addMonth = rentMonthService.getPayMonthUnit(rentMonth.getPaytype());
-				if(null != rentMonth.getLastpaysdate())
-					rentMonth.setLastpaysdate(DateUtils.addMonths(rentMonth.getLastpaysdate(), addMonth));
-				if(null != rentMonth.getLastpayedate())
-					rentMonth.setLastpayedate(DateUtils.addMonths(rentMonth.getLastpayedate(), addMonth));
-				if(null != rentMonth.getNextpaydate())
-					rentMonth.setNextpaydate(DateUtils.addMonths(rentMonth.getNextpaydate(), addMonth));
-				rentMonth.setNextshouldamount(String.valueOf(Integer.valueOf(rentMonth.getRentmonth())*addMonth));
-			}
-		}
+		rentMonthService.setNewRentinMonth(rentMonth);
 		model.addAttribute("vacantPeriodCutconfigs", rentMonthService.findVacantPeriodCutconfigList());
 		model.addAttribute("businessSaleCutconfigs", rentMonthService.findBusinessSaleCutconfigList());
 		model.addAttribute("rentMonth", rentMonth);
@@ -125,23 +97,7 @@ public class RentMonthController extends BaseController {
 	@RequiresPermissions("finance:rentMonth:view")
 	@RequestMapping(value = "rentoutform")
 	public String rentoutform(RentMonth rentMonth, Model model) {
-		if(StringUtils.isBlank(rentMonth.getId())){//如果id为空则表示为新增，则取最新一条的相关数据
-			rentMonth.setInfotype(RentMonth.INFOTYPE.rentout.toString());
-			List<RentMonth> rentMonthList = rentMonthService.find(rentMonth);
-			if(rentMonthList.size()>0){
-				rentMonth = rentMonthService.find(rentMonth).get(0);
-				int addMonth = rentMonthService.getPayMonthUnit(rentMonth.getPaytype());
-				rentMonth.setId("");
-				if(null != rentMonth.getLastpaysdate())
-					rentMonth.setLastpaysdate(DateUtils.addMonths(rentMonth.getLastpaysdate(), addMonth));
-				if(null != rentMonth.getLastpayedate())
-					rentMonth.setLastpayedate(DateUtils.addMonths(rentMonth.getLastpayedate(), addMonth));
-				if(null != rentMonth.getNextpaydate())
-					rentMonth.setNextpaydate(DateUtils.addMonths(rentMonth.getNextpaydate(), addMonth));
-				rentMonth.setNextshouldamount(String.valueOf(Integer.valueOf(rentMonth.getRentmonth())*addMonth));
-				rentMonth.setAmountreceived(String.valueOf(MathUtils.sumInt(rentMonth.getAmountreceived(),String.valueOf(Integer.valueOf(rentMonth.getRentmonth())*addMonth))));
-			}
-		}
+		rentMonthService.setNewRentoutMonth(rentMonth);
 		model.addAttribute("vacantPeriodCutconfigs", rentMonthService.findVacantPeriodCutconfigList());
 		model.addAttribute("businessSaleCutconfigs", rentMonthService.findBusinessSaleCutconfigList());
 		model.addAttribute("rentMonth", rentMonth);

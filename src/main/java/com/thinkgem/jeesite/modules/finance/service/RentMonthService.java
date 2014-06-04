@@ -4,6 +4,7 @@
 package com.thinkgem.jeesite.modules.finance.service;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -11,18 +12,21 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.BaseService;
 import com.thinkgem.jeesite.common.utils.DateUtils;
+import com.thinkgem.jeesite.common.utils.MathUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.finance.dao.CutconfigDao;
 import com.thinkgem.jeesite.modules.finance.dao.RentMonthDao;
 import com.thinkgem.jeesite.modules.finance.entity.Cutconfig;
+import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
+import com.thinkgem.jeesite.modules.finance.entity.VacantPeriod;
 import com.thinkgem.jeesite.modules.sys.utils.DictUtils;
 
 /**
@@ -31,11 +35,13 @@ import com.thinkgem.jeesite.modules.sys.utils.DictUtils;
  * @version 2014-05-06
  */
 @Component
+@Lazy(value=true)
 @Transactional(readOnly = true)
 public class RentMonthService extends BaseService {
 
 	@Autowired
 	private RentMonthDao rentMonthDao;
+	
 	
 	@Autowired
 	private CutconfigDao cutconfigDao;
@@ -63,7 +69,7 @@ public class RentMonthService extends BaseService {
 		}
 
 		dc.add(Restrictions.eq(RentMonth.FIELD_DEL_FLAG, RentMonth.DEL_FLAG_NORMAL));
-		dc.addOrder(Order.desc("lastpayedate"));
+		dc.addOrder(Order.desc("createDate"));
 		return rentMonthDao.find(page, dc);
 	}
 	
@@ -129,23 +135,57 @@ public class RentMonthService extends BaseService {
 		rentMonthDao.deleteById(id);
 	}
 	
-	/**
-	 * 获取租进的包租列表(即将要支付下个月的钱）
-	 * @param paramMap
-	 * @return
-	 */
-	public List<RentMonth> rentInListWillNeedPayNextMonth() {
-		return rentMonthDao.rentInListWillNeedPayNextMonth();
+	public void setNewRentinMonth(RentMonth rentMonth){
+		if(StringUtils.isBlank(rentMonth.getId())){//如果id为空则表示为新增，则取最新一条的相关数据
+			if(null == rentMonth.getLastpayedate() && null == rentMonth.getNextpaydate()){//新增，否则是批量付租
+				rentMonth.setInfotype(RentMonth.INFOTYPE.rentin.toString());
+				List<RentMonth> rentMonthList = find(rentMonth);
+				if(rentMonthList.size()>0){
+					rentMonth = find(rentMonth).get(0);
+				}
+			}
+
+			if(null != rentMonth){
+				List<VacantPeriod> vacantPeriods = rentMonth.getRent().getLandlord_vacantperiods();
+				rentMonth.setId("");
+				int addMonth = getPayMonthUnit(rentMonth.getPaytype());
+				if(null != rentMonth.getLastpaysdate())
+					rentMonth.setLastpaysdate(DateUtils.addMonths(rentMonth.getLastpaysdate(), addMonth));
+				if(null != rentMonth.getLastpayedate())
+					rentMonth.setLastpayedate(DateUtils.addMonths(rentMonth.getLastpayedate(), addMonth));
+				if(null != rentMonth.getNextpaydate())
+					rentMonth.setNextpaydate(DateUtils.addMonths(rentMonth.getNextpaydate(), addMonth));
+				rentMonth.setNextshouldamount(String.valueOf(Integer.valueOf(rentMonth.getRentmonth())*addMonth));
+			}
+		}
 	}
 	
-	/**
-	 * 获取租出的包租列表(即将要收取下个月的钱）
-	 * @param paramMap
-	 * @return
-	 */
-	public List<RentMonth> rentOutListWillNeedPayNextMonth() {
-		return rentMonthDao.rentOutListWillNeedPayNextMonth();
+	public void setNewRentoutMonth(RentMonth rentMonth){
+		if(StringUtils.isBlank(rentMonth.getId())){//如果id为空则表示为新增，则取最新一条的相关数据
+			if(null == rentMonth.getLastpayedate() && null == rentMonth.getNextpaydate()){//新增，否则是批量收租
+				rentMonth.setInfotype(RentMonth.INFOTYPE.rentout.toString());
+				List<RentMonth> rentMonthList = find(rentMonth);
+				if(rentMonthList.size()>0){
+					rentMonth = find(rentMonth).get(0);
+				}
+			}
+			
+			if(null != rentMonth){
+				int addMonth = getPayMonthUnit(rentMonth.getPaytype());
+				rentMonth.setId("");
+				if(null != rentMonth.getLastpaysdate())
+					rentMonth.setLastpaysdate(DateUtils.addMonths(rentMonth.getLastpaysdate(), addMonth));
+				if(null != rentMonth.getLastpayedate())
+					rentMonth.setLastpayedate(DateUtils.addMonths(rentMonth.getLastpayedate(), addMonth));
+				if(null != rentMonth.getNextpaydate())
+					rentMonth.setNextpaydate(DateUtils.addMonths(rentMonth.getNextpaydate(), addMonth));
+				rentMonth.setNextshouldamount(String.valueOf(Integer.valueOf(rentMonth.getRentmonth())*addMonth));
+				rentMonth.setAmountreceived(String.valueOf(MathUtils.sumInt(rentMonth.getAmountreceived(),String.valueOf(Integer.valueOf(rentMonth.getRentmonth())*addMonth))));
+			}
+		}
 	}
+	
+
 	
 	/**
 	 * 获取租进的包租列表(即将要到达租进的最后时间）
@@ -237,15 +277,7 @@ public class RentMonthService extends BaseService {
 		rentMonth.setAmountreceived(Integer.toString(rentMonthout_amountreceived+Integer.parseInt(rentMonth.getRentmonth())*payMonthUnit));
 	}
 	
-	/**
-	 * 获取所有未租出去的房子信息
-	 * @param page
-	 * @param house
-	 * @return
-	 */
-	public List<RentMonth> findNoRentOut() {
-		return rentMonthDao.rentOutListHasCancel();
-	}
+
 	
 	/**
 	 * 获取每多少月付款的月份数
@@ -257,6 +289,16 @@ public class RentMonthService extends BaseService {
 		int payMonthUnit = 0;
 		if(StringUtils.isBlank(paytype) || "月付".equals(paytype)){
 			payMonthUnit = 1;
+		}else if("季付".equals(paytype)){
+			payMonthUnit = 3;
+		}else if("四月付".equals(paytype)){
+			payMonthUnit = 4;
+		}else if("五月付".equals(paytype)){
+			payMonthUnit = 5;
+		}else if("八月付".equals(paytype)){
+			payMonthUnit = 8;
+		}else if("十月付".equals(paytype)){
+			payMonthUnit = 10;
 		}else if("半年付".equals(paytype)){
 			payMonthUnit = 6;
 		}else if("年付".equals(paytype)){
