@@ -14,6 +14,7 @@
 	
 	<script type="text/javascript">
 		$(document).ready(function() {
+			$("#searchForm").validate();
 			$.initSortTable("contentTable",page);
 			
 			$("#btnExport").click(function(){
@@ -37,7 +38,7 @@
         	return false;
         }
 		function resets(){
-			$("input[type=text]","#searchForm").val("");
+			$("input[type=text],select","#searchForm").not("#pageNo,#pageSize").val("");
 			$("#searchForm").submit();
 		}
 		
@@ -93,18 +94,72 @@
 			&nbsp;<input id="btnImport" class="btn btn-primary" type="button" value="导入"/>
 		</shiro:hasPermission>		</div>
 		<div id="pro_search" style="margin-top:10px;${'true' eq paramMap.showHighSearch?'':'display:none;'}">
-		<label>承租下次付租时间：</label>
-		<input id="rentin_nextpaysdate" name="rentin_nextpaysdate" type="text"  maxlength="20" class="input-small Wdate"
-				value="${paramMap.rentin_nextpaysdate}" onclick="WdatePicker({maxDate:'#F{$dp.$D(\'rentin_nextpayedate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
-		至
-		<input id="rentin_nextpayedate" name="rentin_nextpayedate" type="text"  maxlength="20" class="input-small Wdate"
-				value="${paramMap.rentin_nextpayedate}" onclick="WdatePicker({minDate:'#F{$dp.$D(\'rentin_nextpaysdate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
-		<label>出租下次付租时间：</label>
-				<input id="rentout_nextpaysdate" name="rentout_nextpaysdate" type="text"  maxlength="20" class="input-small Wdate"
-				value="${paramMap.rentout_nextpaysdate}" onclick="WdatePicker({maxDate:'#F{$dp.$D(\'rentout_nextpayedate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
-		至
-		<input id="rentout_nextpayedate" name="rentout_nextpayedate" type="text"  maxlength="20" class="input-small Wdate"
-				value="${paramMap.rentout_nextpayedate}" onclick="WdatePicker({minDate:'#F{$dp.$D(\'rentout_nextpaysdate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+		<div style="margin-bottom:5px;">
+			<label>承租租金：</label>
+			<input id="rentin_rentmonthmin" name="rentin_rentmonthmin" type="text" maxlength="10" class="input-small digits" value="${paramMap.rentin_rentmonthmin}"/>
+			至
+			<input id="rentin_rentmonthmax" name="rentin_rentmonthmax" type="text" maxlength="10" class="input-small digits" value="${paramMap.rentin_rentmonthmax}"/>
+			<label>出租租金：</label>
+			<input id="rentout_rentmonthmin" name="rentout_rentmonthmin" type="text" maxlength="10" class="input-small digits" value="${paramMap.rentout_rentmonthmin}"/>
+			至
+			<input id="rentout_rentmonthmax" name="rentout_rentmonthmax" type="text" maxlength="10" class="input-small digits" value="${paramMap.rentout_rentmonthmax}"/>
+			<label>出租付款方式：</label>
+				<select id="rentout_paytype" name="rentout_paytype" class="input-small" >
+					<option value="" label="请选择"/>
+					<c:forEach items="${fns:getDictList('finance_rent_paytype')}" var="dict">
+						<c:choose >
+							<c:when test="${dict.value == paramMap.rentout_paytype }">
+								<option value="${dict.value}" selected="selected" label="">${dict.label}</option>
+							</c:when>
+							<c:otherwise>
+								<option value="${dict.value}" label="">${dict.label}</option>
+							</c:otherwise>
+						</c:choose>
+					</c:forEach>
+				</select>
+		</div>
+		<div style="margin-bottom:5px;">
+			<label>承租开始时间：</label>
+			<input id="rentin_sdatesdate" name="rentin_sdatesdate" type="text"  maxlength="20" class="input-small Wdate"
+					value="${paramMap.rentin_sdatesdate}" onclick="WdatePicker({maxDate:'#F{$dp.$D(\'rentin_sdatesdate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+			至
+			<input id="rentin_sdateedate" name="rentin_sdateedate" type="text"  maxlength="20" class="input-small Wdate"
+					value="${paramMap.rentin_sdateedate}" onclick="WdatePicker({minDate:'#F{$dp.$D(\'rentin_sdateedate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+			<label>承租结束时间：</label>
+					<input id="rentin_edatesdate" name="rentin_edatesdate" type="text"  maxlength="20" class="input-small Wdate"
+					value="${paramMap.rentin_edatesdate}" onclick="WdatePicker({maxDate:'#F{$dp.$D(\'rentin_edatesdate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+			至
+			<input id="rentin_edateedate" name="rentin_edateedate" type="text"  maxlength="20" class="input-small Wdate"
+					value="${paramMap.rentin_edateedate}" onclick="WdatePicker({minDate:'#F{$dp.$D(\'rentin_edateedate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+		</div>
+		<div style="margin-bottom:5px;">
+			<label>出租开始时间：</label>
+			<input id="rentout_sdatesdate" name="rentout_sdatesdate" type="text"  maxlength="20" class="input-small Wdate"
+					value="${paramMap.rentout_sdatesdate}" onclick="WdatePicker({maxDate:'#F{$dp.$D(\'rentout_sdatesdate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+			至
+			<input id="rentout_sdateedate" name="rentout_sdateedate" type="text"  maxlength="20" class="input-small Wdate"
+					value="${paramMap.rentout_sdateedate}" onclick="WdatePicker({minDate:'#F{$dp.$D(\'rentout_sdateedate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+			<label>出租结束时间：</label>
+					<input id="rentout_edatesdate" name="rentout_edatesdate" type="text"  maxlength="20" class="input-small Wdate"
+					value="${paramMap.rentout_edatesdate}" onclick="WdatePicker({maxDate:'#F{$dp.$D(\'rentout_edatesdate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+			至
+			<input id="rentout_edateedate" name="rentout_edateedate" type="text"  maxlength="20" class="input-small Wdate"
+					value="${paramMap.rentout_edateedate}" onclick="WdatePicker({minDate:'#F{$dp.$D(\'rentout_edateedate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+		</div>
+		<div>
+			<label>承租下次付租时间：</label>
+			<input id="rentin_nextpaysdate" name="rentin_nextpaysdate" type="text"  maxlength="20" class="input-small Wdate"
+					value="${paramMap.rentin_nextpaysdate}" onclick="WdatePicker({maxDate:'#F{$dp.$D(\'rentin_nextpayedate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+			至
+			<input id="rentin_nextpayedate" name="rentin_nextpayedate" type="text"  maxlength="20" class="input-small Wdate"
+					value="${paramMap.rentin_nextpayedate}" onclick="WdatePicker({minDate:'#F{$dp.$D(\'rentin_nextpaysdate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+			<label>出租下次付租时间：</label>
+					<input id="rentout_nextpaysdate" name="rentout_nextpaysdate" type="text"  maxlength="20" class="input-small Wdate"
+					value="${paramMap.rentout_nextpaysdate}" onclick="WdatePicker({maxDate:'#F{$dp.$D(\'rentout_nextpayedate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+			至
+			<input id="rentout_nextpayedate" name="rentout_nextpayedate" type="text"  maxlength="20" class="input-small Wdate"
+					value="${paramMap.rentout_nextpayedate}" onclick="WdatePicker({minDate:'#F{$dp.$D(\'rentout_nextpaysdate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+		</div>
 		</div>
 	</form:form>
 	<tags:message content="${message}"/>
@@ -139,7 +194,7 @@
 		<c:forEach items="${page.list}" var="rent">
 			<tr>
 				<td>${rent.business_num}</td>
-				<td><a href="#" onclick="openWindow('${ctx}/finance/house/form?id=${rent.house.id}','${rent.house.name}')">${rent.name}</a></td>
+				<td><a href="#" onclick="openWindow('${ctx}/finance/house/form?id=${rent.house.id}','${rent.house.name}')" title="${rent.name}">${fns:abbr(fns:replaceHtml(rent.name),25)}</a></td>
 				<td>${rent.rentinMonths[0].person.name}</td>
 				<td>${fns:getDictLabel(rent.rentinMonths[0].paytype, 'finance_rent_paytype', '')}</td>
 				<td><fmt:formatDate value="${rent.rentinMonths[0].sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentinMonths[0].edate}" pattern="yyyy-MM-dd"/></td>

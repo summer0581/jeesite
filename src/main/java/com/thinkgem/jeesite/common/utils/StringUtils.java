@@ -7,6 +7,7 @@ package com.thinkgem.jeesite.common.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -179,6 +180,21 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 		}
 		
 		return strArry;
+	}
+	
+	/**
+	 * 检查查询参数map中，是否全部为空
+	 * @param param request中的参数map
+	 * @param keys 传入的key的数组
+	 * @return
+	 */
+	public static boolean checkParameterIsAllBlank(Map<String,Object> param,String...keys){
+		for(String key : keys){
+			if(isNotBlank((String)param.get(key))){
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	public static void main(String[] args){

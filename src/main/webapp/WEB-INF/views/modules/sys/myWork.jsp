@@ -15,7 +15,7 @@
 </head>
 <body><tags:message content="${message}"/>
 	<div class="panel-div">
-	<div class="panel-title"><a href="${ctx}/finance/rent/rentList">您有<span class="badge badge-important">${rentinlistcount}</span>条付租要处理</a></div>
+	<div class="panel-title"><a href="${ctx}/finance/rent/rentList4WillRentinPayfor">您有<span class="badge badge-important">${rentinlistcount}</span>条付租要处理</a></div>
 			 <table class="table table-bordered">
               <thead>
                 <tr>
@@ -27,13 +27,13 @@
                 </tr>
               </thead>
               <tbody>
-              <c:forEach items="${rentinlist}" var="rentMonth">
+              <c:forEach items="${rentinlist.list}" var="rent">
               	 <tr>
-                  <td>${rentMonth.rent.business_num }</td>
-                  <td><a href="${ctx}/finance/rent/form?id=${rentMonth.rent.id}">${rentMonth.rent.house.name }</a></td>
-                  <td><fmt:formatDate value="${rentMonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rentMonth.edate}" pattern="yyyy-MM-dd"/></td>
-                  <td><fmt:formatDate value="${rentMonth.lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rentMonth.lastpayedate}" pattern="yyyy-MM-dd"/></td>
-                  <td><fmt:formatDate value="${rentMonth.nextpaydate}"  pattern="yyyy-MM-dd" />
+                  <td>${rent.business_num }</td>
+                  <td><a href="${ctx}/finance/rent/form?id=${rent.id}">${rent.house.name }</a></td>
+                  <td><fmt:formatDate value="${rent.rentin_sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentin_edate}" pattern="yyyy-MM-dd"/></td>
+                  <td><fmt:formatDate value="${rent.rentin_lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentin_lastpayedate}" pattern="yyyy-MM-dd"/></td>
+                  <td><fmt:formatDate value="${rent.rentin_nextpaydate}"  pattern="yyyy-MM-dd" />
                   </td>
                 </tr>
               </c:forEach>
@@ -41,7 +41,7 @@
             </table>
 	</div>
 	<div class="panel-div">
-	<div class="panel-title"><a href="${ctx}/finance/rent/rentList">您有<span class="badge badge-important">${rentoutlistcount}</span>条收租要处理</a></div>
+	<div class="panel-title"><a href="${ctx}/finance/rent/rentList4WillRentoutReceive">您有<span class="badge badge-important">${rentoutlistcount}</span>条收租要处理</a></div>
 			 <table class="table table-bordered">
               <thead>
                 <tr>
@@ -53,13 +53,13 @@
                 </tr>
               </thead>
               <tbody>
-             <c:forEach items="${rentoutlist}" var="rentMonth">
+             <c:forEach items="${rentoutlist.list}" var="rent">
               	 <tr>
-                  <td>${rentMonth.rent.business_num }</td>
-                  <td><a href="${ctx}/finance/rent/form?id=${rentMonth.rent.id}">${rentMonth.rent.house.name }</a></td>
-                  <td><fmt:formatDate value="${rentMonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rentMonth.edate}" pattern="yyyy-MM-dd"/></td>
-                  <td><fmt:formatDate value="${rentMonth.lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rentMonth.lastpayedate}" pattern="yyyy-MM-dd"/></td>
-                  <td><fmt:formatDate value="${rentMonth.nextpaydate}"  pattern="yyyy-MM-dd" />
+                  <td>${rent.business_num }</td>
+                  <td><a href="${ctx}/finance/rent/form?id=${rent.id}">${rent.house.name }</a></td>
+                  <td><fmt:formatDate value="${rent.rentin_sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentin_edate}" pattern="yyyy-MM-dd"/></td>
+                  <td><fmt:formatDate value="${rent.rentin_lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentin_lastpayedate}" pattern="yyyy-MM-dd"/></td>
+                  <td><fmt:formatDate value="${rent.rentin_nextpaydate}"  pattern="yyyy-MM-dd" />
                   </td>
                 </tr>
               </c:forEach>
@@ -68,7 +68,7 @@
 	</div>
 	<div class="clear"></div>
 	<div class="panel-div">
-	<div class="panel-title"><a href="${ctx}/finance/rent/rentList">您有<span class="badge badge-important">${rentinWRElistcount}</span>套租进房子将要到期，是否续签</a></div>
+	<div class="panel-title"><a href="${ctx}/finance/rent/rentList?rentin_edateedate=${rentwarndate}">您有<span class="badge badge-important">${rentinWRElistcount}</span>套租进房子将要到期，是否续签</a></div>
 			 <table class="table table-bordered">
               <thead>
                 <tr>
@@ -94,7 +94,7 @@
             </table>
 	</div>
 	<div class="panel-div">
-	<div class="panel-title"><a href="${ctx}/finance/rent/rentList">您有<span class="badge badge-important">${rentoutWRElistcount}</span>套出租房子将要到期，是否续租</a></div>
+	<div class="panel-title"><a href="${ctx}/finance/rent/rentList?rentout_edateedate=${rentwarndate}">您有<span class="badge badge-important">${rentoutWRElistcount}</span>套出租房子将要到期，是否续租</a></div>
 			 <table class="table table-bordered"> 
               <thead>
                 <tr>

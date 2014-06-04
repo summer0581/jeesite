@@ -25,4 +25,46 @@
 				searchFun();
 		});
 	}
+
 })(jQuery)
+
+String.prototype.toDate = function(){
+	return new Date(Date.parse(this.replace(/-/g,  "/"))); 
+}
+
+Date.prototype.dateAddYears = function(years){
+	var dt1 = this;
+	var dt2 = new Date(dt1.setFullYear( dt1.getFullYear() + new Number(years) ));
+	return dt2;
+}
+
+Date.prototype.dateAddDays = function(days) {
+	var a = this;
+    a = a.valueOf();
+    a = a + days * 24 * 60 * 60 * 1000;
+    a = new Date(a);
+    return a;
+}
+
+Date.prototype.formate = function(format){ 
+	var o = { 
+	"M+" : this.getMonth()+1, //month 
+	"d+" : this.getDate(), //day 
+	"h+" : this.getHours(), //hour 
+	"m+" : this.getMinutes(), //minute 
+	"s+" : this.getSeconds(), //second 
+	"q+" : Math.floor((this.getMonth()+3)/3), //quarter 
+	"S" : this.getMilliseconds() //millisecond 
+	} 
+
+	if(/(y+)/.test(format)) { 
+	format = format.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length)); 
+	} 
+
+	for(var k in o) { 
+	if(new RegExp("("+ k +")").test(format)) { 
+	format = format.replace(RegExp.$1, RegExp.$1.length==1 ? o[k] : ("00"+ o[k]).substr((""+ o[k]).length)); 
+	} 
+	} 
+	return format; 
+} 

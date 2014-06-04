@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;
 import org.apache.tools.zip.ZipOutputStream;
+import org.aspectj.weaver.patterns.ThisOrTargetAnnotationPointcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -608,6 +609,16 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static String getPathByCLassPath(String path){
+		String classpath = FileUtils.class.getResource("/").getPath();
+		return classpath+path.replaceAll("['/'|\\\\]", "\\" +File.separator);
+		
+	}
+	public static void main(String[] args){
+		System.out.println(File.separator);
+		System.out.println("com/thinkgem/jeesite/modules/finance/excel/房屋包租空置期模板.xlsx".replaceAll("['/'|\\\\]", "\\" +File.separator));
 	}
 
 }

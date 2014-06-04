@@ -5,8 +5,6 @@
  */
 package com.thinkgem.jeesite.common.utils.excel;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -194,6 +192,7 @@ public class ExportExcel {
 	 */
 	private void initialize(String title, List<String> headerList) {
 		this.wb = new SXSSFWorkbook(500);
+		
 		this.sheet = wb.createSheet("Export");
 		this.styles = createStyles(wb);
 		// Create title
@@ -334,7 +333,7 @@ public class ExportExcel {
 		try {
 			if (val == null){
 				cell.setCellValue("");
-			} else if (val instanceof String) {
+			} else if (val instanceof String  && fieldType == Class.class) {
 				cell.setCellValue((String) val);
 			} else if (val instanceof Integer) {
 				cell.setCellValue((Integer) val);

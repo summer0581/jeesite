@@ -52,7 +52,7 @@
 	</div>
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="#">未租进的房屋明细列表</a></li>
-		<li class=""><a href="${ctx}/finance/rentMonth/houseCancelRentlist">退租或已停租房屋明细列表</a></li>
+		<li class=""><a href="${ctx}/finance/house/houseCancelRentlist">退租或已停租房屋明细列表</a></li>
 	</ul>
 	<form:form id="searchForm" modelAttribute="house" action="${ctx}/finance/house/houseNoRentinlist" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
@@ -63,7 +63,6 @@
 	</form:form>
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
 		<thead><tr>
-			<th>业务编号</th>
 			<th>地址</th>
 			<th>楼盘</th>
 			<th>房东姓名</th>
@@ -76,7 +75,6 @@
 		<tbody>
 		<c:forEach items="${page.list}" var="house">
 			<tr>
-				<td>${house.busi_id}</td>
 				<td><a href="${ctx}/finance/house/form?id=${house.id}">${house.name}</a></td>
 				<td>${house.houses}</td>
 				<td>${house.landlord.name}</td>

@@ -6,7 +6,6 @@
 package com.thinkgem.jeesite.modules.sys.web;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,12 +19,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.thinkgem.jeesite.common.config.Global;
+import com.thinkgem.jeesite.common.persistence.Page;
+import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.finance.service.RentMonthService;
 import com.thinkgem.jeesite.modules.finance.service.RentService;
-import com.thinkgem.jeesite.modules.finance.web.RentController.RentHandleType;
 
 /**
  * 我的工作Controller
@@ -43,43 +43,23 @@ public class MyWorkController extends BaseController {
 
 	@RequestMapping(value = {"list", ""})
 	public String list( Model model) {
-		List<RentMonth> temprentinlist = rentMonthService.rentInListWillNeedPayNextMonth();
-		List<RentMonth> temprentoutlist = rentMonthService.rentOutListWillNeedPayNextMonth();
+		Page<Rent> temprentinlist = rentService.rentInListWillNeedPayNextMonth();
+		Page<Rent> temprentoutlist = rentService.rentOutListWillNeedPayNextMonth();
 		List<RentMonth> temprentinwillreachedatelist = rentMonthService.rentInListWillReachEdate();
 		List<RentMonth> temprentoutwillreachedatelist = rentMonthService.rentOutListWillReachEdate();
 		model.addAttribute("sysdate", new Date());
-        model.addAttribute("rentinlistcount", temprentinlist.size());
-        model.addAttribute("rentoutlistcount", temprentoutlist.size());
+		model.addAttribute("rentwarndate", DateUtils.formatDate(DateUtils.addDays(new Date(), 30), "yyyy-MM-dd"));
+        model.addAttribute("rentinlistcount", temprentinlist.getCount());
+        model.addAttribute("rentoutlistcount", temprentoutlist.getCount());
         model.addAttribute("rentinWRElistcount", temprentinwillreachedatelist.size());
         model.addAttribute("rentoutWRElistcount", temprentoutwillreachedatelist.size());
-        model.addAttribute("rentinlist", temprentinlist.subList(0, temprentinlist.size()>5?5:temprentinlist.size()));
-        model.addAttribute("rentoutlist", temprentoutlist.subList(0, temprentoutlist.size()>5?5:temprentoutlist.size()));
+        model.addAttribute("rentinlist", temprentinlist);
+        model.addAttribute("rentoutlist", temprentoutlist);
         model.addAttribute("rentinWRElist", temprentinwillreachedatelist.subList(0, temprentinwillreachedatelist.size()>5?5:temprentinwillreachedatelist.size()));
         model.addAttribute("rentoutWRElist", temprentoutwillreachedatelist.subList(0, temprentoutwillreachedatelist.size()>5?5:temprentoutwillreachedatelist.size()));
 		return "modules/sys/myWork";
 	}
 	
-	@RequiresPermissions("finance:rent:edit")
-	@RequestMapping(value = "rentHandle")
-	public String rentHandle( HttpServletRequest request,RedirectAttributes redirectAttributes) {
-		String id = request.getParameter("id");
-		String handletype = request.getParameter("handletype");
-		if(StringUtils.isNotBlank(id)){
-			Rent rent = rentService.get(id);
-			if(RentHandleType.payRent.equals(RentHandleType.valueOf(handletype))){
-				rentService.payRent(rent);
-			}else if(RentHandleType.receiveRent.equals(RentHandleType.valueOf(handletype))){
-				rentService.receiveRent(rent);
-			}
-			rentService.save(rent);
-			addMessage(redirectAttributes, "租金处理成功");
-		}else{
-			addMessage(redirectAttributes, "id不能为空");
-		}
-		
-		
-		return "redirect:"+Global.getAdminPath()+"/sys/mywork?repage";
-	}
 
 
 

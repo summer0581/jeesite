@@ -114,7 +114,7 @@ public class House extends IdEntity<House> {
 	public void setHouses(String houses) {
 		this.houses = houses;
 	}
-	@OneToOne(cascade={CascadeType.ALL})
+	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="landlord_name")
 	@NotFound(action = NotFoundAction.IGNORE)
 	@IndexedEmbedded
@@ -147,7 +147,7 @@ public class House extends IdEntity<House> {
 	public void setDebit_card(String debit_card) {
 		this.debit_card = debit_card;
 	}
-	@OneToOne(cascade={CascadeType.ALL})
+	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="tenant_name")
 	@NotFound(action = NotFoundAction.IGNORE)
 	@IndexedEmbedded

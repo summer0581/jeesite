@@ -81,6 +81,18 @@ public class HouseController extends BaseController {
 		return "modules/finance/houseNoRentinList";
 	}
 	
+	@RequiresPermissions("finance:house:view")
+	@RequestMapping(value = {"houseCancelRentlist"})
+	public String houseCancelRentlist(House house, HttpServletRequest request, HttpServletResponse response, Model model) {
+		User user = UserUtils.getUser();
+		if (!user.isAdmin()){
+			house.setCreateBy(user);
+		}
+        Page<House> page = houseService.findHouseCancelRent(new Page<House>(request, response), house); 
+        model.addAttribute("page", page);
+		return "modules/finance/houseCancelRentList";
+	}
+	
 
 
 	@RequiresPermissions("finance:house:view")

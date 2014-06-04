@@ -9,6 +9,16 @@
 			$("#businessCutTab").click(function(){
 				$(this).attr("href","${ctx}/finance/stats/businessCut?rentout_sdate_begin="+$("#rentout_sdate_begin").val()+"&rentout_sdate_end="+$("#rentout_sdate_end").val());
 			})
+			$("#btnExport").click(function(){
+				top.$.jBox.confirm("确认要导出房屋包租业绩提成个人统计数据吗？","系统提示",function(v,h,f){
+					if(v=="ok"){
+						$("#searchForm").attr("action","${ctx}/finance/stats/export/businessCut4Person");
+						$("#searchForm").submit();
+					}
+				},{buttonsFocus:1});
+				top.$('.jbox-body .jbox-icon').css('top','55px');
+			});
+
 		});
 		function page(n,s){
 			$("#searchForm").submit();
@@ -50,6 +60,7 @@
 		&nbsp;<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/>
 		&nbsp;<input id="btnReset" class="btn btn-primary" onclick="resets()" type="button" value="重置"/>
 		&nbsp;<input id="btnShow" class="btn btn-primary" onclick="showOrHidden()" type="button" value="高级查询"/>
+		&nbsp;<input id="btnExport" class="btn btn-primary" type="button" value="导出"/>
 	</div>
 	<div id="pro_search" style="margin-top:10px;${'true' eq paramMap.showHighSearch?'':'display:none;'}">
 		<label>空置期时间段：</label>
@@ -73,7 +84,7 @@
 			</tr>
 		</thead>
 		<tbody>
-		<c:forEach items="${list}" var="var">
+		<c:forEach items="${list}" var="var"> 
 			<tr>
 				<td><a href="#" onclick="openWindow('${ctx}/finance/stats/businessCutDetail4Person?personid=${var.person.id}&rentout_sdate_begin=${paramMap.rentout_sdate_begin}&rentout_sdate_end=${paramMap.rentout_sdate_end}','${var.person.name}')">${var.person.name}</a></td>
 				<td>${var.rentinCutTotal }</td>

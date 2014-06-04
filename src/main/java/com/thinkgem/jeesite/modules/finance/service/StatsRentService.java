@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -503,32 +504,21 @@ public class StatsRentService extends BaseService {
 		List<RentMonth> list = getBusinesscutBaseList(paramMap); 
 		
 		/*******************以下开始生成提成列表数据***********************/
-		Map<String,LinkedHashSet<User>> map = getLevelUsersWithRentinMonths(list,paramMap);
-		LinkedHashSet<User> managers = map.get("managers");
-		LinkedHashSet<User> departleaders = map.get("departleaders");
-		LinkedHashSet<User> teamleaders = map.get("teamleaders");
-		LinkedHashSet<User> salers = map.get("salers");//普通业务员
-		
-		List<User> showUserList = new ArrayList<User>();
-		showUserList.addAll(managers);
-		showUserList.addAll(departleaders);
-		showUserList.addAll(teamleaders);
-		showUserList.addAll(salers);
 		
 		List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
 		Map<String,Object> resultMap = null;
-		List<Integer> resultUserCutList = new ArrayList<Integer>();
-		List<Integer> resultUserCutTotalList = new ArrayList<Integer>();
-		for(int i = 0 ; i < showUserList.size(); i++){
-			resultUserCutTotalList.add(0);
-		}
+		Map<String,Object> totalMap = new HashMap<String,Object>();
 
-		int manager_index = 0;
-		int departleader_index = 0;
-		int teamleader_index = 0;
-		int rentinsaler_index = 0;
-		int rentoutsaler_index = 0;
-		int tempdouble = 0;
+		long rentin_cut = 0;
+		long rentout_cut = 0;
+		long teamleader_cut = 0;
+		long departleader_cut = 0;
+		long manager_cut = 0;
+		long rentin_cut_total = 0;//租进业务员总数
+		long rentout_cut_total = 0;//租出业务员总数
+		long teamleader_cut_total = 0;//组长总数
+		long departleader_cut_total = 0;//部长总数
+		long manager_cut_total = 0;//经理总数
 		int tempcut = 0;
 		List<Cutconfig> cut_businesssaletypeconfigs = null;
 		RentMonth sameMonthRentout = null;//同期的租进月记录
@@ -547,69 +537,62 @@ public class StatsRentService extends BaseService {
 				continue;
 			}
 			
-			resultUserCutList = new ArrayList<Integer>();
-			for(int i = 0 ; i < showUserList.size(); i++){
-				resultUserCutList.add(0);
-			}
+			rentin_cut = 0;
+			rentout_cut = 0;
+			teamleader_cut = 0;
+			departleader_cut = 0;
+			manager_cut = 0;
+			
 			resultMap = new HashMap<String,Object>();
 			resultMap.put("rentinmonth",rentinmonth);
 			resultMap.put("rentoutmonth",sameMonthRentout);
-			manager_index = showUserList.indexOf(rentinmonth.getBusi_manager());
-			departleader_index = showUserList.indexOf(rentinmonth.getBusi_departleader());
-			teamleader_index = showUserList.indexOf(rentinmonth.getBusi_teamleader());
-			rentinsaler_index = showUserList.indexOf(rentinmonth.getPerson());
-			rentoutsaler_index = showUserList.indexOf(sameMonthRentout.getPerson());
 			cut_businesssaletypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentinmonth.getCut_businesssaletype());
-			if(manager_index != -1){
-				tempdouble = resultUserCutList.get(manager_index)+(int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_businesssales);
-				resultUserCutList.remove(manager_index);
-				resultUserCutList.add(manager_index, tempdouble);
-				resultUserCutTotalList.set(manager_index, tempdouble+resultUserCutTotalList.get(manager_index));
-			}
-			if(departleader_index != -1){
-				tempdouble = resultUserCutList.get(departleader_index)+(int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.departleader, CutConfigTypeConstant.cut_businesssales);
-				resultUserCutList.remove(departleader_index);
-				resultUserCutList.add(departleader_index, tempdouble);
-				resultUserCutTotalList.set(departleader_index, tempdouble+resultUserCutTotalList.get(departleader_index));
-			}
-			if(teamleader_index != -1){
-				tempdouble = resultUserCutList.get(teamleader_index)+(int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_businesssales);
-				resultUserCutList.remove(teamleader_index);
-				resultUserCutList.add(teamleader_index, tempdouble);
-				resultUserCutTotalList.set(teamleader_index, tempdouble+resultUserCutTotalList.get(teamleader_index));
-			}
-			if(rentinsaler_index != -1){
+			if(null != rentinmonth.getPerson()){
 				if(User.Busi_type.oldbusier.toString().equals(rentinmonth.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
-					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler_old, CutConfigTypeConstant.cut_businesssales);
+					rentin_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler_old, CutConfigTypeConstant.cut_businesssales));
 				}else{
-					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_businesssales);
+					rentin_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_businesssales));
 				}
-
-				tempdouble = resultUserCutList.get(rentinsaler_index)+(tempcut*12-MathUtils.deNull(rentinmonth.getAgencyfee()))/12;
-				resultUserCutList.remove(rentinsaler_index);
-				resultUserCutList.add(rentinsaler_index, tempdouble);
-				resultUserCutTotalList.set(rentinsaler_index, tempdouble+resultUserCutTotalList.get(rentinsaler_index));
 			}
-			if(rentoutsaler_index != -1){
-				
+			if(null != sameMonthRentout.getPerson()){
 				if(User.Busi_type.oldbusier.toString().equals(sameMonthRentout.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
-					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler_old, CutConfigTypeConstant.cut_businesssales);
+					rentout_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler_old, CutConfigTypeConstant.cut_businesssales));
 				}else{
-					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_businesssales);
+					rentout_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_businesssales));
 				}
-				tempdouble = resultUserCutList.get(rentoutsaler_index)+(tempcut*12-MathUtils.deNull(sameMonthRentout.getAgencyfee()))/12;
-				resultUserCutList.remove(rentoutsaler_index);
-				resultUserCutList.add(rentoutsaler_index, tempdouble);
-				resultUserCutTotalList.set(rentoutsaler_index, tempdouble+resultUserCutTotalList.get(rentoutsaler_index));
 			}
-			resultMap.put("resultUserCutList",resultUserCutList);
+			if(null != rentinmonth.getBusi_teamleader()){
+				teamleader_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_businesssales));				
+			}
+			if(null != rentinmonth.getBusi_departleader()){
+				departleader_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.departleader, CutConfigTypeConstant.cut_businesssales));				
+			}
+			if(null != rentinmonth.getBusi_manager()){
+				manager_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_businesssales));	
+			}
+
+			resultMap.put("rentin_cut", rentin_cut);//租进业务员提成
+			resultMap.put("rentout_cut", rentout_cut);//租出业务员提成
+			resultMap.put("teamleader_cut", teamleader_cut);//组长提成
+			resultMap.put("departleader_cut", departleader_cut);//部长提成
+			resultMap.put("manager_cut", manager_cut);//经理提成
+			rentin_cut_total += rentin_cut;
+			rentout_cut_total += rentout_cut;
+			teamleader_cut_total += teamleader_cut;
+			departleader_cut_total += departleader_cut;
+			manager_cut_total += manager_cut;
 			resultList.add(resultMap);
 		}
 		
+		totalMap.put("rentin_cut_total", rentin_cut_total);
+		totalMap.put("rentout_cut_total", rentout_cut_total);
+		totalMap.put("teamleader_cut_total", teamleader_cut_total);
+		totalMap.put("departleader_cut_total", departleader_cut_total);
+		totalMap.put("manager_cut_total", manager_cut_total);
 		Map<String,Object> result = new HashMap<String,Object>();
-		result.put("showUserList", showUserList);
+
 		result.put("resultList", resultList);
-		result.put("resultUserCutTotalList", resultUserCutTotalList);
+		result.put("total", totalMap);
 		
 		return result;
 
@@ -902,7 +885,7 @@ public class StatsRentService extends BaseService {
 		if(!StringUtils.isBlank(name)){
 			dc.add(Restrictions.like("rent.name", "%"+name+"%"));
 		}
-
+		dc.addOrder(Order.asc("rent.business_num"));
 		return rentMonthDao.find(dc); 
 	}
 	
@@ -933,7 +916,7 @@ public class StatsRentService extends BaseService {
 		if(!StringUtils.isBlank(name)){
 			dc.add(Restrictions.like("rent.name", "%"+name+"%"));
 		}
-
+		dc.addOrder(Order.asc("rent.business_num"));
 		return rentMonthDao.find(dc); 
 	}
 	/**
@@ -1012,21 +995,21 @@ public class StatsRentService extends BaseService {
 				sameMonthRentout = tempList.get(0);
 			}
 
-
-			if(null != rentmonth.getBusi_manager()){
-				managers.add(rentmonth.getBusi_manager());
+			if(null != rentmonth ){
+				if(null != rentmonth.getBusi_manager()){
+					managers.add(rentmonth.getBusi_manager());
+				}
+				if(null != rentmonth.getBusi_departleader()){
+					departleaders.add(rentmonth.getBusi_departleader());
+				}
+				if(null != rentmonth.getBusi_teamleader()){
+					teamleaders.add(rentmonth.getBusi_teamleader());
+				}		
+				if(null != rentmonth.getPerson() && !managers.contains(rentmonth.getPerson()) && !departleaders.contains(rentmonth.getPerson()) && !teamleaders.contains(rentmonth.getPerson())){
+					salers.add(rentmonth.getPerson());
+				}
 			}
-			if(null != rentmonth.getBusi_departleader()){
-				departleaders.add(rentmonth.getBusi_departleader());
-			}
-			if(null != rentmonth.getBusi_teamleader()){
-				teamleaders.add(rentmonth.getBusi_teamleader());
-			}
-			
-			if(null != rentmonth.getPerson() && !managers.contains(rentmonth.getPerson()) && !departleaders.contains(rentmonth.getPerson()) && !teamleaders.contains(rentmonth.getPerson())){
-				salers.add(rentmonth.getPerson());
-			}
-			if(null != sameMonthRentout.getPerson() && !managers.contains(sameMonthRentout.getPerson()) && !departleaders.contains(sameMonthRentout.getPerson()) && !teamleaders.contains(sameMonthRentout.getPerson())){
+			if(null != sameMonthRentout && null != sameMonthRentout.getPerson() && !managers.contains(sameMonthRentout.getPerson()) && !departleaders.contains(sameMonthRentout.getPerson()) && !teamleaders.contains(sameMonthRentout.getPerson())){
 				salers.add(sameMonthRentout.getPerson());
 			}
 		}

@@ -9,6 +9,16 @@
 			$("#periodtotaltab").click(function(){
 				$(this).attr("href","${ctx}/finance/stats/businessCut4Person?rentout_sdate_begin="+$("#rentout_sdate_begin").val()+"&rentout_sdate_end="+$("#rentout_sdate_end").val());
 			})
+			$("#btnExport").click(function(){
+				top.$.jBox.confirm("确认要导出房屋包租业绩提成统计数据吗？","系统提示",function(v,h,f){
+					if(v=="ok"){
+						$("#searchForm").attr("action","${ctx}/finance/stats/export/businessCut");
+						$("#searchForm").submit();
+					}
+				},{buttonsFocus:1});
+				top.$('.jbox-body .jbox-icon').css('top','55px');
+			});
+
 		});
 		function page(n,s){
 			$("#searchForm").submit();
@@ -51,6 +61,7 @@
 		&nbsp;<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/>
 		&nbsp;<input id="btnReset" class="btn btn-primary" onclick="resets()" type="button" value="重置"/>
 		&nbsp;<input id="btnShow" class="btn btn-primary" onclick="showOrHidden()" type="button" value="高级查询"/>
+		&nbsp;<input id="btnExport" class="btn btn-primary" type="button" value="导出"/>
 	</div>
 	<div id="pro_search" style="margin-top:10px;${'true' eq paramMap.showHighSearch?'':'display:none;'}">
 		<label>提成时间段：</label>
@@ -64,6 +75,7 @@
 		<table id="contentTable" class="table table-striped table-bordered table-condensed"style="overflow-x:auto;overflow-y:hidden;">
 			<thead>
 				<tr>
+					<th rowspan="2">编号</th>
 					<th rowspan="2">物业名称</th>
 					<th rowspan="2">租进业务员</th>
 					<th rowspan="2">部长</th>
@@ -71,9 +83,11 @@
 					<th rowspan="2">租出业务员</th>
 					<th rowspan="2">租出时间</th>
 					<th colspan="2">中介费</th>
-					<c:forEach items="${showUserList}" var="user">
-						<th rowspan="2">${user.name }</th>
-					</c:forEach>
+					<th rowspan="2">租进业务员提成</th>
+					<th rowspan="2">租出业务员提成</th>
+					<th rowspan="2">组长提成</th>
+					<th rowspan="2">部长提成</th>
+					<th rowspan="2">经理提成</th>
 				</tr>
 				<tr>
 					<th>进</th>
@@ -83,6 +97,7 @@
 			<tbody>
 			<c:forEach items="${resultList}" var="var">
 				<tr>
+					<td>${var.rentinmonth.rent.business_num}</td>
 					<td><a href="#" onclick="openWindow('${ctx}/finance/rent/form?id=${var.rentinmonth.rent.id}','查看[${var.rentinmonth.rent.house.name}]房屋包租明细')">${var.rentinmonth.rent.house.name}</a></td>
 					<td><a href="#" onclick="openWindow('${ctx}/finance/stats/businessCutDetail4Person?personid=${var.rentinmonth.person.id}&rentout_sdate_begin=${paramMap.rentout_sdate_begin}&rentout_sdate_end=${paramMap.rentout_sdate_end}','查看[${var.rentinmonth.person.name}]个人业绩提成明细')">${var.rentinmonth.person.name }</a></td>
 					<td><a href="#" onclick="openWindow('${ctx}/finance/stats/businessCutDetail4Person?personid=${var.rentinmonth.busi_departleader.id}&rentout_sdate_begin=${paramMap.rentout_sdate_begin}&rentout_sdate_end=${paramMap.rentout_sdate_end}','查看[${var.rentinmonth.busi_departleader.name}]个人业绩提成明细')">${var.rentinmonth.busi_departleader.name}</a></td>
@@ -91,16 +106,20 @@
 					<td><fmt:formatDate value="${var.rentoutmonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${var.rentoutmonth.edate}" pattern="yyyy-MM-dd"/></td>
 					<td>${var.rentinmonth.agencyfee}</td>
 					<td>${var.rentoutmonth.agencyfee}</td>
-					<c:forEach items="${var.resultUserCutList}" var="usercut">
-						<td>${usercut}</td>
-					</c:forEach>
+					<td>${var.rentin_cut}</td>
+					<td>${var.rentout_cut}</td>
+					<td>${var.teamleader_cut}</td>
+					<td>${var.departleader_cut}</td>
+					<td>${var.manager_cut}</td>
 				</tr> 
 			</c:forEach>
 			<tr>
-				<td colspan="8">合计</td>
-				<c:forEach items="${resultUserCutTotalList}" var="usercut1">
-						<td>${usercut1}</td>
-				</c:forEach>
+				<td colspan="9">合计</td>
+				<td>${total.rentin_cut_total}</td>
+				<td>${total.rentout_cut_total}</td>
+				<td>${total.teamleader_cut_total}</td>
+				<td>${total.departleader_cut_total}</td>
+				<td>${total.manager_cut_total}</td>
 			</tr>
 			
 	
