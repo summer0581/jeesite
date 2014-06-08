@@ -3,13 +3,14 @@
  */
 package com.thinkgem.jeesite.modules.finance.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
 import com.thinkgem.jeesite.common.persistence.BaseDao;
-import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.persistence.Parameter;
+import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 
@@ -79,5 +80,14 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 
 	public List<RentMonth> findByName(String name){
 		return find("from Rentmonth where name = :p1", new Parameter(name));
+	}
+	/**
+	 * 根据上次付租的起始时间和结束时间找到相应的月记录
+	 * @param name
+	 * @return
+	 */
+	public RentMonth findByNameLastpaySdateAndEdate(Rent rent, Date lastpaysdate,Date lastpayedate,RentMonth.INFOTYPE infotype){
+		List<RentMonth> list = find("from RentMonth rm where rm.rent = :p1 and rm.lastpaysdate = :p2 and rm.lastpayedate = :p3 and rm.infotype = :p4", new Parameter(rent,lastpaysdate,lastpayedate,infotype.toString()));
+		return list.size()>0?list.get(0):null;
 	}
 }

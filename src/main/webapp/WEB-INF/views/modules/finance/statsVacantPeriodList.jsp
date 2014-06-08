@@ -50,6 +50,25 @@
 	</script>
 </head>
 <body>
+	<!-- Modal -->
+	<div id="remarkModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	    <h3 id="myModalLabel">空置期计算说明</h3>
+	  </div>
+	  <div class="modal-body">
+	    <h4>
+	    <span style="color:red;">注意一:</span>要计算空置期的包租月记录，必须设置承租和出租的【头期】这个值，否则系统无法识别为出租第一个月。
+		<br>
+		<br>
+	    <span style="color:red;">注意二:</span>头期设置为1的包租月记录，计算空置期时，必须要设置好租进月记录；<br>
+		头期不为1的，也就是后面续租或者重新出租的月记录，必须要设置好上一次租出记录，否则查不出空置期</h4> 
+	  </div>
+	  <div class="modal-footer">
+	    <button class="btn" data-dismiss="modal" aria-hidden="true">关闭</button>
+	  </div>
+	</div>
+
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="${ctx}/finance/stats/vacantPeriod">空置期提成</a></li>
 		<li ><a href="#" id="periodtotaltab">个人总计</a></li>
@@ -62,7 +81,7 @@
 		&nbsp;<input id="btnReset" class="btn btn-primary" onclick="resets()" type="button" value="重置"/>
 		&nbsp;<input id="btnShow" class="btn btn-primary" onclick="showOrHidden()" type="button" value="高级查询"/>
 		&nbsp;<input id="btnExport" class="btn btn-primary" type="button" value="导出"/>
-
+		<a href="#remarkModal" role="button"  data-toggle="modal"><span class="badge badge-warning">空置期说明</span></a>
 	</div>
 	<div id="pro_search" style="margin-top:10px;${'true' eq paramMap.showHighSearch?'':'display:none;'}">
 		<label>空置期时间段：</label>

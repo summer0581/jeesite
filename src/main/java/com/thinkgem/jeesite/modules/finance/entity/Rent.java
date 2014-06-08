@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -24,17 +23,16 @@ import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.annotations.Where;
 import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.validator.constraints.Length;
 
 import com.thinkgem.jeesite.common.persistence.IdEntity;
 import com.thinkgem.jeesite.common.utils.DateUtils;
-import com.thinkgem.jeesite.common.utils.ListUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.utils.excel.annotation.ExcelField;
 import com.thinkgem.jeesite.common.utils.excel.fieldtype.CustomerEntity;
 import com.thinkgem.jeesite.common.utils.excel.fieldtype.CutconfigEntity;
 import com.thinkgem.jeesite.common.utils.excel.fieldtype.HouseEntity;
 import com.thinkgem.jeesite.common.utils.excel.fieldtype.UserEntity;
+import com.thinkgem.jeesite.modules.finance.constant.VacantPeriodConstant;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 
 /**
@@ -64,6 +62,9 @@ public class Rent extends IdEntity<Rent> {
 	private List<RentMonth> rentinMonths;//承租记录
 	
 	private List<RentMonth> rentoutMonths;//出租记录
+	
+	private Date landlord_vacantPeriodsdate;//房东空置期最近起始时间
+	private Date landlord_vacantPeriodedate;//房东空置期最近结束时间
 	
 
 	public Rent() {
@@ -146,6 +147,7 @@ public class Rent extends IdEntity<Rent> {
 	
 	@OneToMany(mappedBy="rent",cascade=CascadeType.ALL)
 	@NotFound(action = NotFoundAction.IGNORE)
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	@Where(clause="infotype='rentin' and del_flag='"+DEL_FLAG_NORMAL+"'")
 	@OrderBy("createDate desc")
 	public List<RentMonth> getRentinMonths() {
@@ -158,6 +160,7 @@ public class Rent extends IdEntity<Rent> {
 
 	@OneToMany(mappedBy="rent",cascade=CascadeType.ALL)
 	@NotFound(action = NotFoundAction.IGNORE)
+	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	@Where(clause="infotype='rentout' and del_flag='"+DEL_FLAG_NORMAL+"'")
 	@OrderBy("createDate desc")
 	public List<RentMonth> getRentoutMonths() {
@@ -376,7 +379,15 @@ public class Rent extends IdEntity<Rent> {
 	public void setRentin_nextshouldamount(String nextshouldamount) throws Exception {
 		getRentin().setNextshouldamount(nextshouldamount);
 	}
-
+	@Transient
+	@ExcelField(title="承租第几个头期", type=0, align=1, sort=120)
+	public String getRentin_firstmonth_num() throws Exception{
+		return getRentin().getFirstmonth_num();
+	}
+	
+	public void setRentin_firstmonth_num(String firstmonth_num) throws Exception {
+		getRentin().setFirstmonth_num(firstmonth_num);
+	}
 
 	
 	public void setRentout_date(String rentout_date) throws Exception{
@@ -509,7 +520,7 @@ public class Rent extends IdEntity<Rent> {
 	}
 		
 	@Transient
-	@ExcelField(title="出租第几个空置期", type=0, align=1, sort=290)
+	@ExcelField(title="出租第几个头期", type=0, align=1, sort=290)
 	public String getRentout_firstmonth_num() throws Exception{
 		return getRentout().getFirstmonth_num();
 	}
@@ -583,6 +594,24 @@ public class Rent extends IdEntity<Rent> {
 
 
 	
+	@Transient
+	public Date getLandlord_vacantPeriodsdate() {
+		return landlord_vacantPeriodsdate;
+	}
+
+	public void setLandlord_vacantPeriodsdate(Date landlord_vacantPeriodsdate) {
+		this.landlord_vacantPeriodsdate = landlord_vacantPeriodsdate;
+	}
+
+
+	@Transient
+	public Date getLandlord_vacantPeriodedate() {
+		return landlord_vacantPeriodedate;
+	}
+	public void setLandlord_vacantPeriodedate(Date landlord_vacantPeriodedate) {
+		this.landlord_vacantPeriodedate = landlord_vacantPeriodedate;
+	}
+
 
 	public static void main(String[] args){
 		//String date = "2013-01-04至2014-02-05";

@@ -57,9 +57,9 @@
               	 <tr>
                   <td>${rent.business_num }</td>
                   <td><a href="${ctx}/finance/rent/form?id=${rent.id}">${rent.house.name }</a></td>
-                  <td><fmt:formatDate value="${rent.rentin_sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentin_edate}" pattern="yyyy-MM-dd"/></td>
-                  <td><fmt:formatDate value="${rent.rentin_lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentin_lastpayedate}" pattern="yyyy-MM-dd"/></td>
-                  <td><fmt:formatDate value="${rent.rentin_nextpaydate}"  pattern="yyyy-MM-dd" />
+                  <td><fmt:formatDate value="${rent.rentout_sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentout_edate}" pattern="yyyy-MM-dd"/></td>
+                  <td><fmt:formatDate value="${rent.rentout_lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentout_lastpayedate}" pattern="yyyy-MM-dd"/></td>
+                  <td><fmt:formatDate value="${rent.rentout_nextpaydate}"  pattern="yyyy-MM-dd" />
                   </td>
                 </tr>
               </c:forEach>

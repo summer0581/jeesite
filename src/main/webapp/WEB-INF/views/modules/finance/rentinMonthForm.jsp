@@ -40,6 +40,8 @@
 			<div class="controls">
 				<tags:treeselect id="person" name="person.id" notAllowSelectParent="true" value="${rentMonth.person.id}" labelName="person.name" labelValue="${rentMonth.person.name}"
 					title="人员" url="/sys/user/treeData" />
+				<shiro:hasPermission name="finance:rentMonth:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="承租月记录保存"/>&nbsp;</shiro:hasPermission>
+				<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
 			</div>
 		</div>
 		<div class="control-group">
@@ -100,7 +102,13 @@
 			<div class="controls">
 			<form:input path="nextshouldamount" htmlEscape="false" maxlength="64" class="digits"/>			
 			</div>
-		</div>		
+		</div>
+		<div class="control-group">
+			<label class="control-label">第几期的头月（如果是头月则填，不是头月则为空）:</label>
+			<div class="controls">
+			<form:input path="firstmonth_num" htmlEscape="false" maxlength="64" class="digits"/>
+			</div>
+		</div>
 		<div class="control-group">
 			<label class="control-label">中介费:</label>
 			<div class="controls">
@@ -148,10 +156,6 @@
 			<div class="controls">
 				<form:textarea path="remarks" htmlEscape="false" rows="4" maxlength="200" class="input-xxlarge"/>
 			</div>
-		</div>
-		<div class="form-actions">
-			<shiro:hasPermission name="finance:rentMonth:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasPermission>
-			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
 		</div>
 	</form:form>
 </body>

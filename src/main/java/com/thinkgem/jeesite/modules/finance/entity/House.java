@@ -40,6 +40,7 @@ import com.thinkgem.jeesite.modules.sys.entity.User;
 public class House extends IdEntity<House> {
 	
 	private static final long serialVersionUID = 1L;
+	private int temp_index;//临时序号
 	private String busi_id; 	// 业务编号
 	private String name;     //地址
 	private String houses;
@@ -91,6 +92,17 @@ public class House extends IdEntity<House> {
 	public void setBusi_id(String busi_id) {
 		this.busi_id = busi_id;
 	}
+	
+	@ExcelField(title="序号", type=1, align=1, sort=10,groups={1})
+	@Transient
+	public int getTemp_index() {
+		return temp_index;
+	}
+
+	public void setTemp_index(int temp_index) {
+		this.temp_index = temp_index;
+	}
+
 	@ExcelField(title="地址", type=0, align=1, sort=20,groups={1})
 	public String getName() {
 		return name;

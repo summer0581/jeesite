@@ -49,7 +49,6 @@
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
 		<thead><tr>
 			<tr><th style="text-align:center;">选择</th>
-			<th>业务编号</th>
 			<th>地址</th>
 			<th>楼盘</th>
 			<th>房东姓名</th>
@@ -62,7 +61,6 @@
 		<c:forEach items="${page.list}" var="house">
 			<tr>
 				<td style="text-align:center;"><input type="radio" name="id" value="${house.id}" title="${fns:abbr(house.name,40)}" /></td>
-				<td>${house.busi_id}</td>
 				<td><a href="${ctx}/finance/house/form?id=${house.id}">${house.name}</a></td>
 				<td>${house.houses}</td>
 				<td>${house.landlord.name}</td>

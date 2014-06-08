@@ -76,7 +76,7 @@ public class HouseController extends BaseController {
 		if (!user.isAdmin()){
 			house.setCreateBy(user);
 		}
-        Page<House> page = houseService.findNoRelation(new Page<House>(request, response), house); 
+        Page<House> page = houseService.findNoRentin(new Page<House>(request, response), house); 
         model.addAttribute("page", page);
 		return "modules/finance/houseNoRentinList";
 	}

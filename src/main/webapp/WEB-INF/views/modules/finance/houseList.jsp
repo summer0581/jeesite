@@ -17,15 +17,6 @@
 				top.$('.jbox-body .jbox-icon').css('top','55px');
 			});
 			
-			$("#btnExport4Bank").click(function(){
-				top.$.jBox.confirm("确认要导出房屋(批量转账)数据吗？","系统提示",function(v,h,f){ 
-					if(v=="ok"){
-						$("#searchForm").attr("action","${ctx}/finance/house/export4bank");
-						$("#searchForm").submit(); 
-					} 
-				},{buttonsFocus:1});
-				top.$('.jbox-body .jbox-icon').css('top','55px');
-			});
 			$("#btnImport").click(function(){
 				$.jBox($("#importBox").html(), {title:"导入数据", buttons:{"关闭":true}, 
 					bottomText:"导入文件不能超过5M，仅允许导入“xls”或“xlsx”格式文件！"});
@@ -62,7 +53,6 @@
 		&nbsp;<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/>
 		<shiro:hasPermission name="finance:house:view">
 			&nbsp;<input id="btnExport" class="btn btn-primary" type="button" value="导出"/>
-			&nbsp;<input id="btnExport4Bank" class="btn btn-primary" type="button" value="批量转账导出"/>
 		</shiro:hasPermission>
 		<shiro:hasPermission name="finance:house:edit">
 			&nbsp;<input id="btnImport" class="btn btn-primary" type="button" value="导入"/>

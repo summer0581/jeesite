@@ -110,6 +110,28 @@ public class StatsRentController extends BaseController {
 		
 		return "modules/finance/statsBusinessCutDetail4PersonList";
 	}
+	
+	@RequiresPermissions("finance:stats:vacantPeriod")
+	@RequestMapping(value = {"businessCount4PersonList"})
+	public String businessCount4PersonList(@RequestParam Map<String, Object> paramMap, Model model) throws Exception{
+		Map<String,Object> result = statsRentService.businessSaleCount4PersonList(paramMap);
+		//businessCutDetail4PersonMap.put(UserUtils.getUser().getLoginName()+UserUtils.getUser().getLoginIp(), result);
+		model.addAllAttributes(result);
+		model.addAttribute("paramMap", paramMap);
+		
+		return "modules/finance/statsBusinessCount4PersonList";
+	}
+	
+	@RequiresPermissions("finance:stats:vacantPeriod")
+	@RequestMapping(value = {"businessCountDetail4Person"})
+	public String businessCountDetail4Person(@RequestParam Map<String, Object> paramMap, Model model) throws Exception{
+		Map<String,Object> result = statsRentService.businessSaleCountDetail4PersonList(paramMap);
+		//businessCutDetail4PersonMap.put(UserUtils.getUser().getLoginName()+UserUtils.getUser().getLoginIp(), result);
+		model.addAllAttributes(result);
+		model.addAttribute("paramMap", paramMap);
+		
+		return "modules/finance/statsBusinessCountDetail4PersonList";
+	}
 
 
 	@RequiresPermissions("finance:stats:vacantPeriod")

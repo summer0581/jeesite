@@ -20,7 +20,7 @@
 			$("#btnExport").click(function(){
 				top.$.jBox.confirm("确认要导出房屋包租数据吗？","系统提示",function(v,h,f){
 					if(v=="ok"){
-						$("#searchForm").attr("action","${ctx}/finance/rent/export");
+						$("#searchForm").attr("action","${ctx}/finance/rent/export4bank");
 						$("#searchForm").submit();
 					}
 				},{buttonsFocus:1});
@@ -30,31 +30,7 @@
 				$.jBox($("#importBox").html(), {title:"导入数据", buttons:{"关闭":true}, 
 					bottomText:"导入文件不能超过5M，仅允许导入“xls”或“xlsx”格式文件！"});
 			});
-			$("#allcheck").click(function(){
-				$("input[name='rent_id']").attr("checked",$("#allcheck").attr("checked") == "checked"?true:false);
-			})
-			var rentidstemp = $("#rentids").val();
-
-			$('input[name="rent_id"]').each(function(){ 
-				if((","+rentidstemp+",").indexOf($(this).val()) != -1){
-					$(this).attr("checked",true);
-				}
-			  }); 
-			$("#autoPayfor").click(function(){
-				top.$.jBox.confirm("确认要批量处理付租吗？","系统提示",function(v,h,f){
-					if(v=="ok"){
-						  var s=''; 
-						  $('input[name="rent_id"]:checked').each(function(){ 
-						    s+=$(this).val()+','; 
-						  }); 
-						$("#searchForm").attr("action","${ctx}/finance/rent/batchProcessRentMonth");
-						$("#rentids").val(s);
-						$("#searchForm").submit();
-					}
-				},{buttonsFocus:1});
-				top.$('.jbox-body .jbox-icon').css('top','55px');
-
-			})
+			initAutoPayfor();
 		});
 		function page(n,s){
 			$("#pageNo").val(n);
@@ -75,6 +51,37 @@
 				$("#showHighSearch").val("false");
 			}
 			
+		}
+		function initAutoPayfor(){
+			$("#allcheck").click(function(){
+				$("input[name='rent_id']").attr("checked",$("#allcheck").attr("checked") == "checked"?true:false);
+			})
+			var rentidstemp = $("#rentids").val();
+
+			$('input[name="rent_id"]').each(function(){ //初始化勾选项
+				if((","+rentidstemp+",").indexOf($(this).val()) != -1){
+					$(this).attr("checked",true);
+				}
+			  }); 
+			$("#autoPayfor").click(function(){
+				var s=''; 
+				  $('input[name="rent_id"]:checked').each(function(){ 
+				    s+=$(this).val()+','; 
+				  }); 
+				  if('' == s){
+					  alert("请选择要批量处理的记录!");
+					  return;
+				  }
+				top.$.jBox.confirm("确认要批量处理付租吗？","系统提示",function(v,h,f){
+					if(v=="ok"){
+						$("#searchForm").attr("action","${ctx}/finance/rent/batchProcessRentMonth");
+						$("#rentids").val(s);
+						$("#searchForm").submit();
+					}
+				},{buttonsFocus:1});
+				top.$('.jbox-body .jbox-icon').css('top','55px');
+
+			})
 		}
 		
 		function openWindow(url,personname){
@@ -114,6 +121,9 @@
 		&nbsp;<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/>
 		&nbsp;<input id="btnReset" class="btn btn-primary" onclick="resets()" type="button" value="重置"/>
 		&nbsp;<input id="btnShow" class="btn btn-primary" onclick="showOrHidden()" type="button" value="高级查询"/>
+		<shiro:hasPermission name="finance:house:view">
+			&nbsp;<input id="btnExport" class="btn btn-primary" type="button" value="导出"/>
+		</shiro:hasPermission>
 		<input id="autoPayfor" name="autoPayfor" class="btn btn-primary" type="button" value="批量付租"/>		</div>
 		<div id="pro_search" style="margin-top:10px;${'true' eq paramMap.showHighSearch?'':'display:none;'}">
 		<div style="margin-bottom:5px;">
@@ -169,10 +179,19 @@
 					value="${paramMap.rentout_edateedate}" onclick="WdatePicker({minDate:'#F{$dp.$D(\'rentout_edateedate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
 		</div>
 		<div>
-
-			<input style="display:none" id="rentin_nextpayedate" name="rentin_nextpayedate" type="text"  maxlength="20" class="input-small Wdate"
+			<label>承租下次付租时间：</label>
+			<input id="rentin_nextpaysdate" name="rentin_nextpaysdate" type="text"  maxlength="20" class="input-small Wdate"
+					value="${paramMap.rentin_nextpaysdate}" onclick="WdatePicker({maxDate:'#F{$dp.$D(\'rentin_nextpayedate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+			至
+			<input id="rentin_nextpayedate" name="rentin_nextpayedate" type="text"  maxlength="20" class="input-small Wdate"
 					value="${paramMap.rentin_nextpayedate}" onclick="WdatePicker({minDate:'#F{$dp.$D(\'rentin_nextpaysdate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
-					</div>
+			<label>出租下次付租时间：</label>
+					<input id="rentout_nextpaysdate" name="rentout_nextpaysdate" type="text"  maxlength="20" class="input-small Wdate"
+					value="${paramMap.rentout_nextpaysdate}" onclick="WdatePicker({maxDate:'#F{$dp.$D(\'rentout_nextpayedate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+			至
+			<input id="rentout_nextpayedate" name="rentout_nextpayedate" type="text"  maxlength="20" class="input-small Wdate"
+					value="${paramMap.rentout_nextpayedate}" onclick="WdatePicker({minDate:'#F{$dp.$D(\'rentout_nextpaysdate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+		</div>
 		</div>
 		
 	</form:form>
@@ -207,7 +226,11 @@
 				<td>${fns:getDictLabel(rent.rentinMonths[0].paytype, 'finance_rent_paytype', '')}</td>
 				<td><fmt:formatDate value="${rent.rentinMonths[0].sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentinMonths[0].edate}" pattern="yyyy-MM-dd"/></td>
 				<td><fmt:formatDate value="${rent.rentinMonths[0].lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentinMonths[0].lastpayedate}" pattern="yyyy-MM-dd"/></td>
-				<td><fmt:formatDate value="${rent.rentinMonths[0].nextpaydate}"  pattern="yyyy-MM-dd" /></td>
+				<td><fmt:formatDate value="${rent.rentinMonths[0].nextpaydate}"  pattern="yyyy-MM-dd" />
+					<c:if test="${not empty rent.landlord_vacantPeriodsdate}">
+					<div title = '即将到来一个房东空置期：<fmt:formatDate value="${rent.landlord_vacantPeriodsdate}"  pattern="yyyy-MM-dd" />-<fmt:formatDate value="${rent.landlord_vacantPeriodedate}" pattern="yyyy-MM-dd"/>'><i class="icon-bell" ></i></div>
+					</c:if>
+				</td>
 				<td>${rent.rentinMonths[0].rentmonth}</td>
 				<td>${rent.house.receive_username}</td>
 				<td>${rent.house.receive_bank}</td>

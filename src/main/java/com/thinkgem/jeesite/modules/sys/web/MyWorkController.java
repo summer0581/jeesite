@@ -6,19 +6,15 @@
 package com.thinkgem.jeesite.modules.sys.web;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.web.BaseController;
@@ -42,9 +38,17 @@ public class MyWorkController extends BaseController {
 	private RentService rentService;
 
 	@RequestMapping(value = {"list", ""})
-	public String list( Model model) {
-		Page<Rent> temprentinlist = rentService.rentInListWillNeedPayNextMonth();
-		Page<Rent> temprentoutlist = rentService.rentOutListWillNeedPayNextMonth();
+	public String list( Model model) throws Exception {
+		Page<Rent> page1 = new Page<Rent>(0,5);
+		Map<String, Object> paramMap = new HashMap<String,Object>();
+		paramMap.put("rentin_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 7), "yyyy-MM-dd"));
+		paramMap.put("order", "rms.nextpaydate");
+		Page<Rent> temprentinlist = rentService.rentInListWillNeedPayNextMonth(page1,paramMap);
+		Page<Rent> page2 = new Page<Rent>(0,5);
+		paramMap = new HashMap<String,Object>();
+		paramMap.put("rentout_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 7), "yyyy-MM-dd"));
+		paramMap.put("order", "rms2.nextpaydate");
+		Page<Rent> temprentoutlist = rentService.rentOutListWillNeedPayNextMonth(page2,paramMap);
 		List<RentMonth> temprentinwillreachedatelist = rentMonthService.rentInListWillReachEdate();
 		List<RentMonth> temprentoutwillreachedatelist = rentMonthService.rentOutListWillReachEdate();
 		model.addAttribute("sysdate", new Date());

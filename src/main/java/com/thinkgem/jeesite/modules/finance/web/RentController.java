@@ -3,6 +3,7 @@
  */
 package com.thinkgem.jeesite.modules.finance.web;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.utils.excel.ExportExcel;
 import com.thinkgem.jeesite.common.utils.excel.ImportExcel;
 import com.thinkgem.jeesite.common.web.BaseController;
+import com.thinkgem.jeesite.modules.finance.entity.House;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.finance.service.RentService;
@@ -93,16 +95,18 @@ public class RentController extends BaseController {
 	 * @param paramMap
 	 * @param model
 	 * @return
+	 * @throws Exception 
 	 */
 	@RequiresPermissions("finance:rent:view")
 	@RequestMapping(value = "rentList4WillRentinPayfor")
-	public String rentList4WillRentinPayfor(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, Model model) {
-		paramMap.put("rentin_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 7), "yyyy-MM-dd"));
+	public String rentList4WillRentinPayfor(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
+		if(null == paramMap.get("rentin_nextpayedate")){
+			paramMap.put("rentin_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 7), "yyyy-MM-dd"));
+		}
 		paramMap.put("order", "rms.nextpaydate");
-		paramMap.put("desc", "desc");
 		Page<Rent> pages = new Page<Rent>(request, response);
-		pages.setPageSize(200);
-		Page<Rent> page = rentService.rentList(pages,paramMap);
+		pages.setPageSize(50);
+		Page<Rent> page = rentService.rentInListWillNeedPayNextMonth(pages,paramMap);
 		model.addAttribute("page", page);
 		model.addAttribute("sysdate", new Date());
 		model.addAttribute("paramMap", paramMap);
@@ -118,12 +122,13 @@ public class RentController extends BaseController {
 	@RequiresPermissions("finance:rent:view")
 	@RequestMapping(value = "rentList4WillRentoutReceive")
 	public String rentList4WillRentoutReceive(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, Model model) {
-		paramMap.put("rentout_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 7), "yyyy-MM-dd"));
+		if(null == paramMap.get("rentout_nextpayedate")){
+			paramMap.put("rentout_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 7), "yyyy-MM-dd"));
+		}
 		paramMap.put("order", "rms2.nextpaydate");
-		paramMap.put("desc", "desc");
 		Page<Rent> pages = new Page<Rent>(request, response);
-		pages.setPageSize(200);
-		Page<Rent> page = rentService.rentList(pages,paramMap);
+		pages.setPageSize(50);
+		Page<Rent> page = rentService.rentOutListWillNeedPayNextMonth(pages,paramMap);
 		model.addAttribute("page", page);
 		model.addAttribute("sysdate", new Date());
 		model.addAttribute("paramMap", paramMap);
@@ -145,7 +150,7 @@ public class RentController extends BaseController {
 		
 		rentService.save(rent);
 		addMessage(redirectAttributes, "保存包租明细'" + rent.getName() + "'成功");
-		return "redirect:"+Global.getAdminPath()+"/finance/rent/rentList";
+		return form(rent, model);
 	}
 	
 	@RequiresPermissions("finance:rent:edit")
@@ -190,6 +195,28 @@ public class RentController extends BaseController {
 		return "redirect:"+Global.getAdminPath()+"/finance/rent/rentList";
     }
 
+	@RequiresPermissions("finance:rent:view")
+    @RequestMapping(value = "export4bank", method=RequestMethod.POST)
+    public String exportFile4Bank(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
+		try {
+            String fileName = "房屋数据(为批量导入银行)"+DateUtils.getDate("yyyyMMddHHmmss")+".xlsx"; 
+            Page<Rent> pages = new Page<Rent>(request, response, -1);
+            pages.setPageSize(2500);
+            Page<Rent> page = rentService.rentInListWillNeedPayNextMonth(pages, paramMap); 
+            List<House>  houseList = new ArrayList<House>();
+            List<Rent> rentList = page.getList();
+            for(int i = 0 ; i < rentList.size() ; i ++){
+            	Rent rent = rentList.get(i);
+            	rent.getHouse().setTemp_index(i+1);
+            	houseList.add(rent.getHouse());
+            }
+    		new ExportExcel("房屋数据(为批量导入银行)", House.class, 1,1).setDataList(houseList).write(response, fileName).dispose();
+    		return null;
+		} catch (Exception e) {
+			addMessage(redirectAttributes, "导出房屋失败！失败信息："+e.getMessage());
+		}
+		return "redirect:"+Global.getAdminPath()+"/finance/house/?repage";
+    }
 	@RequiresPermissions("finance:rent:edit")
     @RequestMapping(value = "import", method=RequestMethod.POST)
     public String importFile(MultipartFile file, RedirectAttributes redirectAttributes) {

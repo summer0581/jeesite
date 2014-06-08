@@ -25,16 +25,14 @@ import com.thinkgem.jeesite.common.beanvalidator.BeanValidators;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.utils.DateUtils;
-import com.thinkgem.jeesite.common.utils.MathUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.utils.excel.ExportExcel;
 import com.thinkgem.jeesite.common.utils.excel.ImportExcel;
 import com.thinkgem.jeesite.common.web.BaseController;
-import com.thinkgem.jeesite.modules.sys.entity.User;
-import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
-import com.thinkgem.jeesite.modules.finance.entity.House;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.finance.service.RentMonthService;
+import com.thinkgem.jeesite.modules.sys.entity.User;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
 /**
  * 包租月记录Controller
@@ -87,7 +85,7 @@ public class RentMonthController extends BaseController {
 	@RequiresPermissions("finance:rentMonth:view")
 	@RequestMapping(value = "rentinform")
 	public String rentinform(RentMonth rentMonth, Model model) {
-		rentMonthService.setNewRentinMonth(rentMonth);
+		rentMonth = rentMonthService.setNewRentinMonth(rentMonth);
 		model.addAttribute("vacantPeriodCutconfigs", rentMonthService.findVacantPeriodCutconfigList());
 		model.addAttribute("businessSaleCutconfigs", rentMonthService.findBusinessSaleCutconfigList());
 		model.addAttribute("rentMonth", rentMonth);
@@ -97,7 +95,7 @@ public class RentMonthController extends BaseController {
 	@RequiresPermissions("finance:rentMonth:view")
 	@RequestMapping(value = "rentoutform")
 	public String rentoutform(RentMonth rentMonth, Model model) {
-		rentMonthService.setNewRentoutMonth(rentMonth);
+		rentMonth = rentMonthService.setNewRentoutMonth(rentMonth);
 		model.addAttribute("vacantPeriodCutconfigs", rentMonthService.findVacantPeriodCutconfigList());
 		model.addAttribute("businessSaleCutconfigs", rentMonthService.findBusinessSaleCutconfigList());
 		model.addAttribute("rentMonth", rentMonth);
@@ -139,6 +137,8 @@ public class RentMonthController extends BaseController {
 		}
 		return "redirect:"+Global.getAdminPath()+"finance/rentMonth/?repage";
     }
+		
+
 
 	@RequiresPermissions("finance:rentMonth:edit")
     @RequestMapping(value = "import", method=RequestMethod.POST)

@@ -15,13 +15,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.persistence.Page;
-import com.thinkgem.jeesite.common.persistence.Parameter;
 import com.thinkgem.jeesite.common.service.BaseService;
 import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.modules.finance.dao.CustomerDao;
 import com.thinkgem.jeesite.modules.finance.dao.HouseDao;
 import com.thinkgem.jeesite.modules.finance.dao.RentMonthDao;
 import com.thinkgem.jeesite.modules.finance.entity.House;
-import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
 /**
@@ -35,6 +34,9 @@ public class HouseService extends BaseService {
 
 	@Autowired
 	private HouseDao houseDao;
+	
+	@Autowired
+	private CustomerDao customerDao;
 	
 	@Autowired
 	private RentMonthDao rentMonthDao;
@@ -61,7 +63,6 @@ public class HouseService extends BaseService {
 		dc.addOrder(Order.desc("id"));
 		return houseDao.find(page, dc);
 	}
-	
 	/**
 	 * 获取未与明细表关联的房子信息
 	 * @param page
@@ -69,29 +70,17 @@ public class HouseService extends BaseService {
 	 * @return
 	 */
 	public Page<House> findNoRelation(Page<House> page, House house) {
-
-		StringBuffer sql = new StringBuffer();
-		Parameter param = new Parameter();
-		sql.append(" ");
-		sql.append("select h.* from finance_house h ");
-		sql.append("LEFT JOIN finance_customer c on c.id = h.landlord_name ");
-		sql.append("LEFT JOIN finance_rent r on r.house_id = h.id ");
-		sql.append("LEFT JOIN ( select * from finance_rentmonth rm where rm.infotype = 'rentin'  and  ");
-		sql.append(" not exists (select 1 from finance_rentmonth rm2 where rm.rent_id=rm2.rent_id and rm2.infotype = 'rentout'  ");
-		sql.append(" and rm.create_date < rm2.create_date) ) rms on r.id = rms.rent_id  ");
-		sql.append("where h.del_flag=:del_flag and (r.id is null or rms.id is null or rms.edate < current_timestamp )");
-		
-		param.put("del_flag", House.DEL_FLAG_NORMAL);
-		if (StringUtils.isNotEmpty(house.getName())){
-			sql.append(" and h.name like :name ");
-			param.put("name", "%"+house.getName()+"%");
-		}
-		if (null != house.getLandlord() && StringUtils.isNotEmpty(house.getLandlord().getName())){
-			sql.append(" and c.name like :landlord_name ");
-			param.put("landlord_name", "%"+house.getLandlord().getName()+"%");
-		}
-		sql.append(" order by h.name");
-		return houseDao.findBySql(page, sql.toString(), param, House.class);
+		return houseDao.findNoRelation(page, house);
+	}
+	
+	/**
+	 * 获取未租进的房子
+	 * @param page
+	 * @param house
+	 * @return
+	 */
+	public Page<House> findNoRentin(Page<House> page, House house) {
+		return houseDao.findNoRelation(page, house);
 	}
 	
 	/**
@@ -101,29 +90,7 @@ public class HouseService extends BaseService {
 	 * @return
 	 */
 	public Page<House> findHouseCancelRent(Page<House> page, House house) {
-
-		StringBuffer sql = new StringBuffer();
-		Parameter param = new Parameter();
-		sql.append(" ");
-		sql.append("select h.* from finance_house h ");
-		sql.append("LEFT JOIN finance_customer c on c.id = h.landlord_name ");
-		sql.append("LEFT JOIN finance_rent r on r.house_id = h.id ");
-		sql.append("LEFT JOIN ( select * from finance_rentmonth rm where rm.infotype = 'rentout'  and  ");
-		sql.append(" not exists (select 1 from finance_rentmonth rm2 where rm.rent_id=rm2.rent_id  and rm2.infotype = 'rentout' ");
-		sql.append(" and rm.create_date < rm2.create_date) ) rms on r.id = rms.rent_id  ");
-		sql.append("where h.del_flag=:del_flag and (r.id is null or rms.id is null or rms.edate < current_timestamp or rms.cancelrentdate is not null)");
-		
-		param.put("del_flag", House.DEL_FLAG_NORMAL);
-		if (StringUtils.isNotEmpty(house.getName())){
-			sql.append(" and h.name like :name ");
-			param.put("name", "%"+house.getName()+"%");
-		}
-		if (null != house.getLandlord() && StringUtils.isNotEmpty(house.getLandlord().getName())){
-			sql.append(" and c.name like :landlord_name ");
-			param.put("landlord_name", "%"+house.getLandlord().getName()+"%");
-		}
-		sql.append(" order by h.name");
-		return houseDao.findBySql(page, sql.toString(), param, House.class);
+		return houseDao.findHouseCancelRent(page,house);
 	}
 	
 
@@ -159,6 +126,16 @@ public class HouseService extends BaseService {
 	public void save(House house) {
 		if(StringUtils.isBlank(house.getId())){//当新增记录时，将组长的部门设置给当前房子。
 			house.setOffice(UserUtils.getUserById(house.getTeam_leader().getId()).getOffice());
+		}
+		if(null == house.getLandlord() || null == house.getLandlord().getOffice()){//房东很有可能只带有id，需要在这里自动查询一次
+			if(StringUtils.isNotBlank(house.getLandlord().getId())){
+				house.setLandlord(customerDao.get(house.getLandlord().getId()));
+			}
+		}
+		if(null == house.getTenant() || null == house.getTenant().getOffice()){//租户很有可能只带有id，需要在这里自动查询一次
+			if(StringUtils.isNotBlank(house.getTenant().getId())){
+				house.setTenant(customerDao.get(house.getTenant().getId()));
+			}
 		}
 		houseDao.save(house);
 	}
