@@ -74,14 +74,17 @@
 				  }
 				top.$.jBox.confirm("确认要批量处理付租吗？","系统提示",function(v,h,f){
 					if(v=="ok"){
-						$("#searchForm").attr("action","${ctx}/finance/rent/batchProcessRentMonth");
-						$("#rentids").val(s);
-						$("#searchForm").submit();
+						submitBatchProcessRentMonth(s);
 					}
 				},{buttonsFocus:1});
 				top.$('.jbox-body .jbox-icon').css('top','55px');
 
 			})
+		}
+		function submitBatchProcessRentMonth(rentids){
+			$("#searchForm").attr("action","${ctx}/finance/rent/batchProcessRentMonth");
+			$("#rentids").val(rentids);
+			$("#searchForm").submit();
 		}
 		
 		function openWindow(url,personname){
@@ -237,7 +240,7 @@
 				<td>${rent.house.is_xingyebank}</td>
 				<td>${rent.rentinMonths[0].nextshouldamount}</td>
 				<shiro:hasPermission name="finance:rent:edit"><td>
-					<a href="${ctx}/finance/rent/form?id=${rent.id}">一键付租</a>
+					<a href="#" onclick="submitBatchProcessRentMonth('${rent.id}')">一键付租</a>
     				<a href="${ctx}/finance/rent/form?id=${rent.id}">修改</a>
     				<br/>
 					<a href="${ctx}/finance/rent/delete?id=${rent.id}" onclick="return confirmx('确认要删除该包租明细吗？', this.href)">删除</a>

@@ -147,7 +147,6 @@ public class Rent extends IdEntity<Rent> {
 	
 	@OneToMany(mappedBy="rent",cascade=CascadeType.ALL)
 	@NotFound(action = NotFoundAction.IGNORE)
-	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	@Where(clause="infotype='rentin' and del_flag='"+DEL_FLAG_NORMAL+"'")
 	@OrderBy("createDate desc")
 	public List<RentMonth> getRentinMonths() {
@@ -160,7 +159,6 @@ public class Rent extends IdEntity<Rent> {
 
 	@OneToMany(mappedBy="rent",cascade=CascadeType.ALL)
 	@NotFound(action = NotFoundAction.IGNORE)
-	@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 	@Where(clause="infotype='rentout' and del_flag='"+DEL_FLAG_NORMAL+"'")
 	@OrderBy("createDate desc")
 	public List<RentMonth> getRentoutMonths() {

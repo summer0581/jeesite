@@ -115,7 +115,7 @@ public class HouseDao extends BaseDao<House> {
 			sql.append(" and h.name like :name ");
 			param.put("name", "%"+house.getName()+"%");
 		}
-		if (null != house.getLandlord() && StringUtils.isNotEmpty(house.getLandlord().getName())){
+		if (null != house.getLandlord() && StringUtils.isNotEmpty(house.getLandlord().getName())){ 
 			sql.append(" and c.name like :landlord_name ");
 			param.put("landlord_name", "%"+house.getLandlord().getName()+"%");
 		}

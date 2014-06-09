@@ -76,7 +76,9 @@ public class HouseController extends BaseController {
 		if (!user.isAdmin()){
 			house.setCreateBy(user);
 		}
-        Page<House> page = houseService.findNoRentin(new Page<House>(request, response), house); 
+		Page<House> pages = new Page<House>(request, response);
+		pages.setPageSize(100);
+        Page<House> page = houseService.findNoRentin(pages, house); 
         model.addAttribute("page", page);
 		return "modules/finance/houseNoRentinList";
 	}
@@ -88,7 +90,9 @@ public class HouseController extends BaseController {
 		if (!user.isAdmin()){
 			house.setCreateBy(user);
 		}
-        Page<House> page = houseService.findHouseCancelRent(new Page<House>(request, response), house); 
+		Page<House> pages = new Page<House>(request, response);
+		pages.setPageSize(100);
+        Page<House> page = houseService.findHouseCancelRent(pages, house); 
         model.addAttribute("page", page);
 		return "modules/finance/houseCancelRentList";
 	}

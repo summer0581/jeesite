@@ -11,6 +11,7 @@ import java.util.Map;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -203,16 +204,19 @@ public class RentService extends BaseService {
 		try{
 			for(int i = 0 ; i < rentidArry.length ; i ++){
 				RentMonth rentMonth = null;
+				RentMonth rentMonthTarget = new RentMonth();
 				if(infotype.equals(RentMonth.INFOTYPE.rentin.toString())){
 					rentMonth = get(rentidArry[i]).getRentin();
-					rentMonth.setId("");
-					rentMonthService.setNewRentinMonth(rentMonth);
+					BeanUtils.copyProperties(rentMonth, rentMonthTarget);
+					rentMonthTarget.setId("");
+					rentMonthService.setNewRentinMonth(rentMonthTarget);
 				}else if(infotype.equals(RentMonth.INFOTYPE.rentout.toString())){
 					rentMonth = get(rentidArry[i]).getRentout();
-					rentMonth.setId("");
-					rentMonthService.setNewRentoutMonth(rentMonth);
+					BeanUtils.copyProperties(rentMonth, rentMonthTarget);
+					rentMonthTarget.setId("");
+					rentMonthService.setNewRentoutMonth(rentMonthTarget);
 				}
-				rentMonthDao.save(rentMonth);
+				rentMonthDao.save(rentMonthTarget);
 				rentMonthDao.flush();
 			}
 		}catch(Exception e){

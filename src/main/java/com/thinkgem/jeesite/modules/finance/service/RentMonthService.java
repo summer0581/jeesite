@@ -150,7 +150,7 @@ public class RentMonthService extends BaseService {
 		dc.add(Restrictions.eq("infotype", rentmonth.getInfotype()));
 		dc.add(Restrictions.eq("rent", rentmonth.getRent()));
 		
-		dc.add(Restrictions.and(Restrictions.lt("lastpaysdate", rentmonth.getLastpaysdate())));
+		dc.add(Restrictions.lt("lastpaysdate", rentmonth.getLastpaysdate()));
 		dc.add(Restrictions.eq(RentMonth.FIELD_DEL_FLAG, RentMonth.DEL_FLAG_NORMAL));
 		dc.addOrder(Order.desc("lastpaysdate"));
 		List<RentMonth> tempList = rentMonthDao.find(dc);

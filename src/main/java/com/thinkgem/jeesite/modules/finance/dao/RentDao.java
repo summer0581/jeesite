@@ -60,6 +60,8 @@ public class RentDao extends BaseDao<Rent> {
 		Date rentin_nextpayedate = DateUtils.parseDate(paramMap.get("rentin_nextpayedate"));
 		Date rentout_nextpaysdate = DateUtils.parseDate(paramMap.get("rentout_nextpaysdate"));
 		Date rentout_nextpayedate = DateUtils.parseDate(paramMap.get("rentout_nextpayedate"));
+		Date rentout_cancelrentsdate = DateUtils.parseDate(paramMap.get("rentout_cancelrentsdate"));
+		Date rentout_cancelrentedate = DateUtils.parseDate(paramMap.get("rentout_cancelrentedate"));
 		String rentin_rentmonthmin = (String)paramMap.get("rentin_rentmonthmin");
 		String rentin_rentmonthmax = (String)paramMap.get("rentin_rentmonthmax");
 		String rentout_rentmonthmin = (String)paramMap.get("rentout_rentmonthmin");
@@ -119,7 +121,7 @@ public class RentDao extends BaseDao<Rent> {
 
 		if(!StringUtils.checkParameterIsAllBlank(paramMap, "rentout_sdatesdate","rentout_sdateedate",
 				"rentout_nextpaysdate","rentout_nextpayedate","rentout_rentmonthmin","rentout_rentmonthmax","rentout_paytype",
-				"rentout_edatesdate","rentout_edateedate")){
+				"rentout_edatesdate","rentout_edateedate","rentout_cancelrentsdate","rentout_cancelrentedate")){
 			sql.append("INNER JOIN ( ");
 			sql.append("select * ");
 			sql.append("from finance_rentmonth rm ");
@@ -148,6 +150,14 @@ public class RentDao extends BaseDao<Rent> {
 				sql.append("and rm.nextpaydate <= :rentout_nextpayedate   ");
 				sqlparam.put("rentout_nextpayedate", rentout_nextpayedate);
 			}
+			if(null != rentout_cancelrentsdate){
+				sql.append("and rm.cancelrentdate >= :rentout_cancelrentsdate   ");
+				sqlparam.put("rentout_cancelrentsdate", rentout_cancelrentsdate);
+			}
+			if(null != rentout_cancelrentedate){
+				sql.append("and rm.cancelrentdate <= :rentout_cancelrentedate   ");
+				sqlparam.put("rentout_cancelrentedate", rentout_cancelrentedate);
+			}
 			if(StringUtils.isNotBlank(rentout_rentmonthmin)){
 				sql.append("and rm.rentmonth >= :rentout_rentmonthmin   ");
 				sqlparam.put("rentout_rentmonthmin", StringUtils.toInteger(rentout_rentmonthmin));
@@ -169,6 +179,11 @@ public class RentDao extends BaseDao<Rent> {
 		if (StringUtils.isNotEmpty(name)){
 			sql.append(" and r.name like :rentname ");
 			sqlparam.put("rentname", "%"+name+"%");
+		}
+		String business_num = (String)paramMap.get("business_num");
+		if (StringUtils.isNotEmpty(business_num)){
+			sql.append(" and r.business_num = :business_num ");
+			sqlparam.put("business_num", business_num);
 		}
 		String order = (String)paramMap.get("order");
 		String desc = (String)paramMap.get("desc");

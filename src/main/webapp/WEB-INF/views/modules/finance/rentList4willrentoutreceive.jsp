@@ -47,15 +47,18 @@
 						  $('input[name="rent_id"]:checked').each(function(){ 
 						    s+=$(this).val()+','; 
 						  }); 
-						$("#searchForm").attr("action","${ctx}/finance/rent/batchProcessRentMonth");
-						$("#rentids").val(s);
-						$("#searchForm").submit();
+						  submitBatchProcessRentMonth(s);
 					}
 				},{buttonsFocus:1});
 				top.$('.jbox-body .jbox-icon').css('top','55px');
 
 			})
 		});
+		function submitBatchProcessRentMonth(rentids){
+			$("#searchForm").attr("action","${ctx}/finance/rent/batchProcessRentMonth");
+			$("#rentids").val(rentids);
+			$("#searchForm").submit();
+		}
 		function page(n,s){
 			$("#pageNo").val(n);
 			$("#pageSize").val(s);
@@ -219,7 +222,7 @@
 				<td>${rent.house.tenant.name}(${rent.house.tenant.telephone})</td>
 				<td>${rent.rentinMonths[0].nextshouldamount}</td>
 				<shiro:hasPermission name="finance:rent:edit"><td>
-					<a href="${ctx}/finance/rent/form?id=${rent.id}">一键收租</a>
+					<a href="#" onclick="submitBatchProcessRentMonth('${rent.id}')">一键收租</a>
     				<a href="${ctx}/finance/rent/form?id=${rent.id}">修改</a>
     				<br/>
 					<a href="${ctx}/finance/rent/delete?id=${rent.id}" onclick="return confirmx('确认要删除该包租明细吗？', this.href)">删除</a>
