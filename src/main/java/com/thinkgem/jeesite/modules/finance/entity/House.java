@@ -368,6 +368,11 @@ public class House extends IdEntity<House> {
 	public String getRent_nextshouldpay() throws Exception {
 		return rent.getRentin().getNextshouldamount();
 	}
+	@Transient
+	@ExcelField(title="应付备注", type=1, align=1, sort=247,groups={1})
+	public String getRent_remarks() throws Exception {
+		return rent.getRentin().getRemarks();
+	}
 	@ExcelField(title="房屋来源", type=0, align=1, sort=250)
 	public String getHouse_source() {
 		return house_source;

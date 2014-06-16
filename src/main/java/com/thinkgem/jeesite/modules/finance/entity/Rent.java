@@ -203,7 +203,7 @@ public class Rent extends IdEntity<Rent> {
 
 	
 	@Transient
-	@ExcelField(title="承租人", type=0, align=1, sort=20, fieldType=UserEntity.class)
+	@ExcelField(title="租进业务员", type=0, align=1, sort=20, fieldType=UserEntity.class)
 	public User getRentin_person() throws Exception  {
 		return getRentin().getPerson();
 	}
@@ -386,6 +386,16 @@ public class Rent extends IdEntity<Rent> {
 	public void setRentin_firstmonth_num(String firstmonth_num) throws Exception {
 		getRentin().setFirstmonth_num(firstmonth_num);
 	}
+	
+	@Transient
+	@ExcelField(title="承租备注", type=0, align=1, sort=125)
+	public String getRentin_remarks() throws Exception{
+		return getRentin().getRemarks();
+	}
+	
+	public void setRentin_remarks(String remarks) throws Exception {
+		getRentin().setRemarks(remarks);
+	}
 
 	
 	public void setRentout_date(String rentout_date) throws Exception{
@@ -547,6 +557,16 @@ public class Rent extends IdEntity<Rent> {
 	}	
 	
 	@Transient
+	@ExcelField(title="出租备注", type=0, align=1, sort=303)
+	public String getRentout_remarks() throws Exception{
+		return getRentout().getRemarks();
+	}
+	
+	public void setRentout_remarks(String remarks) throws Exception {
+		getRentout().setRemarks(remarks);
+	}
+	
+	@Transient
 	@ExcelField(title="房东姓名", type=0, align=1, sort=305 ,fieldType= CustomerEntity.class)
 	public Customer getLandlord() throws Exception {
 		return house.getLandlord();
@@ -589,6 +609,8 @@ public class Rent extends IdEntity<Rent> {
 	public void setTenant_telephone(String tenant_telephone) throws Exception {
 		house.setTenant_telephone(tenant_telephone);
 	}
+	
+	
 
 
 	

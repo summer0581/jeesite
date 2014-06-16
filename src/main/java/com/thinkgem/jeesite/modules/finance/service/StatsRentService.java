@@ -742,7 +742,8 @@ public class StatsRentService extends BaseService {
 		
 
 		for(RentMonth rentinmonth : list){
-			sameMonthRentout = getSameMonthRentoutByRentinMonth(rentinmonth);			
+			sameMonthRentout = getSameMonthRentoutByRentinMonth(rentinmonth);		
+			resultMap = new HashMap<String,Object>();
 			resultMap.put("rentinmonth", rentinmonth);
 			resultMap.put("rentoutmonth", sameMonthRentout);
 
@@ -776,7 +777,7 @@ public class StatsRentService extends BaseService {
 				}else{
 					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_businesssales);
 				}
-				if((int)DateUtils.compareDates(sameMonthRentout.getLastpaysdate(), sameMonthRentout.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
+				if(null != sameMonthRentout && (int)DateUtils.compareDates(sameMonthRentout.getLastpaysdate(), sameMonthRentout.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
 					tempdouble = (tempcut*inmonthnumper-MathUtils.deNull(rentinmonth.getAgencyfee()))/inmonthnumper;
 				}else{
 					tempdouble = tempcut;
@@ -944,7 +945,7 @@ public class StatsRentService extends BaseService {
 	}
 	
 	/**
-	 * 业绩提成个人统计
+	 * 完成量个人统计详细记录
 	 * @param paramMap
 	 * @return
 	 * @throws Exception
@@ -1056,7 +1057,7 @@ public class StatsRentService extends BaseService {
 		}
 		String infotype = (String)paramMap.get("infotype");
 		if(!StringUtils.isBlank(infotype) && "businessCount".equals(infotype)){//完成量统计
-			dc.add(Restrictions.neOrIsNotNull("firstmonth_num", ""));
+			dc.add(Restrictions.eqProperty("lastpaysdate", "sdate"));
 		}else{
 			dc.add(Restrictions.eq("infotype", "rentin"));
 		}

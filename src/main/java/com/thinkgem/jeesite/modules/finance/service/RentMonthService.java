@@ -196,6 +196,7 @@ public class RentMonthService extends BaseService {
 				}
 
 				rentMonth.setId("");
+				rentMonth.setRemarks("");
 				int addMonth = getPayMonthUnit(rentMonth.getPaytype());
 				if(null != rentMonth.getLastpaysdate())
 					rentMonth.setLastpaysdate(DateUtils.addDays(DateUtils.addMonths(rentMonth.getLastpaysdate(), addMonth), vacantPeriodDays));
@@ -226,14 +227,22 @@ public class RentMonthService extends BaseService {
 			if(null != rentMonth){
 				int addMonth = getPayMonthUnit(rentMonth.getPaytype());
 				rentMonth.setId("");
+				rentMonth.setRemarks("");
 				if(null != rentMonth.getLastpaysdate())
 					rentMonth.setLastpaysdate(DateUtils.addMonths(rentMonth.getLastpaysdate(), addMonth));
 				if(null != rentMonth.getLastpayedate())
 					rentMonth.setLastpayedate(DateUtils.addMonths(rentMonth.getLastpayedate(), addMonth));
 				if(null != rentMonth.getNextpaydate())
 					rentMonth.setNextpaydate(DateUtils.addMonths(rentMonth.getNextpaydate(), addMonth));
+				
+				String amountReceived = String.valueOf(MathUtils.sumInt(rentMonth.getAmountreceived(),String.valueOf(Integer.valueOf(rentMonth.getRentmonth())*addMonth)));
+				if(StringUtils.isNotBlank(rentMonth.getNextshouldamount())){//如果设置了下次应付金额，则已收总计是用下次应付金额来累加
+					amountReceived = String.valueOf(MathUtils.sumInt(rentMonth.getAmountreceived(),String.valueOf(Integer.valueOf(rentMonth.getNextshouldamount()))));
+					rentMonth.setAmountreceived(amountReceived);
+				}else{
+					rentMonth.setAmountreceived(amountReceived);
+				}
 				rentMonth.setNextshouldamount(String.valueOf(Integer.valueOf(rentMonth.getRentmonth())*addMonth));
-				rentMonth.setAmountreceived(String.valueOf(MathUtils.sumInt(rentMonth.getAmountreceived(),String.valueOf(Integer.valueOf(rentMonth.getRentmonth())*addMonth))));
 			}
 		}
 		return rentMonth;
