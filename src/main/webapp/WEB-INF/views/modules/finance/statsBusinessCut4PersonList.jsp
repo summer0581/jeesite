@@ -21,13 +21,14 @@
 
 		});
 		function page(n,s){
+			$("#searchForm").attr("action","${ctx}/finance/stats/businessCut4Person");
 			$("#searchForm").submit();
         	return false;
         }
 		
 		function resets(){
 			$("input[type=text]","#searchForm").val("");
-			$("#searchForm").submit();
+			page();
 		}
 		
 		function showOrHidden(){
@@ -57,7 +58,7 @@
 	<input id="orderBy" name="orderBy" type="hidden" value="${paramMap.orderBy}"/>
 	<input id="showHighSearch" name="showHighSearch" type="hidden" value="${paramMap.showHighSearch}"/>
 	<div><label>房屋地址：</label><input name="name" type="text" maxlength="50" class="input-small" value="${paramMap.name}"/>
-		&nbsp;<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/>
+		&nbsp;<input id="btnSubmit" class="btn btn-primary" onclick="return page();" type="submit" value="查询"/>
 		&nbsp;<input id="btnReset" class="btn btn-primary" onclick="resets()" type="button" value="重置"/>
 		&nbsp;<input id="btnShow" class="btn btn-primary" onclick="showOrHidden()" type="button" value="高级查询"/>
 		&nbsp;<input id="btnExport" class="btn btn-primary" type="button" value="导出"/>

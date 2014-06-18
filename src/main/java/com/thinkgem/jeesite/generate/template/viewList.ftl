@@ -26,12 +26,13 @@
 		function page(n,s){
 			$("#pageNo").val(n);
 			$("#pageSize").val(s);
+			$("#searchForm").attr("action","${r"${ctx}"}/${urlPrefix}/");
 			$("#searchForm").submit();
         	return false;
         }
         function resets(){
 			$("input[type=text]","#searchForm").val("");
-			$("#searchForm").submit();
+			page();
 		}
 	</script>
 </head>

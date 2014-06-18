@@ -31,7 +31,7 @@
         }
         function resets(){
 			$("input[type=text]","#searchForm").val("");
-			$("#searchForm").submit();
+			page();
 		}
 	</script>
 </head>

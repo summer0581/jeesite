@@ -20,8 +20,10 @@
 			$("#btnExport").click(function(){
 				top.$.jBox.confirm("确认要导出房屋包租数据吗？","系统提示",function(v,h,f){
 					if(v=="ok"){
+						//var tempaction = $("#searchForm").attr();
 						$("#searchForm").attr("action","${ctx}/finance/rent/export");
 						$("#searchForm").submit();
+						//$("#searchForm").attr("action",tempaction);
 					}
 				},{buttonsFocus:1});
 				top.$('.jbox-body .jbox-icon').css('top','55px');
@@ -34,12 +36,13 @@
 		function page(n,s){
 			$("#pageNo").val(n);
 			$("#pageSize").val(s);
+			$("#searchForm").attr("action","${ctx}/finance/rent/rentList");
 			$("#searchForm").submit();
         	return false;
         }
 		function resets(){
 			$("input[type=text],select","#searchForm").not("#pageNo,#pageSize").val("");
-			$("#searchForm").submit();
+			page();
 		}
 		
 		function showOrHidden(){
@@ -86,7 +89,7 @@
 		<form:input path="name" htmlEscape="false" maxlength="50" class="input-small" value="${paramMap.name}"/>
 		<label>编号：</label>
 		<input name="business_num" maxlength="50" type="text" class="input-small digits" value="${paramMap.business_num}"/>
-		&nbsp;<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/>
+		&nbsp;<input id="btnSubmit" class="btn btn-primary" onclick="return page();" type="submit" value="查询"/>
 		&nbsp;<input id="btnReset" class="btn btn-primary" onclick="resets()" type="button" value="重置"/>
 		&nbsp;<input id="btnShow" class="btn btn-primary" onclick="showOrHidden()" type="button" value="高级查询"/>
 		<shiro:hasPermission name="finance:house:view">

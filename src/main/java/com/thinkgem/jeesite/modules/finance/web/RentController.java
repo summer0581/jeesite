@@ -192,7 +192,7 @@ public class RentController extends BaseController {
 		} catch (Exception e) {
 			addMessage(redirectAttributes, "导出包租失败！失败信息："+e.getMessage());
 		}
-		return "redirect:"+Global.getAdminPath()+"/finance/rent/rentList";
+		return "redirect:"+Global.getAdminPath()+"/finance/rent/rentList?repage";
     }
 
 	@RequiresPermissions("finance:rent:view")
@@ -215,7 +215,7 @@ public class RentController extends BaseController {
 		} catch (Exception e) {
 			addMessage(redirectAttributes, "导出房屋失败！失败信息："+e.getMessage());
 		}
-		return "redirect:"+Global.getAdminPath()+"/finance/house/?repage";
+		return "redirect:"+Global.getAdminPath()+"/finance/rentList/?repage";
     }
 	@RequiresPermissions("finance:rent:edit")
     @RequestMapping(value = "import", method=RequestMethod.POST)
@@ -236,7 +236,7 @@ public class RentController extends BaseController {
 						failureMsg.append("<br/>包租信息 "+rent.getName()+" 已存在;进行更新; ");
 						failureNum++;
 					}
-					rentService.save(rent);
+					rentService.save4Excel(rent);
 					successNum++;
 				}catch(ConstraintViolationException ex){
 					failureMsg.append("<br/>包租 "+rent.getName()+" 导入失败：");

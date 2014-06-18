@@ -196,7 +196,7 @@ public class RentMonthService extends BaseService {
 				}
 
 				rentMonth.setId("");
-				rentMonth.setRemarks("");
+				//rentMonth.setRemarks("");14-06-18 刘睿建议不取消remarks复制。
 				int addMonth = getPayMonthUnit(rentMonth.getPaytype());
 				if(null != rentMonth.getLastpaysdate())
 					rentMonth.setLastpaysdate(DateUtils.addDays(DateUtils.addMonths(rentMonth.getLastpaysdate(), addMonth), vacantPeriodDays));
@@ -205,6 +205,7 @@ public class RentMonthService extends BaseService {
 				if(null != rentMonth.getNextpaydate())
 					rentMonth.setNextpaydate(DateUtils.addDays(DateUtils.addMonths(rentMonth.getNextpaydate(), addMonth), vacantPeriodDays));
 				rentMonth.setNextshouldamount(String.valueOf(Integer.valueOf(rentMonth.getRentmonth())*addMonth));
+				
 			}
 		}
 		return rentMonth;
@@ -227,7 +228,7 @@ public class RentMonthService extends BaseService {
 			if(null != rentMonth){
 				int addMonth = getPayMonthUnit(rentMonth.getPaytype());
 				rentMonth.setId("");
-				rentMonth.setRemarks("");
+				//rentMonth.setRemarks("");
 				if(null != rentMonth.getLastpaysdate())
 					rentMonth.setLastpaysdate(DateUtils.addMonths(rentMonth.getLastpaysdate(), addMonth));
 				if(null != rentMonth.getLastpayedate())

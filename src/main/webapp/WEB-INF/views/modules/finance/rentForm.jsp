@@ -147,7 +147,7 @@
 							 		<th>时段一：</th>
 							 		<td>
 							 		<input type="hidden" name="salesman_vacantperiods[0].id" value="${empty rent.salesman_vacantperiods?'':rent.salesman_vacantperiods[0].id }"/>
-							 		<input type="hidden" name="salesman_vacantperiods[0].sn" value="2"/>
+							 		<input type="hidden" name="salesman_vacantperiods[0].sn" value="1"/>
 							 		<input id="salesman_vacantperiods_sdate1" name="salesman_vacantperiods[0].sdate" type="text"  maxlength="20" class="input-medium Wdate"
 								value="<fmt:formatDate value="${empty rent.salesman_vacantperiods?'':rent.salesman_vacantperiods[0].sdate}" pattern="yyyy-MM-dd"/>"
 								onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/> 
@@ -293,7 +293,7 @@
 							 		<th>时段一：</th>
 							 		<td>
 							 		<input type="hidden" name="landlord_vacantperiods[0].id" value="${empty rent.landlord_vacantperiods?'':rent.landlord_vacantperiods[0].id }"/>
-							 		<input type="hidden" name="landlord_vacantperiods[0].sn" value="2"/>
+							 		<input type="hidden" name="landlord_vacantperiods[0].sn" value="1"/>
 							 		<input id="landlord_vacantperiods_sdate1" name="landlord_vacantperiods[0].sdate" type="text"  maxlength="20" class="input-medium Wdate"
 								value="<fmt:formatDate value="${empty rent.landlord_vacantperiods?'':rent.landlord_vacantperiods[0].sdate}" pattern="yyyy-MM-dd"/>"
 								onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/> 

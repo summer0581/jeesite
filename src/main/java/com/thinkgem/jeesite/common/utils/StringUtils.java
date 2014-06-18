@@ -6,6 +6,7 @@
 package com.thinkgem.jeesite.common.utils;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -197,7 +198,20 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 		return true;
 	}
 	
+	/**
+	 * 检测字符串是否为日期格式
+	 * @param datestr
+	 * @return
+	 */
+	public static boolean isDate(String datestr){
+		if(null != DateUtils.parseDate(datestr)){
+			return true;
+		}
+		return false;
+	}
+	
 	public static void main(String[] args){
-		
+		Date date = DateUtils.parseDate("30");
+		System.out.println("11");
 	}
 }

@@ -25,9 +25,15 @@
 		function page(n,s){
 			$("#pageNo").val(n);
 			$("#pageSize").val(s);
+			$("#searchForm").attr("action","${ctx}/finance/house/");
 			$("#searchForm").submit();
         	return false;
         }
+		
+		function resets(){
+			$("input[type=text],select","#searchForm").not("#pageNo,#pageSize").val("");
+			page();
+		}
 		
 
 	</script>
@@ -50,7 +56,8 @@
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
 		<label>地址 ：</label><form:input path="name" htmlEscape="false" maxlength="50" class="input-small"/>
 		<label>房东姓名 ：</label><form:input path="landlord.name" htmlEscape="false" maxlength="50" class="input-small"/>
-		&nbsp;<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/>
+		&nbsp;<input id="btnSubmit" class="btn btn-primary" onclick="return page();" type="submit" value="查询"/>
+		&nbsp;<input id="btnReset" class="btn btn-primary" onclick="resets()" type="button" value="重置"/>
 		<shiro:hasPermission name="finance:house:view">
 			&nbsp;<input id="btnExport" class="btn btn-primary" type="button" value="导出"/>
 		</shiro:hasPermission>

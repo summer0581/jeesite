@@ -3,6 +3,8 @@
  */
 package com.thinkgem.jeesite.modules.finance.dao;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import com.thinkgem.jeesite.common.persistence.BaseDao;
@@ -17,4 +19,7 @@ import com.thinkgem.jeesite.modules.finance.entity.VacantPeriod;
 @Repository
 public class VacantPeriodDao extends BaseDao<VacantPeriod> {
 	
+	public List<VacantPeriod> findVacantPeriod(VacantPeriod vp){
+		return find("from VacantPeriod where rent = :p1 and type = :p2 and sdate = :p3 and edate = :p4",new Parameter(vp.getRent(),vp.getType(),vp.getSdate(),vp.getEdate()));
+	}
 }

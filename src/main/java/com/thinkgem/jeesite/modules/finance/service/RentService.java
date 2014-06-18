@@ -25,6 +25,7 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.finance.constant.VacantPeriodConstant;
 import com.thinkgem.jeesite.modules.finance.dao.RentDao;
 import com.thinkgem.jeesite.modules.finance.dao.RentMonthDao;
+import com.thinkgem.jeesite.modules.finance.dao.VacantPeriodDao;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.finance.entity.VacantPeriod;
@@ -43,6 +44,9 @@ public class RentService extends BaseService {
 	private RentDao rentDao;
 	@Autowired
 	private RentMonthDao rentMonthDao;
+	
+	@Autowired
+	private VacantPeriodDao vacantPeriodDao;
 	@Autowired
 	private RentMonthService rentMonthService;
 	
@@ -69,17 +73,69 @@ public class RentService extends BaseService {
 	public void save(Rent rent) {
 		if(null != rent.getSalesman_vacantperiods())
 			for(VacantPeriod vp: rent.getSalesman_vacantperiods()){//批量设置业务员空置期
+				vp.setRent(rent);
 				if(StringUtils.isBlank(vp.getId())){
 					vp.prePersist();
 				}
-				vp.setRent(rent);
+				
 			}
 		if(null != rent.getLandlord_vacantperiods())
 			for(VacantPeriod vp: rent.getLandlord_vacantperiods()){//批量设置房东空置期
+				vp.setRent(rent);
 				if(StringUtils.isBlank(vp.getId())){
 					vp.prePersist();
 				}
+				
+			}
+		if(null != rent.getRentinMonths())
+			for(int i = 0 ;  i < rent.getRentinMonths().size(); i++){//批量设置承租月明细
+				RentMonth r = rent.getRentinMonths().get(i);
+
+				if(StringUtils.isBlank(r.getId())){
+					r.prePersist();
+				}
+				r.setRent(rent);
+				r.setInfotype("rentin");
+			}
+		if(null != rent.getRentoutMonths())
+			for(int i = 0 ;  i < rent.getRentoutMonths().size(); i++){//批量设置承租月明细
+				RentMonth r = rent.getRentoutMonths().get(i);
+
+				if(StringUtils.isBlank(r.getId())){
+					r.prePersist();
+				}
+				r.setRent(rent);
+				r.setInfotype("rentout");
+			}
+
+		rentDao.save(rent);
+	}
+	
+	@Transactional(readOnly = false)
+	public void save4Excel(Rent rent) {
+		if(null != rent.getSalesman_vacantperiods())
+			for(VacantPeriod vp: rent.getSalesman_vacantperiods()){//批量设置业务员空置期
 				vp.setRent(rent);
+				if(StringUtils.isBlank(vp.getId())){
+					List<VacantPeriod> vplist = vacantPeriodDao.findVacantPeriod(vp);//如果该空置期已存在于数据库，则跳出
+					if(null != vplist && vplist.size() > 0 ){
+						continue;
+					}
+					vp.prePersist();
+				}
+				
+			}
+		if(null != rent.getLandlord_vacantperiods())
+			for(VacantPeriod vp: rent.getLandlord_vacantperiods()){//批量设置房东空置期
+				vp.setRent(rent);
+				if(StringUtils.isBlank(vp.getId())){
+					List<VacantPeriod> vplist = vacantPeriodDao.findVacantPeriod(vp);//如果该空置期已存在于数据库，则跳出
+					if(null != vplist && vplist.size() > 0 ){
+						continue;
+					}
+					vp.prePersist();
+				}
+				
 			}
 		if(null != rent.getRentinMonths())
 			for(int i = 0 ;  i < rent.getRentinMonths().size(); i++){//批量设置承租月明细
@@ -141,6 +197,7 @@ public class RentService extends BaseService {
 
 		rentDao.save(rent);
 	}
+
 	
 	@Transactional(readOnly = false)
 	public void delete(String id) {

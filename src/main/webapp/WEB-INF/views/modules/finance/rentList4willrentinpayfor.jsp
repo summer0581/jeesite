@@ -35,12 +35,13 @@
 		function page(n,s){
 			$("#pageNo").val(n);
 			$("#pageSize").val(s);
+			$("#searchForm").attr("action","${ctx}/finance/rent/rentList4WillRentinPayfor");
 			$("#searchForm").submit();
         	return false;
         }
 		function resets(){
 			$("input[type=text],select","#searchForm").not("#pageNo,#pageSize").val("");
-			$("#searchForm").submit();
+			page();
 		}
 		
 		function showOrHidden(){
@@ -121,7 +122,7 @@
 		<input id="showHighSearch" name="showHighSearch" type="hidden" value="${paramMap.showHighSearch}"/>
 		<div><label>房屋地址：</label>
 		<form:input path="name" htmlEscape="false" maxlength="50" class="input-small" value="${paramMap.name}"/>
-		&nbsp;<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/>
+		&nbsp;<input id="btnSubmit" class="btn btn-primary" onclick="return page();" type="submit" value="查询"/>
 		&nbsp;<input id="btnReset" class="btn btn-primary" onclick="resets()" type="button" value="重置"/>
 		&nbsp;<input id="btnShow" class="btn btn-primary" onclick="showOrHidden()" type="button" value="高级查询"/>
 		<shiro:hasPermission name="finance:house:view">
