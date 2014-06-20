@@ -1146,7 +1146,7 @@ public class StatsRentService extends BaseService {
 			paramMap1.put("rent", rentmonth.getRent());
 			paramMap1.put("sdate_begin", paramMap.get("rentout_sdate_begin"));
 			paramMap1.put("sdate_end", paramMap.get("rentout_sdate_end"));
-			List<RentMonth> tempList = rentMonthService.findSameRentinByRentout(paramMap1);
+			List<RentMonth> tempList = rentMonthService.findSameRentoutByRentin(paramMap1);
 			if(null != tempList && tempList.size() > 0){
 				sameMonthRentout = tempList.get(0);
 			}
@@ -1188,7 +1188,7 @@ public class StatsRentService extends BaseService {
 		Map<String,Object> paramMap1 = new HashMap<String,Object>();
 		paramMap1.put("infotype", "rentin");
 		paramMap1.put("rent", rentoutMonth.getRent());
-		paramMap1.put("firstmonth_num", rentoutMonth.getFirstmonth_num());
+		paramMap1.put("sdate_begin", rentoutMonth.getLastpaysdate());
 
 		List<RentMonth> tempList = rentMonthService.findSameRentinByRentout(paramMap1);
 		if(null != tempList && tempList.size() > 0){

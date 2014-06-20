@@ -382,6 +382,15 @@ public class Rent extends IdEntity<Rent> {
 		getRentin().setNextshouldamount(nextshouldamount);
 	}
 	@Transient
+	@ExcelField(title="承租下次应付备注", type=0, align=1, sort=117)
+	public String getRentin_nextshouldremark() throws Exception {
+		return getRentin().getNextshouldremark();
+	}
+
+	public void setRentin_nextshouldremark(String nextshouldremark) throws Exception {
+		getRentin().setNextshouldremark(nextshouldremark);
+	}
+	@Transient
 	@ExcelField(title="承租第几个头期", type=0, align=1, sort=120)
 	public String getRentin_firstmonth_num() throws Exception{
 		return getRentin().getFirstmonth_num();
@@ -548,6 +557,15 @@ public class Rent extends IdEntity<Rent> {
 
 	public void setRentout_nextshouldamount(String nextshouldamount) throws Exception {
 		getRentout().setNextshouldamount(nextshouldamount);
+	}
+	@Transient
+	@ExcelField(title="承租下次应收备注", type=0, align=1, sort=297)
+	public String getRentout_nextshouldremark() throws Exception {
+		return getRentout().getNextshouldremark();
+	}
+
+	public void setRentout_nextshouldremark(String nextshouldremark) throws Exception {
+		getRentout().setNextshouldremark(nextshouldremark);
 	}
 
 	@Transient

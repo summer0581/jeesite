@@ -107,8 +107,8 @@ public class RentMonthService extends BaseService {
 			dc.add(Restrictions.eq("rent", paramMap.get("rent")));
 		}
 		if(null != paramMap.get("sdate_begin") ){//传入的是当前出租月记录的上次付租起始时间，查当前rent对应的租进月记录中 上次付租起始时间比它小的。
-			Date sdate_begin = DateUtils.parseDate(paramMap.get("sdate_begin"));
-			//dc.add(Restrictions.le("lastpaysdate", sdate_begin));
+			Date sdate_begin = (Date)paramMap.get("sdate_begin");
+			dc.add(Restrictions.le("lastpaysdate", sdate_begin));
 			
 		}
 		dc.add(Restrictions.eq(RentMonth.FIELD_DEL_FLAG, RentMonth.DEL_FLAG_NORMAL));

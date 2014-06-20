@@ -81,6 +81,7 @@ public class RentDao extends BaseDao<Rent> {
 			sql.append("select * ");
 			sql.append("from finance_rentmonth rm ");
 			sql.append("where rm.infotype = 'rentin'   ");
+			sql.append("and rm.del_flag = "+Rent.DEL_FLAG_NORMAL+" ");
 			if(null != rentin_sdatesdate){
 				sql.append("and rm.sdate >= :rentin_sdatesdate   ");
 				sqlparam.put("rentin_sdatesdate", rentin_sdatesdate);
@@ -126,6 +127,7 @@ public class RentDao extends BaseDao<Rent> {
 			sql.append("select * ");
 			sql.append("from finance_rentmonth rm ");
 			sql.append("where rm.infotype = 'rentout' ");
+			sql.append("and rm.del_flag = "+Rent.DEL_FLAG_NORMAL+" ");
 			if(null != rentout_sdatesdate){
 				sql.append("and rm.sdate >= :rentout_sdatesdate   ");
 				sqlparam.put("rentout_sdatesdate", rentout_sdatesdate);
@@ -175,6 +177,7 @@ public class RentDao extends BaseDao<Rent> {
 			sql.append(") rms2 on r.id = rms2.rent_id ");
 		}
 		sql.append(" where 1=1  ");
+		sql.append("and r.del_flag = "+Rent.DEL_FLAG_NORMAL+" ");
 		String name = (String)paramMap.get("name");
 		if (StringUtils.isNotEmpty(name)){
 			sql.append(" and r.name like :rentname ");

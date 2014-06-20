@@ -100,9 +100,15 @@
 		<div class="control-group">
 			<label class="control-label">下次应收金额:</label>
 			<div class="controls">
-			<form:input path="nextshouldamount" htmlEscape="false" maxlength="64" class="digits"/>			
+			<form:input path="nextshouldamount" htmlEscape="false" maxlength="64" class="digits"/>		
 			</div>
 		</div>	
+		<div class="control-group">
+			<label class="control-label">下次应收备注:</label>
+			<div class="controls">
+			<form:textarea path="nextshouldremark" htmlEscape="false" rows="4" maxlength="2000" class="input-xxlarge"/>	
+			</div>
+		</div>
 		<div class="control-group">
 			<label class="control-label">第几期的头月（如果是头月则填，不是头月则为空）:</label>
 			<div class="controls">

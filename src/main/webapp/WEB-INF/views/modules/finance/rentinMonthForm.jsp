@@ -104,11 +104,17 @@
 			</div>
 		</div>
 		<div class="control-group">
+			<label class="control-label">下次应付备注:</label>
+			<div class="controls">
+			<form:textarea path="nextshouldremark" htmlEscape="false" rows="4" maxlength="2000" class="input-xxlarge"/>	
+			</div>
+		</div>
+		<!-- <div class="control-group">
 			<label class="control-label">第几期的头月（如果是头月则填，不是头月则为空）:</label>
 			<div class="controls">
 			<form:input path="firstmonth_num" htmlEscape="false" maxlength="64" class="digits"/>
 			</div>
-		</div>
+		</div> -->
 		<div class="control-group">
 			<label class="control-label">中介费:</label>
 			<div class="controls">
