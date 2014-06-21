@@ -26,7 +26,6 @@ import com.thinkgem.jeesite.modules.finance.constant.VacantPeriodConstant;
 import com.thinkgem.jeesite.modules.finance.dao.CutconfigDao;
 import com.thinkgem.jeesite.modules.finance.dao.RentMonthDao;
 import com.thinkgem.jeesite.modules.finance.entity.Cutconfig;
-import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.finance.entity.VacantPeriod;
 import com.thinkgem.jeesite.modules.sys.utils.DictUtils;
@@ -107,8 +106,13 @@ public class RentMonthService extends BaseService {
 			dc.add(Restrictions.eq("rent", paramMap.get("rent")));
 		}
 		if(null != paramMap.get("sdate_begin") ){//传入的是当前出租月记录的上次付租起始时间，查当前rent对应的租进月记录中 上次付租起始时间比它小的。
-			Date sdate_begin = (Date)paramMap.get("sdate_begin");
-			dc.add(Restrictions.le("lastpaysdate", sdate_begin));
+			Date sdate_begin = null;
+			if(paramMap.get("sdate_begin") instanceof Date){
+				sdate_begin = (Date)paramMap.get("sdate_begin");
+			}else{
+				sdate_begin = (Date)paramMap.get("sdate_begin");
+			}
+			dc.add(Restrictions.le("lastpayedate", sdate_begin));
 			
 		}
 		dc.add(Restrictions.eq(RentMonth.FIELD_DEL_FLAG, RentMonth.DEL_FLAG_NORMAL));
@@ -134,8 +138,19 @@ public class RentMonthService extends BaseService {
 			dc.add(Restrictions.eq("rent", paramMap.get("rent")));
 		}
 		if(null != paramMap.get("sdate_begin") && null != paramMap.get("sdate_end") ){//传入的是当前出租月记录的上次付租起始时间，查当前rent对应的租进月记录中 上次付租起始时间比它小的。
-			Date sdate_begin = (Date)paramMap.get("sdate_begin");
-			Date sdate_end = (Date)paramMap.get("sdate_end");
+			Date sdate_begin = null;
+			Date sdate_end = null;
+			if(paramMap.get("sdate_begin") instanceof Date){
+				sdate_begin = (Date)paramMap.get("sdate_begin");
+			}else{
+				sdate_begin = DateUtils.parseDate(paramMap.get("sdate_begin"));
+			}
+			if(paramMap.get("sdate_end") instanceof Date){
+				sdate_end = (Date)paramMap.get("sdate_end");
+			}else{
+				sdate_end = DateUtils.parseDate(paramMap.get("sdate_end"));
+			}
+			
 			dc.add(Restrictions.or(Restrictions.and(Restrictions.le("lastpaysdate", sdate_begin),Restrictions.ge("lastpayedate", sdate_begin)),Restrictions.and(Restrictions.ge("lastpaysdate", sdate_begin),Restrictions.le("lastpaysdate", sdate_end))));
 		}
 		dc.add(Restrictions.eq(RentMonth.FIELD_DEL_FLAG, RentMonth.DEL_FLAG_NORMAL));

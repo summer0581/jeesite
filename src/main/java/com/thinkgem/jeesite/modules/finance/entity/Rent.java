@@ -160,7 +160,6 @@ public class Rent extends IdEntity<Rent> {
 	public void setRentinMonths(List<RentMonth> rentinMonths) {
 		this.rentinMonths = rentinMonths;
 	}
-
 	@OneToMany(mappedBy="rent",cascade=CascadeType.ALL)
 	@NotFound(action = NotFoundAction.IGNORE)
 	@Where(clause="infotype='rentout' and del_flag='"+DEL_FLAG_NORMAL+"'")
@@ -651,8 +650,6 @@ public class Rent extends IdEntity<Rent> {
 
 	public void setLandlord(Customer landlord) throws Exception {
 		house.setLandlord(landlord);
-		if(null != landlord)
-		landlord.setOffice(getRentin_busi_departleader().getOffice());
 	}
 
 	@Transient
@@ -673,8 +670,6 @@ public class Rent extends IdEntity<Rent> {
 
 	public void setTenant(Customer tenant) throws Exception {
 		house.setTenant(tenant);
-		if(null != tenant)
-		tenant.setOffice(getRentin_busi_departleader().getOffice());
 	}
 
 	@Transient

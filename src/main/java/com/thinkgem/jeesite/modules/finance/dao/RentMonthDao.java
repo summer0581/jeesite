@@ -87,7 +87,7 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 	 * @return
 	 */
 	public RentMonth findByNameLastpaySdateAndEdate(Rent rent, Date lastpaysdate,Date lastpayedate,RentMonth.INFOTYPE infotype){
-		List<RentMonth> list = find("from RentMonth rm where rm.rent = :p1 and rm.lastpaysdate = :p2 and rm.lastpayedate = :p3 and rm.infotype = :p4", new Parameter(rent,lastpaysdate,lastpayedate,infotype.toString()));
+		List<RentMonth> list = findBySql("select * from finance_rentmonth rm where rm.rent_id = :p1 and rm.lastpaysdate = :p2 and rm.lastpayedate = :p3 and rm.infotype = :p4", new Parameter(rent.getId(),lastpaysdate,lastpayedate,infotype.toString()),RentMonth.class);
 		return list.size()>0?list.get(0):null;
 	}
 }

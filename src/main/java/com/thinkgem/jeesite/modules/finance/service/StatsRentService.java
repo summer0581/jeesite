@@ -1188,7 +1188,7 @@ public class StatsRentService extends BaseService {
 		Map<String,Object> paramMap1 = new HashMap<String,Object>();
 		paramMap1.put("infotype", "rentin");
 		paramMap1.put("rent", rentoutMonth.getRent());
-		paramMap1.put("sdate_begin", rentoutMonth.getLastpaysdate());
+		paramMap1.put("sdate_begin", rentoutMonth.getLastpayedate());
 
 		List<RentMonth> tempList = rentMonthService.findSameRentinByRentout(paramMap1);
 		if(null != tempList && tempList.size() > 0){

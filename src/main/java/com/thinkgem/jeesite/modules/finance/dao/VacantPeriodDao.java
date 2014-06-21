@@ -20,6 +20,6 @@ import com.thinkgem.jeesite.modules.finance.entity.VacantPeriod;
 public class VacantPeriodDao extends BaseDao<VacantPeriod> {
 	
 	public List<VacantPeriod> findVacantPeriod(VacantPeriod vp){
-		return find("from VacantPeriod where rent = :p1 and type = :p2 and sdate = :p3 and edate = :p4",new Parameter(vp.getRent(),vp.getType(),vp.getSdate(),vp.getEdate()));
+		return findBySql("select * from finance_vacantperiod where rent_id = :p1 and type = :p2 and sdate = :p3 and edate = :p4",new Parameter(null != vp.getRent()?vp.getRent().getId():"",vp.getType(),vp.getSdate(),vp.getEdate()),VacantPeriod.class);
 	}
 }

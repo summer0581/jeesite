@@ -112,7 +112,28 @@ public class RentService extends BaseService {
 	}
 	
 	@Transactional(readOnly = false)
-	public void save4Excel(Rent rent) {
+	public void save4Excel(Rent rent) throws Exception {
+		if(null != rent.getHouse() && null == rent.getHouse().getOffice()){
+			if(null != rent.getRentin_busi_departleader() && !StringUtils.isBlank(rent.getRentin_busi_departleader().getLoginName())){
+				rent.getHouse().setOffice(rent.getRentin_busi_departleader().getOffice());
+			}else{
+				rent.getHouse().setOffice(rent.getRentin_busi_manager().getOffice());
+			}
+		}
+		if(null != rent.getLandlord() && null == rent.getLandlord().getOffice()){
+			if(null != rent.getRentin_busi_departleader() && !StringUtils.isBlank(rent.getRentin_busi_departleader().getLoginName())){
+				rent.getLandlord().setOffice(rent.getRentin_busi_departleader().getOffice());
+			}else{
+				rent.getLandlord().setOffice(rent.getRentin_busi_manager().getOffice());
+			}
+		}
+		if(null != rent.getTenant() && null == rent.getTenant().getOffice()){
+			if(null != rent.getRentin_busi_departleader() && !StringUtils.isBlank(rent.getRentin_busi_departleader().getLoginName())){
+				rent.getTenant().setOffice(rent.getRentin_busi_departleader().getOffice());
+			}else{
+				rent.getTenant().setOffice(rent.getRentin_busi_manager().getOffice());
+			}
+		}
 		if(null != rent.getSalesman_vacantperiods())
 			for(VacantPeriod vp: rent.getSalesman_vacantperiods()){//批量设置业务员空置期
 				vp.setRent(rent);
@@ -143,7 +164,9 @@ public class RentService extends BaseService {
 				if(StringUtils.isBlank(r.getId()) 
 						&& (null == r.getPerson() || StringUtils.isBlank(r.getPerson().getName()) )
 						&& null == r.getSdate() 
-						&& null == r.getEdate()){//从excel导入的数据中有很多是为空的值,判断3个值是否存在 
+						&& null == r.getEdate()
+						&& null == r.getLastpaysdate()
+						&& null == r.getLastpayedate()){//从excel导入的数据中有很多是为空的值,判断3个值是否存在 
 					rent.getRentinMonths().remove(i);
 					i--;
 					continue;
@@ -171,7 +194,9 @@ public class RentService extends BaseService {
 				if(StringUtils.isBlank(r.getId()) 
 						&& (null == r.getPerson() || StringUtils.isBlank(r.getPerson().getName()) ) 
 						&& null == r.getSdate() 
-						&& null == r.getEdate()){//从excel导入的数据中有很多是为空的值,判断3个值是否存在
+						&& null == r.getEdate()
+						&& null == r.getLastpaysdate()
+						&& null == r.getLastpayedate()){//从excel导入的数据中有很多是为空的值,判断3个值是否存在
 					rent.getRentoutMonths().remove(i);
 					i--;
 					continue;
@@ -194,8 +219,8 @@ public class RentService extends BaseService {
 				r.setRent(rent);
 				r.setInfotype("rentout");
 			}
-
 		rentDao.save(rent);
+		
 	}
 
 	
