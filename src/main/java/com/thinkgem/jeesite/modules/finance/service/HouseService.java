@@ -139,7 +139,34 @@ public class HouseService extends BaseService {
 		}
 		houseDao.save(house);
 	}
+
 	
+	@Transactional(readOnly = false)
+	public void save4ExcelImport(House house) {
+		List<House> hlist = houseDao.findByName(house.getName());
+		House temphouse = null;
+		if(null != hlist && hlist.size() > 0){
+			temphouse = hlist.get(0);
+		}
+		if(null == house.getOffice()){//当新增记录时，将组长的部门设置给当前房子。
+			if(null != temphouse){
+				house.setOffice(temphouse.getOffice());
+			}
+		}
+		
+		if(null == house.getLandlord() ){//房东很有可能只带有id，需要在这里自动查询一次
+			if(null != temphouse){
+				house.setLandlord(temphouse.getLandlord());
+			}
+		}
+		if(null == house.getTenant() ){//租户很有可能只带有id，需要在这里自动查询一次
+			if(null != temphouse){
+				house.setTenant(temphouse.getTenant());
+			}
+		}
+		houseDao.save(house);
+	}
+
 	@Transactional(readOnly = false)
 	public void delete(String id) {
 		houseDao.deleteById(id);

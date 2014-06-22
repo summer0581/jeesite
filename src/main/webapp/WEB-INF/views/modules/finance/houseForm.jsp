@@ -90,7 +90,7 @@
 		<div class="control-group">
 			<label class="control-label">转帐卡号:</label>
 			<div class="controls">
-				<form:input path="debit_card" htmlEscape="false" maxlength="64" class=""/>
+				<form:input path="debit_card" htmlEscape="false" maxlength="64" class="input-xxlarge"/>
 			</div>
 		</div>
 		<div class="control-group">
@@ -145,13 +145,13 @@
 		<div class="control-group">
 			<label class="control-label">收款户名:</label>
 			<div class="controls">
-			<form:input path="receive_username" htmlEscape="false" maxlength="64" class=""/>
+			<form:input path="receive_username" htmlEscape="false" maxlength="64" class="input-xxlarge"/>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">收款银行及营业网点:</label>
 			<div class="controls">
-				<form:input path="receive_bank" htmlEscape="false" maxlength="64" class=""/>	
+				<form:input path="receive_bank" htmlEscape="false" maxlength="64" class="input-xxlarge"/>	
 			</div>
 		</div>
 		<div class="control-group">
@@ -166,7 +166,7 @@
 		<div class="control-group">
 			<label class="control-label">汇入地址:</label>
 			<div class="controls">
-				<form:input path="remit_address" htmlEscape="false" maxlength="64" class=""/>	
+				<form:input path="remit_address" htmlEscape="false" maxlength="64" class="input-xxlarge"/>	
 			</div>
 		</div>
 		<div class="control-group">

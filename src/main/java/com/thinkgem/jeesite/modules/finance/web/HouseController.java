@@ -199,14 +199,13 @@ public class HouseController extends BaseController {
 					temphouse = houseService.findByName(house.getName());
 					if (null == temphouse){
 						BeanValidators.validateWithException(validator, house);
-						houseService.save(house);
 						successNum++;
 					}else{
 						house.setId(temphouse.getId());
-						houseService.save(house);
 						failureMsg.append("<br/>地址 "+house.getName()+" 已存在;进行更新; ");
 						failureNum++;
 					}
+					houseService.save4ExcelImport(house);
 				}catch(ConstraintViolationException ex){
 					failureMsg.append("<br/>地址 "+house.getName()+" 导入失败：");
 					List<String> messageList = BeanValidators.extractPropertyAndMessageAsList(ex, ": ");
