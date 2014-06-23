@@ -18,21 +18,37 @@
 			$.initSortTable("contentTable",page);
 			
 			$("#btnExport").click(function(){
-				top.$.jBox.confirm("确认要导出房屋包租数据吗？","系统提示",function(v,h,f){
-					if(v=="ok"){
-						//var tempaction = $("#searchForm").attr();
-						$("#searchForm").attr("action","${ctx}/finance/rent/export");
-						$("#searchForm").submit();
-						//$("#searchForm").attr("action",tempaction);
-					}
-				},{buttonsFocus:1});
-				top.$('.jbox-body .jbox-icon').css('top','55px');
 			});
 			$("#btnImport").click(function(){
 				$.jBox($("#importBox").html(), {title:"导入数据", buttons:{"关闭":true}, 
 					bottomText:"导入文件不能超过5M，仅允许导入“xls”或“xlsx”格式文件！"});
 			});
 		});
+		
+		//基本导出
+		function exportExcel4base(){
+			top.$.jBox.confirm("确认要导出房屋包租数据吗？","系统提示",function(v,h,f){
+				if(v=="ok"){
+					//var tempaction = $("#searchForm").attr();
+					$("#searchForm").attr("action","${ctx}/finance/rent/export");
+					$("#searchForm").submit();
+					//$("#searchForm").attr("action",tempaction);
+				}
+			},{buttonsFocus:1});
+			top.$('.jbox-body .jbox-icon').css('top','55px');
+
+		}
+		
+		//每日做账导出
+		function exportExcel4perdaymake(){
+			top.$.jBox.confirm("确认要导出房屋包租数据吗？","系统提示",function(v,h,f){
+				if(v=="ok"){
+					$("#searchForm").attr("action","${ctx}/finance/rent/export4bank");
+					$("#searchForm").submit();
+				}
+			},{buttonsFocus:1});
+			top.$('.jbox-body .jbox-icon').css('top','55px');
+		}
 		function page(n,s){
 			$("#pageNo").val(n);
 			$("#pageSize").val(s);

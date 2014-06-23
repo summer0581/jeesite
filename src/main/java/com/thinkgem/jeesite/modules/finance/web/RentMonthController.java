@@ -62,7 +62,9 @@ public class RentMonthController extends BaseController {
 		if (!user.isAdmin()){
 			rentMonth.setCreateBy(user);
 		}
-        Page<RentMonth> page = rentMonthService.find(new Page<RentMonth>(request, response), rentMonth); 
+		Page<RentMonth> page = new Page<RentMonth>(request, response);
+		page.setPageSize(10);
+        page = rentMonthService.find(page, rentMonth); 
         model.addAttribute("page", page);
         model.addAttribute("rent", rentMonth.getRent());
         if(RentMonth.INFOTYPE.rentin.toString().equals(rentMonth.getInfotype())){

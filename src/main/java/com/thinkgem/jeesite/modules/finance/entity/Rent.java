@@ -558,7 +558,7 @@ public class Rent extends IdEntity<Rent> {
 		getRentout().setNextshouldamount(nextshouldamount);
 	}
 	@Transient
-	@ExcelField(title="承租下次应收备注", type=0, align=1, sort=297)
+	@ExcelField(title="出租下次应收备注", type=0, align=1, sort=297)
 	public String getRentout_nextshouldremark() throws Exception {
 		return getRentout().getNextshouldremark();
 	}
@@ -641,7 +641,7 @@ public class Rent extends IdEntity<Rent> {
 	public void setRentout_remarks(String remarks) throws Exception {
 		getRentout().setRemarks(remarks);
 	}
-	
+
 	@Transient
 	@ExcelField(title="房东姓名", type=0, align=1, sort=405 ,fieldType= CustomerEntity.class)
 	public Customer getLandlord() throws Exception {

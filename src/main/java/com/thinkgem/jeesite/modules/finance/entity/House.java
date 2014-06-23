@@ -366,7 +366,11 @@ public class House extends IdEntity<House> {
 	@Transient
 	@ExcelField(title="应付金额", type=1, align=1, sort=245,groups={1})
 	public String getRent_nextshouldpay() throws Exception {
-		return rent.getRentin().getNextshouldamount();
+		if(StringUtils.isNotBlank(rent.getRentin().getNextshouldamount())){
+			return rent.getRentin().getNextshouldamount();
+		}else{
+			return rent.getRentin().getRentmonth();
+		}
 	}
 	@Transient
 	@ExcelField(title="应付备注", type=1, align=1, sort=247,groups={1})

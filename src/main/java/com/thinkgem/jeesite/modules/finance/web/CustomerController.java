@@ -103,6 +103,7 @@ public class CustomerController extends BaseController {
 	public String selectList(Customer customer, HttpServletRequest request, HttpServletResponse response, Model model) {
         list(customer, request, response, model);
         String listtype = request.getParameter("listtype");
+        model.addAttribute("listtype", listtype);
         if("landlord".equals(listtype)){
         	return "modules/finance/landlordSelectList";
         }else if("tenant".equals(listtype)){

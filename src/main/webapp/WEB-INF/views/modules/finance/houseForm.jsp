@@ -42,7 +42,7 @@
 		<div class="control-group">
 			<label class="control-label">楼盘:</label>
 			<div class="controls">
-				<form:input path="houses" htmlEscape="false" maxlength="255" class="required"/>
+				<form:input path="houses" htmlEscape="false" maxlength="255" class=""/>
 			</div>
 		</div>
 		<div class="control-group">
@@ -77,7 +77,7 @@
 						}
 					}
 					$("#relationButton_landlord").click(function(){
-						top.$.jBox.open("iframe:${ctx}/finance/customer/selectList?pageSize=8&listtype=landlord", "添加房东",$(top.document).width()-220,$(top.document).height()-180,{
+						top.$.jBox.open("iframe:${ctx}/finance/customer/selectList?pageSize=15&listtype=landlord", "添加房东",$(top.document).width()-220,$(top.document).height()-180,{
 							buttons:{"确定":true}, loaded:function(h){
 								$(".jbox-content", top.document).css("overflow-y","hidden");
 							}
@@ -115,7 +115,7 @@
 						}
 					}
 					$("#relationButton_tenant").click(function(){
-						top.$.jBox.open("iframe:${ctx}/finance/customer/selectList?pageSize=8&listtype=tenant", "添加租户",$(top.document).width()-220,$(top.document).height()-180,{
+						top.$.jBox.open("iframe:${ctx}/finance/customer/selectList?pageSize=15&listtype=tenant", "添加租户",$(top.document).width()-220,$(top.document).height()-180,{
 							buttons:{"确定":true}, loaded:function(h){
 								$(".jbox-content", top.document).css("overflow-y","hidden");
 							}
@@ -230,7 +230,7 @@
 			<label class="control-label">组长:</label>
 			<div class="controls">
 				<tags:treeselect id="team_leader" name="team_leader.id" notAllowSelectParent="true" value="${house.team_leader.id}" labelName="team_leader.name" labelValue="${house.team_leader.name}"
-					title="人员" url="/sys/user/treeData" cssClass="required"/>
+					title="人员" url="/sys/user/treeData" cssClass=""/>
 			</div>
 		</div>
 		<div class="control-group">

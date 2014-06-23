@@ -33,6 +33,7 @@ import com.thinkgem.jeesite.common.utils.excel.ImportExcel;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.finance.entity.House;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
+import com.thinkgem.jeesite.modules.finance.excel.entity.Excel2House4BatchBank;
 import com.thinkgem.jeesite.modules.finance.service.HouseService;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
@@ -64,7 +65,8 @@ public class HouseController extends BaseController {
 		if (!user.isAdmin()){
 			house.setCreateBy(user);
 		}
-        Page<House> page = houseService.find(new Page<House>(request, response), house); 
+		Page<House> page = new Page<House>(request, response);
+        page = houseService.find(page, house); 
         model.addAttribute("page", page);
 		return "modules/finance/houseList";
 	}
@@ -159,7 +161,7 @@ public class HouseController extends BaseController {
             Page<House> pages = new Page<House>(request, response, -1);
             pages.setPageSize(500);
     		 Page<House> page = houseService.find(pages, house); 
-    		new ExportExcel("房屋数据", House.class).setDataList(page.getList()).write(response, fileName).dispose();
+    		new ExportExcel("房屋数据", Excel2House4BatchBank.class).setDataList(page.getList()).write(response, fileName).dispose();
     		return null;
 		} catch (Exception e) {
 			addMessage(redirectAttributes, "导出房屋失败！失败信息："+e.getMessage());

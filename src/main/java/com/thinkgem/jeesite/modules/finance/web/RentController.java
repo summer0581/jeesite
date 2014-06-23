@@ -35,6 +35,8 @@ import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.finance.entity.House;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
+import com.thinkgem.jeesite.modules.finance.excel.entity.Excel2House4BatchBank;
+import com.thinkgem.jeesite.modules.finance.excel.entity.Excel2Rent4WillReceive;
 import com.thinkgem.jeesite.modules.finance.service.RentService;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
@@ -194,6 +196,22 @@ public class RentController extends BaseController {
 		}
 		return "redirect:"+Global.getAdminPath()+"/finance/rent/rentList?repage";
     }
+	
+	@RequiresPermissions("finance:rent:view")
+    @RequestMapping(value = "export4willreceive", method=RequestMethod.POST)
+    public String exportFile4willreceive(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
+		try {
+            String fileName = "包租数据"+DateUtils.getDate("yyyyMMddHHmmss")+".xlsx"; 
+            Page<Rent> pages = new Page<Rent>(request, response, -1);
+            pages.setPageSize(500);
+    		Page<Rent> page = rentService.rentList(pages, paramMap); 
+    		new ExportExcel("包租数据", Excel2Rent4WillReceive.class).setDataList(page.getList()).write(response, fileName).dispose();
+    		return null;
+		} catch (Exception e) {
+			addMessage(redirectAttributes, "导出包租失败！失败信息："+e.getMessage());
+		}
+		return "redirect:"+Global.getAdminPath()+"/finance/rent/rentList?repage";
+    }
 
 	@RequiresPermissions("finance:rent:view")
     @RequestMapping(value = "export4bank", method=RequestMethod.POST)
@@ -210,7 +228,7 @@ public class RentController extends BaseController {
             	rent.getHouse().setTemp_index(i+1);
             	houseList.add(rent.getHouse());
             }
-    		new ExportExcel("房屋数据(为批量导入银行)", House.class, 1,1).setDataList(houseList).write(response, fileName).dispose();
+    		new ExportExcel("房屋数据(为批量导入银行)", Excel2House4BatchBank.class).setDataList(houseList).write(response, fileName).dispose();
     		return null;
 		} catch (Exception e) {
 			addMessage(redirectAttributes, "导出房屋失败！失败信息："+e.getMessage());

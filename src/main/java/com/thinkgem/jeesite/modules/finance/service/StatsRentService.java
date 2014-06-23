@@ -465,6 +465,9 @@ public class StatsRentService extends BaseService {
 		for(RentMonth rentinmonth : list){
 			sameMonthRentout = getSameMonthRentoutByRentinMonth(rentinmonth);
 			
+			if(null == sameMonthRentout){//如果未找到同期的出租记录，则跳出循环
+				continue;
+			}
 			rentin_cut = 0;
 			rentout_cut = 0;
 			teamleader_cut = 0;
@@ -591,7 +594,9 @@ public class StatsRentService extends BaseService {
 
 		for(RentMonth rentinmonth : list){
 			sameMonthRentout = getSameMonthRentoutByRentinMonth(rentinmonth);
-
+			if(null == sameMonthRentout){//如果未找到同期的出租记录，则跳出循环
+				continue;
+			}
 			cut_businesssaletypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentinmonth.getCut_businesssaletype());
 			inmonthnumper = (int)DateUtils.compareDates(rentinmonth.getEdate(), rentinmonth.getSdate(), Calendar.DATE)/DaysPerMonth;
 			if(inmonthnumper > AgencyfeeMonthMax){
@@ -742,7 +747,10 @@ public class StatsRentService extends BaseService {
 		
 
 		for(RentMonth rentinmonth : list){
-			sameMonthRentout = getSameMonthRentoutByRentinMonth(rentinmonth);		
+			sameMonthRentout = getSameMonthRentoutByRentinMonth(rentinmonth);	
+			if(null == sameMonthRentout){//如果未找到同期的出租记录，则跳出循环
+				continue;
+			}
 			resultMap = new HashMap<String,Object>();
 			resultMap.put("rentinmonth", rentinmonth);
 			resultMap.put("rentoutmonth", sameMonthRentout);
