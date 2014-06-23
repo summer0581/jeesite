@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="${ctxStatic}/common/typica-login.css">
 	<style type="text/css">
 		.control-group{border-bottom:0px;}
-		body {background: url(${ctxStatic}/images/login_bg.jpg) no-repeat ;background-position: 50% 0%;background-size:100% 100%; }
+		body {background: url(${ctxStatic}/images/login_bgf.jpg) no-repeat ;background-position: 50% 0%;background-size:100% 100%; }
 		#title{color:white; font-size:45px; font-weight: bold; text-align: center; }
 		.login-form label {font-size:14px;}
 		.container{width:340px; margin-left: 50%; margin-top: 15%;}
