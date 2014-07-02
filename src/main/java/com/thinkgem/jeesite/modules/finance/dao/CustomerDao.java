@@ -20,6 +20,6 @@ import com.thinkgem.jeesite.modules.finance.entity.Rent;
 @Repository
 public class CustomerDao extends BaseDao<Customer> {
 	public List<Customer> findByName(String name){
-		return find("from Customer where name = :p1", new Parameter(name));
+		return find("select * from finance_customer c where c.name = :p1", new Parameter(name));
 	}
 }

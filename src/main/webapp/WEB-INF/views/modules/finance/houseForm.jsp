@@ -227,7 +227,7 @@
 			</div>
 		</div>
 		<div class="control-group">
-			<label class="control-label">组长:</label>
+			<label class="control-label">部长:</label>
 			<div class="controls">
 				<tags:treeselect id="team_leader" name="team_leader.id" notAllowSelectParent="true" value="${house.team_leader.id}" labelName="team_leader.name" labelValue="${house.team_leader.name}"
 					title="人员" url="/sys/user/treeData" cssClass=""/>

@@ -142,6 +142,13 @@ public class RentController extends BaseController {
 		model.addAttribute("rent", rent);
 		return "modules/finance/rentForm";
 	}
+	//快速录入合同
+	@RequiresPermissions("finance:rent:view")
+	@RequestMapping(value = "quickluruhetongform")
+	public String quickluruhetongform(Rent rent, Model model) {
+		model.addAttribute("rent", rent);
+		return "modules/finance/rentQuickLuruHetongForm";
+	}
 
 	@RequiresPermissions("finance:rent:edit")
 	@RequestMapping(value = "save")
@@ -153,6 +160,23 @@ public class RentController extends BaseController {
 		rentService.save(rent);
 		addMessage(redirectAttributes, "保存包租明细'" + rent.getName() + "'成功");
 		return form(rent, model);
+	}
+	
+	//快速录入合同的保存
+	@RequiresPermissions("finance:rent:edit")
+	@RequestMapping(value = "save4quickLuruHetong")
+	public String save4quickLuruHetong(Rent rent, Model model, RedirectAttributes redirectAttributes) {
+		if (!beanValidator(model, rent)){
+			return form(rent, model);
+		}
+		try{
+			rentService.save4quickLuruHetong(rent);
+		} catch (Exception e) {
+			addMessage(redirectAttributes, "导出包租失败！失败信息："+e.getMessage());
+			return quickluruhetongform(rent, model);
+		}
+		addMessage(redirectAttributes, "保存包租明细'" + rent.getName() + "'成功");
+		return quickluruhetongform(rent, model);
 	}
 	
 	@RequiresPermissions("finance:rent:edit")

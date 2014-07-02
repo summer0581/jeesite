@@ -279,7 +279,12 @@ public class Rent extends IdEntity<Rent> {
 	public String getRentin_date() throws Exception{
 		Date rentin_sdate = getRentin().getSdate();
 		Date rentin_edate = getRentin().getEdate();
-		return DateUtils.formatDate(rentin_sdate,"yyyy-MM-dd")+Rent.DATEHODlER+DateUtils.formatDate(rentin_edate,"yyyy-MM-dd");
+		if(null != rentin_sdate && null != rentin_edate){
+			return DateUtils.formatDate(rentin_sdate,"yyyy-MM-dd")+Rent.DATEHODlER+DateUtils.formatDate(rentin_edate,"yyyy-MM-dd");
+		}else{
+			return "";
+		}
+
 	}
 
 	public void setRentin_lastpaydate(String rentin_lastpaydate) throws Exception{
@@ -292,7 +297,11 @@ public class Rent extends IdEntity<Rent> {
 	public String getRentin_lastpaydate() throws Exception{
 		Date rentin_lastpaysdate = getRentin().getLastpaysdate();
 		Date rentin_lastpayedate = getRentin().getLastpayedate();
-		return DateUtils.formatDate(rentin_lastpaysdate,"yyyy-MM-dd")+Rent.DATEHODlER+DateUtils.formatDate(rentin_lastpayedate,"yyyy-MM-dd");
+		if(null != rentin_lastpaysdate && null != rentin_lastpayedate){
+			return DateUtils.formatDate(rentin_lastpaysdate,"yyyy-MM-dd")+Rent.DATEHODlER+DateUtils.formatDate(rentin_lastpayedate,"yyyy-MM-dd");
+		}else{
+			return "";
+		}
 	}
 
 	public void setRentin_lastpayedate(Date rentin_lastpayedate) throws Exception {
@@ -420,7 +429,11 @@ public class Rent extends IdEntity<Rent> {
 	public String getRentout_date() throws Exception{
 		Date rentout_sdate = getRentout().getSdate();
 		Date rentout_edate = getRentout().getEdate();
-		return DateUtils.formatDate(rentout_sdate,"yyyy-MM-dd")+Rent.DATEHODlER+DateUtils.formatDate(rentout_edate,"yyyy-MM-dd");
+		if(null != rentout_sdate && null != rentout_edate){
+			return DateUtils.formatDate(rentout_sdate,"yyyy-MM-dd")+Rent.DATEHODlER+DateUtils.formatDate(rentout_edate,"yyyy-MM-dd");
+		}else{
+			return "";
+		}
 	}
 	@Transient
 	@ExcelField(title="出租押金", type=0, align=1, sort=190)
@@ -581,13 +594,20 @@ public class Rent extends IdEntity<Rent> {
 	@ExcelField(title="业务员空置期", type=0, align=1, sort=305)
 	public String getBusisaler_vacantPeriods() throws Exception{
 		StringBuffer vacantPeriods = new StringBuffer();
-		for(VacantPeriod vp : salesman_vacantperiods){
-			if(null != vp.getSdate() && null != vp.getEdate() && vp.getType().equals(DictUtils.getDictValue("分配给业务员的空置期", "finance_vacnatperiod_type", "1"))){
-				vacantPeriods.append(DateUtils.formatDate(vp.getSdate(), "yyyy-MM-dd")+DATEHODlER+DateUtils.formatDate(vp.getEdate(), "yyyy-MM-dd")+STRINGHODlER);
+		if(null != salesman_vacantperiods){
+			for(VacantPeriod vp : salesman_vacantperiods){
+				if(null != vp.getSdate() && null != vp.getEdate() && vp.getType().equals(DictUtils.getDictValue("分配给业务员的空置期", "finance_vacnatperiod_type", "1"))){
+					vacantPeriods.append(DateUtils.formatDate(vp.getSdate(), "yyyy-MM-dd")+DATEHODlER+DateUtils.formatDate(vp.getEdate(), "yyyy-MM-dd")+STRINGHODlER);
+				}
 			}
 		}
-		return vacantPeriods.substring(0,vacantPeriods.length()-1);
+		if(vacantPeriods.length() > 0){
+			return vacantPeriods.substring(0,vacantPeriods.length()-1);
+		}else{
+			return "";
+		}
 	}
+
 	/**
 	 * 空置期用逗号隔开，如 30,30,30 或 30,2014-05-01-2014-06-01,30
 	 * @param vacantPeriods
@@ -602,12 +622,18 @@ public class Rent extends IdEntity<Rent> {
 	@ExcelField(title="内部无提成空置期", type=0, align=1, sort=310)
 	public String getNocut_vacantPeriods() throws Exception{
 		StringBuffer vacantPeriods = new StringBuffer();
-		for(VacantPeriod vp : salesman_vacantperiods){
-			if(null != vp.getSdate() && null != vp.getEdate() && vp.getType().equals(DictUtils.getDictValue("公司内部给出的无提成的空置期", "finance_vacnatperiod_type", "1"))){
-				vacantPeriods.append(DateUtils.formatDate(vp.getSdate(), "yyyy-MM-dd")+DATEHODlER+DateUtils.formatDate(vp.getEdate(), "yyyy-MM-dd")+STRINGHODlER);
+		if(null != salesman_vacantperiods){
+			for(VacantPeriod vp : salesman_vacantperiods){
+				if(null != vp.getSdate() && null != vp.getEdate() && vp.getType().equals(DictUtils.getDictValue("公司内部给出的无提成的空置期", "finance_vacnatperiod_type", "1"))){
+					vacantPeriods.append(DateUtils.formatDate(vp.getSdate(), "yyyy-MM-dd")+DATEHODlER+DateUtils.formatDate(vp.getEdate(), "yyyy-MM-dd")+STRINGHODlER);
+				}
 			}
 		}
-		return vacantPeriods.substring(0,vacantPeriods.length()-1);
+		if(vacantPeriods.length() > 0){
+			return vacantPeriods.substring(0,vacantPeriods.length()-1);
+		}else{
+			return "";
+		}
 	}
 	
 	public void setNocut_vacantPeriods(String vacantPeriods) throws Exception {
@@ -619,12 +645,19 @@ public class Rent extends IdEntity<Rent> {
 	@ExcelField(title="房东空置期", type=0, align=1, sort=315)
 	public String getLandlord_vacantPeriods() throws Exception{
 		StringBuffer vacantPeriods = new StringBuffer();
-		for(VacantPeriod vp : landlord_vacantperiods){
-			if(null != vp.getSdate() && null != vp.getEdate() && vp.getType().equals(DictUtils.getDictValue("房东指定的空置期", "finance_vacnatperiod_type", "1"))){
-				vacantPeriods.append(DateUtils.formatDate(vp.getSdate(), "yyyy-MM-dd")+DATEHODlER+DateUtils.formatDate(vp.getEdate(), "yyyy-MM-dd")+STRINGHODlER);
+		if(null != landlord_vacantperiods){
+			for(VacantPeriod vp : landlord_vacantperiods){
+				if(null != vp.getSdate() && null != vp.getEdate() && vp.getType().equals(DictUtils.getDictValue("房东指定的空置期", "finance_vacnatperiod_type", "1"))){
+					vacantPeriods.append(DateUtils.formatDate(vp.getSdate(), "yyyy-MM-dd")+DATEHODlER+DateUtils.formatDate(vp.getEdate(), "yyyy-MM-dd")+STRINGHODlER);
+				}
 			}
 		}
-		return vacantPeriods.substring(0,vacantPeriods.length()-1);
+		if(vacantPeriods.length() > 0){
+			return vacantPeriods.substring(0,vacantPeriods.length()-1);
+		}else{
+			return "";
+		}
+		
 	}
 	
 	public void setLandlord_vacantPeriods(String vacantPeriods) throws Exception {
@@ -682,10 +715,6 @@ public class Rent extends IdEntity<Rent> {
 		house.setTenant_telephone(tenant_telephone);
 	}
 	
-	
-
-
-	
 	@Transient
 	public Date getLandlord_vacantPeriodsdate() {
 		return landlord_vacantPeriodsdate;
@@ -739,7 +768,34 @@ public class Rent extends IdEntity<Rent> {
 		return vacantPeriodList;
 	}
 
+	
+	private String busisaler_vacantPeriodsTemp = "";
+	private String landlord_vacantPeriodsTemp = "";
+	
+	@Transient
+	public String getBusisaler_vacantPeriodsTemp() throws Exception{
+		return busisaler_vacantPeriodsTemp;
+	}
 
+	/**
+	 * 空置期临时变量，必须要建这个，不然方法设置的顺序会导致报错用逗号隔开，如 30,30,30 或 30,2014-05-01-2014-06-01,30
+	 * @param vacantPeriods
+	 * @throws Exception
+	 */
+	public void setBusisaler_vacantPeriodsTemp(String vacantPeriods) throws Exception {
+		busisaler_vacantPeriodsTemp = vacantPeriods;
+	}
+
+	@Transient
+	public String getLandlord_vacantPeriodsTemp() throws Exception{
+		return landlord_vacantPeriodsTemp;
+	}
+	
+	public void setLandlord_vacantPeriodsTemp(String vacantPeriods) throws Exception {
+		landlord_vacantPeriodsTemp = vacantPeriods;
+	}
+
+	
 	public static void main(String[] args){
 		//String date = "2013-01-04至2014-02-05";
 		//String[] strarry = StringUtils.splitWithTokenIndex(date, "至", 3);

@@ -18,11 +18,15 @@
 			$.initSortTable("contentTable",page);
 			
 			$("#btnExport").click(function(){
+				exportExcel4base();
 			});
 			$("#btnImport").click(function(){
 				$.jBox($("#importBox").html(), {title:"导入数据", buttons:{"关闭":true}, 
 					bottomText:"导入文件不能超过5M，仅允许导入“xls”或“xlsx”格式文件！"});
 			});
+			$("#btnLuhetong").click(function(){
+				$.jBox("iframe:${ctx}/finance/rent/quickluruhetongform", {title:"快捷录合同",top:"25px", width: 1300, height: 630,buttons:{"关闭":true}});
+			})
 		});
 		
 		//基本导出
@@ -113,7 +117,11 @@
 		</shiro:hasPermission>
 		<shiro:hasPermission name="finance:house:edit">
 			&nbsp;<input id="btnImport" class="btn btn-primary" type="button" value="导入"/>
-		</shiro:hasPermission>		</div>
+		</shiro:hasPermission>
+		<shiro:hasPermission name="finance:house:view">
+			&nbsp;<input id="btnLuhetong" class="btn btn-primary" type="button" value="快捷录合同"/>
+		</shiro:hasPermission>		
+		</div>
 		<div id="pro_search" style="margin-top:10px;${'true' eq paramMap.showHighSearch?'':'display:none;'}">
 		<div style="margin-bottom:5px;">
 			<label>承租租金：</label>
@@ -224,7 +232,7 @@
 		<c:forEach items="${page.list}" var="rent">
 			<tr>
 				<td>${rent.business_num}</td>
-				<td><a href="#" onclick="openWindow('${ctx}/finance/house/form?id=${rent.house.id}','${rent.house.name}')" title="${rent.name}">${fns:abbr(fns:replaceHtml(rent.name),25)}</a></td>
+				<td><a href="#" onclick="openWindow('${ctx}/finance/house/form?id=${rent.house.id}','${rent.house.name}')" title="${rent.house.name}">${fns:abbr(fns:replaceHtml(rent.house.name),25)}</a></td>
 				<td>${rent.rentinMonths[0].person.name}</td>
 				<td>${fns:getDictLabel(rent.rentinMonths[0].paytype, 'finance_rent_paytype', '')}</td>
 				<td><fmt:formatDate value="${rent.rentinMonths[0].sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentinMonths[0].edate}" pattern="yyyy-MM-dd"/></td>

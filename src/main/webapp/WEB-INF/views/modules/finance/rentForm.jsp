@@ -84,7 +84,7 @@
 			<div class="controls">
 				<form:hidden id="houseid" path="house.id" htmlEscape="false" maxlength="64" class="input-xlarge"/>
 				<input type="hidden" id="rentin_sdate" name="rentin_sdate" value="<fmt:formatDate value="${rent.rentin_sdate}" pattern="yyyy-MM-dd"/>"/>
-				<form:input id="name" path="name" htmlEscape="false" maxlength="64" class="required input-xlarge" readonly="true"/>
+				<form:input id="house.name" path="house.name" htmlEscape="false" maxlength="64" class="required input-xlarge" readonly="true"/>
 				<a id="relationButton" href="javascript:" class="btn">选择房屋</a>
 				<shiro:hasPermission name="finance:rent:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="包租主信息保存"/>&nbsp;</shiro:hasPermission>
 				<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>

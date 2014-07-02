@@ -4,7 +4,6 @@
 package com.thinkgem.jeesite.modules.finance.service;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,12 +16,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.thinkgem.jeesite.common.persistence.Page;
-import com.thinkgem.jeesite.common.persistence.Parameter;
 import com.thinkgem.jeesite.common.service.BaseService;
-import com.thinkgem.jeesite.common.utils.DateUtils;
+import com.thinkgem.jeesite.common.utils.CacheUtils;
 import com.thinkgem.jeesite.common.utils.EntityUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
-import com.thinkgem.jeesite.modules.finance.constant.VacantPeriodConstant;
+import com.thinkgem.jeesite.modules.finance.dao.CustomerDao;
+import com.thinkgem.jeesite.modules.finance.dao.HouseDao;
 import com.thinkgem.jeesite.modules.finance.dao.RentDao;
 import com.thinkgem.jeesite.modules.finance.dao.RentMonthDao;
 import com.thinkgem.jeesite.modules.finance.dao.VacantPeriodDao;
@@ -42,6 +41,10 @@ public class RentService extends BaseService {
 
 	@Autowired
 	private RentDao rentDao;
+	@Autowired
+	private HouseDao houseDao;
+	@Autowired
+	private CustomerDao customerDao;
 	@Autowired
 	private RentMonthDao rentMonthDao;
 	
@@ -110,6 +113,71 @@ public class RentService extends BaseService {
 
 		rentDao.save(rent);
 	}
+	
+	@Transactional(readOnly = false)
+	public void save4quickLuruHetong(Rent rent) throws Exception {
+		rent.setRentin_busi_departleader(UserUtils.getUserById(rent.getRentin_busi_departleader().getId()));
+		rent.setBusisaler_vacantPeriods(rent.getBusisaler_vacantPeriodsTemp());
+		rent.setLandlord_vacantPeriods(rent.getLandlord_vacantPeriodsTemp());
+		if(null != rent.getHouse() && StringUtils.isNotBlank(rent.getHouse().getName()) && StringUtils.isBlank(rent.getHouse().getId())){//房子如果是新增的，则初始化
+			rent.getHouse().prePersist();
+			rent.getHouse().setOffice(rent.getRentin_busi_departleader().getOffice());
+			rent.setName(rent.getHouse().getName());
+			
+			if(null != rent.getHouse().getLandlord() && StringUtils.isNotBlank(rent.getHouse().getLandlord().getName()) && StringUtils.isBlank(rent.getHouse().getLandlord().getId())){
+				rent.getHouse().getLandlord().prePersist();
+				rent.getHouse().getLandlord().setOffice(rent.getRentin_busi_departleader().getOffice());
+			}else{
+				rent.getHouse().setLandlord(null);
+			}
+			if(null != rent.getHouse().getTenant() && StringUtils.isNotBlank(rent.getHouse().getTenant().getName()) && StringUtils.isBlank(rent.getHouse().getTenant().getId())){
+				rent.getHouse().getTenant().prePersist();
+				rent.getHouse().getTenant().setOffice(rent.getRentin_busi_departleader().getOffice());
+			}else{
+				rent.getHouse().setTenant(null);
+			}
+		}
+		
+		if(null != rent.getSalesman_vacantperiods())
+			for(VacantPeriod vp: rent.getSalesman_vacantperiods()){//批量设置业务员空置期
+				vp.setRent(rent);
+				if(StringUtils.isBlank(vp.getId())){
+					vp.prePersist();
+				}
+				
+			}
+		if(null != rent.getLandlord_vacantperiods())
+			for(VacantPeriod vp: rent.getLandlord_vacantperiods()){//批量设置房东空置期
+				vp.setRent(rent);
+				if(StringUtils.isBlank(vp.getId())){
+					vp.prePersist();
+				}
+				
+			}
+		if(null != rent.getRentinMonths())
+			for(int i = 0 ;  i < rent.getRentinMonths().size(); i++){//批量设置承租月明细
+				RentMonth r = rent.getRentinMonths().get(i);
+				rent.getHouse().setTeam_leader(r.getBusi_departleader());//将租进月明细中的部长设置给房子的部长。
+				if(StringUtils.isBlank(r.getId())){
+					r.prePersist();
+				}
+				r.setRent(rent);
+				r.setInfotype("rentin");
+			}
+		if(null != rent.getRentoutMonths())
+			for(int i = 0 ;  i < rent.getRentoutMonths().size(); i++){//批量设置承租月明细
+				RentMonth r = rent.getRentoutMonths().get(i);
+
+				if(StringUtils.isBlank(r.getId())){
+					r.prePersist();
+				}
+				r.setRent(rent);
+				r.setInfotype("rentout");
+			}
+		houseDao.save(rent.getHouse());
+		rentDao.save(rent);
+	}
+
 	
 	@Transactional(readOnly = false)
 	public void save4Excel(Rent rent) throws Exception {
