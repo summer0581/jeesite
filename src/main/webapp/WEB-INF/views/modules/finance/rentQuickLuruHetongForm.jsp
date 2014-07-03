@@ -106,12 +106,14 @@
 			<label class="control-label">房东给出的空置期:</label>
 			<div class="controls">
 				<form:input id="landlord_vacantPeriods" path="landlord_vacantPeriodsTemp" htmlEscape="false" maxlength="64" class=" input-xlarge" />
+				<span class="badge badge-warning" title="空置期请用逗号隔开，如'20,20,20'或'2014-06-07,20,30">注</span>
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">业务员空置期:</label>
 			<div class="controls">
 				<form:input id="busisaler_vacantPeriods" path="busisaler_vacantPeriodsTemp" htmlEscape="false" maxlength="64" class=" input-xlarge" />
+				<span class="badge badge-warning" title="空置期请用逗号隔开，如'20,20,20'或'2014-06-07,20,30">注</span>
 			</div>
 		</div>
 

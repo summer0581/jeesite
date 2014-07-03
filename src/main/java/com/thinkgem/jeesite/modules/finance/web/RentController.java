@@ -176,7 +176,7 @@ public class RentController extends BaseController {
 			return quickluruhetongform(rent, model);
 		}
 		addMessage(redirectAttributes, "保存包租明细'" + rent.getName() + "'成功");
-		return quickluruhetongform(rent, model);
+		return "redirect:"+Global.getAdminPath()+"/finance/oper/sucess?repage";
 	}
 	
 	@RequiresPermissions("finance:rent:edit")
