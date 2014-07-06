@@ -79,6 +79,26 @@ public class StatsRentController extends BaseController {
 		
 		return "modules/finance/statsVacantPeriodDetail4PersonList";
 	}
+
+	@RequiresPermissions("finance:stats:vacantPeriod")
+	@RequestMapping(value = {"vacantPeriod4PersonByMonth"})
+	public String vacantPeriod4PersonByMonth(@RequestParam Map<String, Object> paramMap, Model model) throws Exception{
+		Map<String,Object> result = statsRentService.vacantPeriod4PersonByMonth(paramMap);
+		vacantPeriod4PersonMap.put(UserUtils.getUser().getLoginName()+UserUtils.getUser().getLoginIp(), result);
+		model.addAllAttributes(result);
+		model.addAttribute("paramMap", paramMap);
+		return "modules/finance/statsVacantPeriod4PersonByMonthList";
+	}
+	@RequiresPermissions("finance:stats:vacantPeriod")
+	@RequestMapping(value = {"vacantPeriodDetail4PersonByMonth"})
+	public String vacantPeriodDetail4PersonByMonth(@RequestParam Map<String, Object> paramMap, Model model) throws Exception{
+		Map<String,Object> result = statsRentService.vacantPeriodDetail4PersonByMonth(paramMap);
+		vacantPeriodDetail4PersonMap.put(UserUtils.getUser().getLoginName()+UserUtils.getUser().getLoginIp(), result);
+		model.addAllAttributes(result);
+		model.addAttribute("paramMap", paramMap);
+		
+		return "modules/finance/statsVacantPeriodDetail4PersonList";
+	}
 	
 	@RequiresPermissions("finance:stats:vacantPeriod")
 	@RequestMapping(value = {"businessCut"})

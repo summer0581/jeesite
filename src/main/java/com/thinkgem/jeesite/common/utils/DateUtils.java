@@ -135,10 +135,14 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 		if(null == newdate || null == olddate){
 			return 0;
 		}
+		
 		long t = newdate.getTime()-olddate.getTime();
 		long result = 0;
 		if(Calendar.DATE == field ){
 			result = t/(24*60*60*1000);
+		}else if(Calendar.MONTH == field ){
+			t = newdate.getMonth()-olddate.getMonth();
+			result = t;
 		}
 		return result;
 	}
@@ -179,5 +183,9 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 //		System.out.println(getDate("yyyy年MM月dd日 E"));
 //		long time = new Date().getTime()-parseDate("2012-11-19").getTime();
 //		System.out.println(time/(24*60*60*1000));
+		//Date s1 = DateUtils.parseDate("2014-05-01");
+		//Date s2 = DateUtils.parseDate("2014-06-30");
+		//System.out.println(compareDates(s2,s1,Calendar.MONTH));
+		System.out.println(5%5);
 	}
 }
