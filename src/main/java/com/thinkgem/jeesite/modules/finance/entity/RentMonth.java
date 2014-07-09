@@ -88,7 +88,7 @@ public class RentMonth extends IdEntity<RentMonth> {
 		this.name = name;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="rent_id")
 	@NotFound(action = NotFoundAction.IGNORE)
 	@NotNull
@@ -101,7 +101,7 @@ public class RentMonth extends IdEntity<RentMonth> {
 		this.rent = rent;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="person")
 	@NotFound(action = NotFoundAction.IGNORE)
 	@IndexedEmbedded
@@ -209,7 +209,7 @@ public class RentMonth extends IdEntity<RentMonth> {
 		this.agencyfee = agencyfee;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="busi_manager")
 	@NotFound(action = NotFoundAction.IGNORE)
 	@IndexedEmbedded
@@ -221,7 +221,7 @@ public class RentMonth extends IdEntity<RentMonth> {
 		this.busi_manager = busi_manager;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="busi_departleader")
 	@NotFound(action = NotFoundAction.IGNORE)
 	@IndexedEmbedded
@@ -233,7 +233,7 @@ public class RentMonth extends IdEntity<RentMonth> {
 		this.busi_departleader = busi_departleader;
 	}
 
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="busi_teamleader")
 	@NotFound(action = NotFoundAction.IGNORE)
 	@IndexedEmbedded

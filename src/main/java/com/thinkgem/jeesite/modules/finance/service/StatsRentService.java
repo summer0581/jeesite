@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.service.BaseService;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.MathUtils;
@@ -29,6 +28,7 @@ import com.thinkgem.jeesite.modules.finance.constant.VacantPeriodConstant;
 import com.thinkgem.jeesite.modules.finance.dao.RentMonthDao;
 import com.thinkgem.jeesite.modules.finance.dao.VacantPeriodDao;
 import com.thinkgem.jeesite.modules.finance.entity.Cutconfig;
+import com.thinkgem.jeesite.modules.finance.entity.House;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.finance.entity.VacantPeriod;
@@ -443,7 +443,7 @@ public class StatsRentService extends BaseService {
 		List<RentMonth> list = getVacantperiodBaseAllList(paramMap); 
 		String themonth = (String)paramMap.get("rentout_sdate_begin");
 		Date themonthdate = DateUtils.parseDate(themonth);
-		int totalpaymonth = 12;//付完空置期的总月数
+		int totalpaymonth = 6;//付完空置期的总月数
 		int permonth = 6;//每隔多少月付空置期提成
 		
 		Map<String,LinkedHashSet<User>> map = getLevelUsersWithRentMonths(list,paramMap);
@@ -477,12 +477,12 @@ public class StatsRentService extends BaseService {
 		RentMonth sameMonthRentin = null;//同期的租进月记录
 		
 			for(RentMonth rentmonth : list){
-				//判断，房子出租的起始日期距离选择的起始日期是否为 设置的 分月 倍数，因空置期提成支付改成了按6个月一次 还要判断，当前查询时间距离该房子的上次支付起始时间是否已经超过了最大支付时间限度
-				if(DateUtils.compareDates(rentmonth.getLastpaysdate(), themonthdate, Calendar.MONTH)%permonth !=0 ||
-					DateUtils.compareDates(themonthdate,rentmonth.getLastpaysdate(), Calendar.MONTH) > totalpaymonth){
+				//判断，房子出租的起始日期距离选择的起始日期是否为 设置的 支付月总数，因空置期提成支付改成了分6个月支付
+				long xmonth = DateUtils.compareDates(themonthdate,rentmonth.getLastpaysdate(), Calendar.MONTH);
+				if(xmonth < 0 || xmonth >= totalpaymonth){
 					continue;
 				}
-				
+				 
 				lastRentoutMonth = rentMonthService.findLastRentMonth(rentmonth);
 				
 				sameMonthRentin = getSameMonthRentinByRentoutMonth(rentmonth);
@@ -515,7 +515,7 @@ public class StatsRentService extends BaseService {
 				manager_cut = Math.round(rentout_rentmonth/DaysPerMonth * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel );
 				
 				/**************************以下是空置期合计的计算**********************/
-				double perlevel = (double)permonth/(double)totalpaymonth;
+				double perlevel = 1.0/(double)totalpaymonth;
 				if(null != sameMonthRentin){//如果没设置进去记录，则无法找到对应的经理，部长，组长，租进业务员
 					if(null != sameMonthRentin.getPerson()){
 						username_temp = sameMonthRentin.getPerson().getLoginName();
@@ -606,7 +606,7 @@ public class StatsRentService extends BaseService {
 		List<RentMonth> list = getVacantperiodBaseAllList(paramMap); 
 		String themonth = (String)paramMap.get("rentout_sdate_begin");
 		Date themonthdate = DateUtils.parseDate(themonth);
-		int totalpaymonth = 12;//付完空置期的总月数
+		int totalpaymonth = 6;//付完空置期的总月数
 		int permonth = 6;//每隔多少月付空置期提成
 		List<Map<String, Object>> rentinRentMonths = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> rentoutRentMonths = new ArrayList<Map<String, Object>>();
@@ -633,9 +633,9 @@ public class StatsRentService extends BaseService {
 		RentMonth sameMonthRentin = null;//同期的租进月记录
 		
 			for(RentMonth rentmonth : list){
-				//判断，房子出租的起始日期距离选择的起始日期是否为 设置的 分月 倍数，因空置期提成支付改成了按6个月一次 还要判断，当前查询时间距离该房子的上次支付起始时间是否已经超过了最大支付时间限度
-				if(DateUtils.compareDates(rentmonth.getLastpaysdate(), themonthdate, Calendar.MONTH)%permonth !=0 ||
-					DateUtils.compareDates(themonthdate,rentmonth.getLastpaysdate(), Calendar.MONTH) > totalpaymonth){
+				//判断，房子出租的起始日期距离选择的起始日期是否为 设置的 支付月总数，因空置期提成支付改成了分6个月支付
+				long xmonth = DateUtils.compareDates(themonthdate,rentmonth.getLastpaysdate(), Calendar.MONTH);
+				if(xmonth < 0 || xmonth >= totalpaymonth){
 					continue;
 				}
 				lastRentoutMonth = rentMonthService.findLastRentMonth(rentmonth);
@@ -670,7 +670,7 @@ public class StatsRentService extends BaseService {
 				resultMap.put("vacantperiod", vacantperiod);//空置期天数
 				resultMap.put("vacantperiod_type", recentVacantType);//空置期提成类型
 
-				double perlevel = (double)permonth/(double)totalpaymonth;
+				double perlevel = 1.0/(double)totalpaymonth;
 				cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(sameMonthRentin.getCut_vacantperiodtype());
 				if(null != sameMonthRentin){//如果没设置进去记录，则无法找到对应的经理，部长，组长，租进业务员
 					if(person.equals(sameMonthRentin.getBusi_manager())){//判断此人是不是经理
@@ -738,7 +738,7 @@ public class StatsRentService extends BaseService {
 	 */
 	public Map<String,Object> businessSaleCut(Map<String, Object> paramMap) throws Exception{
 
-		List<RentMonth> list = getBusinesscutBaseList(paramMap); 
+		List<RentMonth> list = getBusinesscutBaseSqlList(paramMap); 
 		
 		/*******************以下开始生成提成列表数据***********************/
 		
@@ -779,11 +779,14 @@ public class StatsRentService extends BaseService {
 			cut_businesssaletypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentinmonth.getCut_businesssaletype());
 			
 			inmonthnumper = (int)DateUtils.compareDates(rentinmonth.getEdate(), rentinmonth.getSdate(), Calendar.DATE)/DaysPerMonth;
+			if(0 == inmonthnumper){//有极少可能没设置起始日期和结束日期
+				continue;
+			}
 			if(inmonthnumper > AgencyfeeMonthMax){
 				inmonthnumper = AgencyfeeMonthMax;
 			}
 
-			if(null != rentinmonth.getPerson()){
+			if(null != rentinmonth.getPerson() && StringUtils.isNotBlank(rentinmonth.getPerson().getName())){
 				if(User.Busi_type.oldbusier.toString().equals(rentinmonth.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
 					rentin_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler_old, CutConfigTypeConstant.cut_businesssales));
 				}else{
@@ -796,6 +799,9 @@ public class StatsRentService extends BaseService {
 			}
 			if(null != sameMonthRentout){
 				outmonthnumper = (int)DateUtils.compareDates(sameMonthRentout.getEdate(), sameMonthRentout.getSdate(), Calendar.DATE)/DaysPerMonth;
+				if(0 == outmonthnumper){//有极少可能没设置起始日期和结束日期
+					continue;
+				}
 				if(outmonthnumper > AgencyfeeMonthMax){
 					outmonthnumper = AgencyfeeMonthMax;
 				}
@@ -812,13 +818,13 @@ public class StatsRentService extends BaseService {
 				}
 
 			}
-			if(null != rentinmonth.getBusi_teamleader()){
+			if(null != rentinmonth.getBusi_teamleader() && StringUtils.isNotBlank(rentinmonth.getBusi_teamleader().getName())){
 				teamleader_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_businesssales));				
 			}
-			if(null != rentinmonth.getBusi_departleader()){
+			if(null != rentinmonth.getBusi_departleader() && StringUtils.isNotBlank(rentinmonth.getBusi_departleader().getName())){
 				departleader_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.departleader, CutConfigTypeConstant.cut_businesssales));				
 			}
-			if(null != rentinmonth.getBusi_manager()){
+			if(null != rentinmonth.getBusi_manager() && StringUtils.isNotBlank(rentinmonth.getBusi_manager().getName())){
 				manager_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_businesssales));	
 			}
 
@@ -1322,12 +1328,12 @@ public class StatsRentService extends BaseService {
 		
 		Date rentout_sdate_begin = DateUtils.parseDate(paramMap.get("rentout_sdate_begin"));
 		if (rentout_sdate_begin == null){
-			rentout_sdate_begin = DateUtils.parseDate(Global.getConfig("sys.default_sdate"));
+			rentout_sdate_begin = DateUtils.getFirstDayOfMonth(new Date());
 			paramMap.put("rentout_sdate_begin", DateUtils.formatDate(rentout_sdate_begin, "yyyy-MM-dd"));
 		}
 		Date rentout_sdate_end = DateUtils.parseDate(paramMap.get("rentout_sdate_end"));
 		if (rentout_sdate_end == null){
-			rentout_sdate_end = DateUtils.parseDate(Global.getConfig("sys.default_edate"));
+			rentout_sdate_end = DateUtils.getLastDayOfMonth(new Date());
 			paramMap.put("rentout_sdate_end", DateUtils.formatDate(rentout_sdate_end, "yyyy-MM-dd"));
 		}
 		dc.add(Restrictions.neOrIsNotNull("firstmonth_num", ""));
@@ -1354,7 +1360,7 @@ public class StatsRentService extends BaseService {
 		
 		Date rentout_sdate_begin = DateUtils.parseDate(paramMap.get("rentout_sdate_begin"));
 		if (rentout_sdate_begin == null){
-			rentout_sdate_begin = DateUtils.parseDate(Global.getConfig("sys.default_sdate"));
+			rentout_sdate_begin = DateUtils.getFirstDayOfMonth(new Date());
 			paramMap.put("rentout_sdate_begin", DateUtils.formatDate(rentout_sdate_begin, "yyyy-MM-dd"));
 		}
 		dc.add(Restrictions.neOrIsNotNull("firstmonth_num", ""));
@@ -1381,12 +1387,12 @@ public class StatsRentService extends BaseService {
 		
 		Date rentout_sdate_begin = DateUtils.parseDate(paramMap.get("rentout_sdate_begin"));
 		if (rentout_sdate_begin == null){
-			rentout_sdate_begin = DateUtils.parseDate(Global.getConfig("sys.default_sdate"));
+			rentout_sdate_begin = DateUtils.getFirstDayOfMonth(new Date());
 			paramMap.put("rentout_sdate_begin", DateUtils.formatDate(rentout_sdate_begin, "yyyy-MM-dd"));
 		}
 		Date rentout_sdate_end = DateUtils.parseDate(paramMap.get("rentout_sdate_end"));
 		if (rentout_sdate_end == null){
-			rentout_sdate_end = DateUtils.parseDate(Global.getConfig("sys.default_edate"));
+			rentout_sdate_end = DateUtils.getLastDayOfMonth(new Date());
 			paramMap.put("rentout_sdate_end", DateUtils.formatDate(rentout_sdate_end, "yyyy-MM-dd"));
 		}
 		String infotype = (String)paramMap.get("infotype");
@@ -1396,15 +1402,76 @@ public class StatsRentService extends BaseService {
 			dc.add(Restrictions.eq("infotype", "rentin"));
 		}
 		
-		dc.add(Restrictions.and(Restrictions.ge("lastpaysdate", rentout_sdate_begin),Restrictions.le("lastpaysdate", rentout_sdate_end)));
+		dc.add(Restrictions.and(Restrictions.le("lastpaysdate", rentout_sdate_end),Restrictions.ge("lastpayedate", rentout_sdate_begin)));
 
 		String name = (String)paramMap.get("name");
 		if(!StringUtils.isBlank(name)){
 			dc.add(Restrictions.like("rent.name", "%"+name+"%"));
 		}
 		dc.addOrder(Order.asc("rent.business_num"));
+
 		return rentMonthDao.find(dc); 
 	}
+	
+	/**
+	 * 获取业绩提成基础列表
+	 * @param paramMap
+	 * @return
+	 */
+	public List<RentMonth> getBusinesscutBaseSqlList(Map<String, Object> paramMap){
+		List<Map<String,Object>> result = rentMonthDao.getBusinesscutBaseList(paramMap);
+		List<RentMonth> rentMonthList = new ArrayList<RentMonth>();
+		for(int i = 0 ; i < result.size() ; i++){
+			Map<String,Object> rMap = result.get(i);
+			RentMonth rentMonth = new RentMonth();
+			Rent rent = new Rent();
+			House house = new House();
+			
+			rentMonth.setId((String)rMap.get("id"));
+			rentMonth.setSdate((Date)rMap.get("sdate"));
+			rentMonth.setEdate((Date)rMap.get("edate"));
+			rentMonth.setLastpaysdate((Date)rMap.get("lastpaysdate"));
+			rentMonth.setLastpayedate((Date)rMap.get("lastpayedate"));
+			rentMonth.setCut_businesssaletype((String)rMap.get("cut_businesssaletype"));
+			rentMonth.setAgencyfee((String)rMap.get("agencyfee"));
+			
+			
+			house.setId((String)rMap.get("house_id"));
+			house.setName((String)rMap.get("name"));
+			rent.setHouse(house);
+			rent.setId((String)rMap.get("rent_id"));
+			rent.setBusiness_num((Integer)rMap.get("business_num"));
+			
+			
+			User person = new User();
+			person.setId((String)rMap.get("person"));
+			person.setName((String)rMap.get("person_name"));
+			person.setUserBusitype((String)rMap.get("person_busitype"));
+			
+			User teamleader = new User();
+			teamleader.setId((String)rMap.get("busi_teamleader"));
+			teamleader.setName((String)rMap.get("busi_teamleader_name"));
+			
+			User departleader = new User();
+			departleader.setId((String)rMap.get("busi_departleader"));
+			departleader.setName((String)rMap.get("busi_departleader_name"));
+			
+			User manager = new User();
+			manager.setId((String)rMap.get("busi_manager"));
+			manager.setName((String)rMap.get("busi_manager_name"));
+			
+			
+			rentMonth.setRent(rent);
+			rentMonth.setPerson(person);
+			rentMonth.setBusi_teamleader(teamleader);
+			rentMonth.setBusi_departleader(departleader);
+			rentMonth.setBusi_manager(manager);
+
+			rentMonthList.add(rentMonth);
+		}
+		return rentMonthList;
+	}
+
 	
 
 	

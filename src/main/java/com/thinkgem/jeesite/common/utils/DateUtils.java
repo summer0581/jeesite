@@ -141,7 +141,7 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 		if(Calendar.DATE == field ){
 			result = t/(24*60*60*1000);
 		}else if(Calendar.MONTH == field ){
-			t = newdate.getMonth()-olddate.getMonth();
+			t = newdate.getMonth()-olddate.getMonth()+(newdate.getYear()-olddate.getYear())*12;
 			result = t;
 		}
 		return result;
@@ -174,6 +174,24 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 		return date;
 	}
 	
+	public static Date getFirstDayOfMonth(Date   sDate1)   {  
+        Calendar cDay1 = Calendar.getInstance();  
+        cDay1.setTime(sDate1);  
+        final int firstDay = cDay1.getActualMinimum(Calendar.DAY_OF_MONTH);  
+        Date firstDate = cDay1.getTime();  
+        firstDate.setDate(firstDay);  
+        return firstDate;  
+	}
+	
+	public static Date getLastDayOfMonth(Date   sDate1)   {  
+        Calendar   cDay1   =   Calendar.getInstance();  
+        cDay1.setTime(sDate1);  
+        final   int   lastDay   =   cDay1.getActualMaximum(Calendar.DAY_OF_MONTH);  
+        Date   lastDate   =   cDay1.getTime();  
+        lastDate.setDate(lastDay);  
+        return   lastDate;  
+	}  
+	
 	/**
 	 * @param args
 	 * @throws ParseException
@@ -183,9 +201,9 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 //		System.out.println(getDate("yyyy年MM月dd日 E"));
 //		long time = new Date().getTime()-parseDate("2012-11-19").getTime();
 //		System.out.println(time/(24*60*60*1000));
-		//Date s1 = DateUtils.parseDate("2014-05-01");
+		Date s1 = DateUtils.parseDate("2014-05-03");
 		//Date s2 = DateUtils.parseDate("2014-06-30");
 		//System.out.println(compareDates(s2,s1,Calendar.MONTH));
-		System.out.println(5%5);
+		System.out.println(DateUtils.getFirstDayOfMonth(s1)+":"+DateUtils.getLastDayOfMonth(s1));
 	}
 }

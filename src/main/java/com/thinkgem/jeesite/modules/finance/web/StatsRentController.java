@@ -108,6 +108,8 @@ public class StatsRentController extends BaseController {
 		model.addAllAttributes(result);
 		model.addAttribute("paramMap", paramMap);
 		return "modules/finance/statsBusinessCutList";
+
+		
 	}
 	
 	@RequiresPermissions("finance:stats:vacantPeriod")
