@@ -762,7 +762,7 @@ public class StatsRentService extends BaseService {
 		List<Cutconfig> cut_businesssaletypeconfigs = null;
 		RentMonth sameMonthRentout = null;//同期的租进月记录
 		for(RentMonth rentinmonth : list){
-			sameMonthRentout = getSameMonthRentoutByRentinMonth(rentinmonth);
+			sameMonthRentout = getSameMonthRentoutByRentinMonthSql(rentinmonth);
 			
 			if(null == sameMonthRentout){//如果未找到同期的出租记录，则跳出循环
 				continue;
@@ -797,7 +797,7 @@ public class StatsRentService extends BaseService {
 				}
 				
 			}
-			if(null != sameMonthRentout){
+			if(null != sameMonthRentout ){
 				outmonthnumper = (int)DateUtils.compareDates(sameMonthRentout.getEdate(), sameMonthRentout.getSdate(), Calendar.DATE)/DaysPerMonth;
 				if(0 == outmonthnumper){//有极少可能没设置起始日期和结束日期
 					continue;
@@ -805,7 +805,7 @@ public class StatsRentService extends BaseService {
 				if(outmonthnumper > AgencyfeeMonthMax){
 					outmonthnumper = AgencyfeeMonthMax;
 				}
-				if(null != sameMonthRentout.getPerson()){
+				if(null != sameMonthRentout.getPerson() && StringUtils.isNotBlank(sameMonthRentout.getPerson().getName())){
 					if(User.Busi_type.oldbusier.toString().equals(sameMonthRentout.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
 						rentout_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler_old, CutConfigTypeConstant.cut_businesssales));
 					}else{
@@ -1620,6 +1620,22 @@ public class StatsRentService extends BaseService {
 			sameMonthRentout = null;
 		}
 		return sameMonthRentout;
+	}
+	
+	
+	/**
+	 * 根据出租月记录获取相对应的租进月记录
+	 * @param rentoutMonth
+	 * @return
+	 */
+	public RentMonth getSameMonthRentoutByRentinMonthSql(RentMonth rentinMonth){
+		Map<String,Object> paramMap1 = new HashMap<String,Object>();
+		paramMap1.put("infotype", "rentout");
+		paramMap1.put("rent", rentinMonth.getRent());
+		paramMap1.put("sdate_begin", rentinMonth.getLastpaysdate());
+		paramMap1.put("sdate_end", rentinMonth.getLastpayedate());
+
+		return rentMonthDao.findSameRentoutByRentin(paramMap1);
 	}
 	
 	/**

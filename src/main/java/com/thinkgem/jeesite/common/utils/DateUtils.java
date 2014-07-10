@@ -179,17 +179,23 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         cDay1.setTime(sDate1);  
         final int firstDay = cDay1.getActualMinimum(Calendar.DAY_OF_MONTH);  
         Date firstDate = cDay1.getTime();  
-        firstDate.setDate(firstDay);  
+        firstDate.setDate(firstDay);
+        firstDate.setHours(0);
+        firstDate.setMinutes(0);
+        firstDate.setSeconds(0);
         return firstDate;  
 	}
 	
 	public static Date getLastDayOfMonth(Date   sDate1)   {  
-        Calendar   cDay1   =   Calendar.getInstance();  
+        Calendar cDay1 = Calendar.getInstance();  
         cDay1.setTime(sDate1);  
-        final   int   lastDay   =   cDay1.getActualMaximum(Calendar.DAY_OF_MONTH);  
-        Date   lastDate   =   cDay1.getTime();  
-        lastDate.setDate(lastDay);  
-        return   lastDate;  
+        final int lastDay = cDay1.getActualMaximum(Calendar.DAY_OF_MONTH);  
+        Date lastDate = cDay1.getTime();  
+        lastDate.setDate(lastDay); 
+        lastDate.setHours(0);
+        lastDate.setMinutes(0);
+        lastDate.setSeconds(0);
+        return lastDate;  
 	}  
 	
 	/**

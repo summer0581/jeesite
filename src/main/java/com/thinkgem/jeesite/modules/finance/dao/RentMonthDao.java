@@ -3,19 +3,21 @@
  */
 package com.thinkgem.jeesite.modules.finance.dao;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
-import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.BaseDao;
 import com.thinkgem.jeesite.common.persistence.Parameter;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.modules.finance.entity.House;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
+import com.thinkgem.jeesite.modules.sys.entity.User;
 
 /**
  * 包租月记录DAO接口
@@ -132,6 +134,69 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 		pm.put("lastpayedate", rentout_sdate_end);
 		
 		return findBySql(sql.toString(), pm, Map.class);
+	}
+	
+	public RentMonth findSameRentoutByRentin(Map<String, Object> paramMap){
+		StringBuffer sql = new StringBuffer();
+		Parameter pm = new Parameter();
+		sql.append("select t.id,t.rent_id,t.sdate,t.edate,t.lastpaysdate,t.lastpayedate,t.cut_businesssaletype,");
+		sql.append(" t.person,c_p.name person_name,c_p.user_busitype person_busitype, ");
+		sql.append(" t.agencyfee ");
+		sql.append(" from  finance_rentmonth t  ");
+		sql.append(" left join sys_user c_p on c_p.id = t.person ");
+		sql.append(" where t.del_flag = :del_flag and t.infotype = 'rentout' ");
+		sql.append(" and t.rent_id = :rent_id ");
+		pm.put("del_flag", RentMonth.DEL_FLAG_NORMAL);
+		if (null != paramMap.get("rent")){
+			pm.put("rent_id", ((Rent)paramMap.get("rent")).getId());
+		}else{
+			pm.put("rent_id", "null");
+		}
+		if (StringUtils.isNotEmpty((String)paramMap.get("firstmonth_num"))){
+			sql.append(" and t.firstmonth_num = :firstmonth_num ");
+			pm.put("firstmonth_num", (String)paramMap.get("firstmonth_num"));
+		}
+		if(null != paramMap.get("sdate_begin") && null != paramMap.get("sdate_end") ){//传入的是当前出租月记录的上次付租起始时间，查当前rent对应的租进月记录中 上次付租起始时间比它小的。
+			Date sdate_begin = null;
+			Date sdate_end = null;
+			if(paramMap.get("sdate_begin") instanceof Date){
+				sdate_begin = (Date)paramMap.get("sdate_begin");
+			}else{
+				sdate_begin = DateUtils.parseDate(paramMap.get("sdate_begin"));
+			}
+			if(paramMap.get("sdate_end") instanceof Date){
+				sdate_end = (Date)paramMap.get("sdate_end");
+			}else{
+				sdate_end = DateUtils.parseDate(paramMap.get("sdate_end"));
+			}
+			sql.append(" and ((t.lastpaysdate <= :sdate_begin and t.lastpayedate >= :sdate_begin) or (t.lastpaysdate >= :sdate_begin and t.lastpaysdate <= :sdate_end)) ");
+			pm.put("sdate_begin", sdate_begin);
+			pm.put("sdate_end", sdate_end);
+		}
+		sql.append(" order by t.lastpayedate desc ");
+		List<Map<String,Object>> resultList = findBySql(sql.toString(), pm, Map.class);
+		RentMonth rentMonth = null;
+		if(null != resultList && resultList.size() > 0){
+			Map<String,Object> rMap = resultList.get(0);
+			rentMonth = new RentMonth();
+
+			rentMonth.setId((String)rMap.get("id"));
+			rentMonth.setSdate((Date)rMap.get("sdate"));
+			rentMonth.setEdate((Date)rMap.get("edate"));
+			rentMonth.setLastpaysdate((Date)rMap.get("lastpaysdate"));
+			rentMonth.setLastpayedate((Date)rMap.get("lastpayedate"));
+			rentMonth.setCut_businesssaletype((String)rMap.get("cut_businesssaletype"));
+			rentMonth.setAgencyfee((String)rMap.get("agencyfee"));
+			
+			User person = new User();
+			person.setId((String)rMap.get("person"));
+			person.setName((String)rMap.get("person_name"));
+			person.setUserBusitype((String)rMap.get("person_busitype"));	
+			
+			rentMonth.setPerson(person);
+		}
+				
+		return rentMonth;
 	}
 
 
