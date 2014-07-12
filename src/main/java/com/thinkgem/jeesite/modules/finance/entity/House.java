@@ -72,6 +72,11 @@ public class House extends IdEntity<House> {
 	private User team_leader;
 	
 	private Rent rent;
+	private String rent_state;//出租状态
+	
+	public enum RentState{
+		norentout,hascancelrent
+	}
 	
 	
 
@@ -385,9 +390,14 @@ public class House extends IdEntity<House> {
 	public void setHouse_source(String house_source) {
 		this.house_source = house_source;
 	}
-	
-	
-	
+	@Transient
+	public String getRent_state() {
+		return rent_state;
+	}
+
+	public void setRent_state(String rent_state) {
+		this.rent_state = rent_state;
+	}
 	
 }
 

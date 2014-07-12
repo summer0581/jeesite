@@ -13,6 +13,7 @@ import com.thinkgem.jeesite.common.persistence.Parameter;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.cms.entity.Article;
 import com.thinkgem.jeesite.modules.finance.entity.House;
+import com.thinkgem.jeesite.modules.finance.entity.House.RentState;
 
 /**
  * 房屋明细DAO接口
@@ -73,9 +74,13 @@ public class HouseDao extends BaseDao<House> {
 		sql.append("select h.* from finance_house h ");
 		sql.append("LEFT JOIN finance_customer c on c.id = h.landlord_name ");
 		sql.append("LEFT JOIN finance_rent r on r.house_id = h.id ");
-		sql.append("LEFT JOIN ( select * from finance_rentmonth rm where rm.infotype = 'rentin'  and  ");
-		sql.append(" not exists (select 1 from finance_rentmonth rm2 where rm.rent_id=rm2.rent_id and rm2.infotype = 'rentin'  ");
-		sql.append(" and rm.create_date < rm2.create_date) ) rms on r.id = rms.rent_id  ");
+		sql.append("LEFT JOIN ( ");
+		sql.append("		SELECT * FROM ( ");
+		sql.append("				SELECT * FROM finance_rentmonth rm1 ");
+		sql.append("				WHERE rm1.infotype = 'rentin' AND rm1.del_flag = :del_flag ");
+		sql.append("				ORDER BY rm1.create_date DESC ");
+		sql.append("			) rm2 GROUP BY rm2.rent_id ");
+		sql.append("  ) rms on r.id = rms.rent_id  ");
 		sql.append("where h.del_flag=:del_flag and (r.id is null or rms.id is null or rms.edate < current_timestamp )");
 		
 		param.put("del_flag", House.DEL_FLAG_NORMAL);
@@ -105,10 +110,20 @@ public class HouseDao extends BaseDao<House> {
 		sql.append("select h.* from finance_house h ");
 		sql.append("LEFT JOIN finance_customer c on c.id = h.landlord_name ");
 		sql.append("LEFT JOIN finance_rent r on r.house_id = h.id ");
-		sql.append("LEFT JOIN ( select * from finance_rentmonth rm where rm.infotype = 'rentout'  and  ");
-		sql.append(" not exists (select 1 from finance_rentmonth rm2 where rm.rent_id=rm2.rent_id  and rm2.infotype = 'rentout' ");
-		sql.append(" and rm.create_date < rm2.create_date) ) rms on r.id = rms.rent_id  ");
-		sql.append("where h.del_flag=:del_flag and (r.id is null or rms.id is null or rms.edate < current_timestamp or rms.cancelrentdate is not null)");
+		sql.append("LEFT JOIN ( ");
+		sql.append("		SELECT * FROM ( ");
+		sql.append("				SELECT * FROM finance_rentmonth rm1 ");
+		sql.append("				WHERE rm1.infotype = 'rentout' AND rm1.del_flag = :del_flag ");
+		sql.append("				ORDER BY rm1.create_date DESC ");
+		sql.append("			) rm2 GROUP BY rm2.rent_id ");
+		sql.append("  ) rms on r.id = rms.rent_id  ");
+		String rentstateConditionSql = "r.id is null or rms.id is null or rms.cancelrentdate is not null";
+		if(RentState.hascancelrent.toString().equals(house.getRent_state())){//已退租
+			rentstateConditionSql = " rms.cancelrentdate is not null ";
+		}else if(RentState.norentout.toString().equals(house.getRent_state())){//未租出
+			rentstateConditionSql = " r.id is null or rms.id is null ";
+		}
+		sql.append("where h.del_flag=:del_flag and ("+rentstateConditionSql+")");
 		
 		param.put("del_flag", House.DEL_FLAG_NORMAL);
 		if (StringUtils.isNotEmpty(house.getName())){

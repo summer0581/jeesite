@@ -87,12 +87,15 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 	 * @param paramMap
 	 * @return
 	 */
-	public List<Map<String,Object>> getBusinesscutBaseList(Map<String, Object> paramMap){
+	public List<RentMonth> getBusinesscutBaseList(Map<String, Object> paramMap){
 		StringBuffer sql = new StringBuffer();
 		Parameter pm = new Parameter();
 		sql.append("select t.id,t.rent_id,h.id house_id,h.name,t.sdate,t.edate,t.lastpaysdate,t.lastpayedate,t.cut_businesssaletype,");
-		sql.append(" t.person,c_p.name person_name,c_p.user_busitype person_busitype,t.busi_manager,c_m.name busi_manager_name,t.busi_departleader,c_d.name busi_departleader_name, ");
-		sql.append(" t.busi_teamleader,c_t.name busi_teamleader_name,r.business_num,t.agencyfee ");
+		sql.append(" t.person,c_p.name person_name,c_p.login_name person_loginname,c_p.user_busitype person_busitype,");
+		sql.append(" t.busi_manager,c_m.name busi_manager_name,c_m.login_name busi_manager_loginname,");
+		sql.append(" t.busi_departleader,c_d.name busi_departleader_name,c_d.login_name busi_departleader_loginname, ");
+		sql.append(" t.busi_teamleader,c_t.name busi_teamleader_name,c_t.login_name busi_teamleader_loginname, ");
+		sql.append(" r.business_num,t.agencyfee ");
 		sql.append(" from ( ");
 		sql.append("		select rm.* from finance_rentmonth rm  ");
 		sql.append("		where rm.lastpaysdate <= :lastpayedate and rm.lastpayedate >= :lastpaysdate");
@@ -133,15 +136,82 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 			paramMap.put("rentout_sdate_end", DateUtils.formatDate(rentout_sdate_end, "yyyy-MM-dd"));
 		}
 		pm.put("lastpayedate", rentout_sdate_end);
+		List<Map<String,Object>> result = findBySql(sql.toString(), pm, Map.class);
+		/****************************封装数据到最后list************************************/
+		List<RentMonth> rentMonthList = new ArrayList<RentMonth>();
+		for(int i = 0 ; i < result.size() ; i++){
+			Map<String,Object> rMap = result.get(i);
+			RentMonth rentMonth = new RentMonth();
+			Rent rent = new Rent();
+			House house = new House();
+			
+			rentMonth.setId((String)rMap.get("id"));
+			rentMonth.setSdate((Date)rMap.get("sdate"));
+			rentMonth.setEdate((Date)rMap.get("edate"));
+			rentMonth.setLastpaysdate((Date)rMap.get("lastpaysdate"));
+			rentMonth.setLastpayedate((Date)rMap.get("lastpayedate"));
+			rentMonth.setCut_businesssaletype((String)rMap.get("cut_businesssaletype"));
+			rentMonth.setAgencyfee((String)rMap.get("agencyfee"));
+			
+			
+			house.setId((String)rMap.get("house_id"));
+			house.setName((String)rMap.get("name"));
+			rent.setHouse(house);
+			rent.setId((String)rMap.get("rent_id"));
+			rent.setBusiness_num((Integer)rMap.get("business_num"));
+			
+			User person = null;
+			if(StringUtils.isNotBlank((String)rMap.get("person_name"))){
+				person = new User();
+				person.setId((String)rMap.get("person"));
+				person.setName((String)rMap.get("person_name"));
+				person.setUserBusitype((String)rMap.get("person_busitype"));
+				person.setLoginName((String)rMap.get("person_loginname"));
+			}
+			
+			User teamleader = null;
+			if(StringUtils.isNotBlank((String)rMap.get("busi_teamleader_name"))){
+				teamleader = new User();
+				teamleader.setId((String)rMap.get("busi_teamleader"));
+				teamleader.setName((String)rMap.get("busi_teamleader_name"));
+				teamleader.setLoginName((String)rMap.get("busi_teamleader_loginname"));
+			}
+			
+			User departleader = null;
+			if(StringUtils.isNotBlank((String)rMap.get("busi_departleader_name"))){
+				departleader = new User();
+				departleader.setId((String)rMap.get("busi_departleader"));
+				departleader.setName((String)rMap.get("busi_departleader_name"));
+				departleader.setLoginName((String)rMap.get("busi_departleader_loginname"));
+			}
+
+			User manager = null;
+			if(StringUtils.isNotBlank((String)rMap.get("busi_manager_name"))){
+				manager = new User();
+				manager.setId((String)rMap.get("busi_manager"));
+				manager.setName((String)rMap.get("busi_manager_name"));
+				manager.setLoginName((String)rMap.get("busi_manager_loginname"));
+			}
+
+			
+			
+			rentMonth.setRent(rent);
+			rentMonth.setPerson(person);
+			rentMonth.setBusi_teamleader(teamleader);
+			rentMonth.setBusi_departleader(departleader);
+			rentMonth.setBusi_manager(manager);
+
+			rentMonthList.add(rentMonth);
+		}
 		
-		return findBySql(sql.toString(), pm, Map.class);
+		return rentMonthList;
 	}
 	
 	public RentMonth findSameRentoutByRentin(Map<String, Object> paramMap){
 		StringBuffer sql = new StringBuffer();
 		Parameter pm = new Parameter();
 		sql.append("select t.id,t.rent_id,t.sdate,t.edate,t.lastpaysdate,t.lastpayedate,t.cut_businesssaletype,");
-		sql.append(" t.person,c_p.name person_name,c_p.user_busitype person_busitype, ");
+		sql.append(" t.person,c_p.name person_name,c_p.user_busitype person_busitype,c_p.login_name person_loginname, ");
 		sql.append(" t.agencyfee ");
 		sql.append(" from  finance_rentmonth t  ");
 		sql.append(" left join sys_user c_p on c_p.id = t.person ");
@@ -176,6 +246,7 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 		}
 		sql.append(" order by t.lastpayedate desc ");
 		List<Map<String,Object>> resultList = findBySql(sql.toString(), pm, Map.class);
+		/****************************以下是拼接字符串************************************/
 		RentMonth rentMonth = null;
 		if(null != resultList && resultList.size() > 0){
 			Map<String,Object> rMap = resultList.get(0);
@@ -189,10 +260,15 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 			rentMonth.setCut_businesssaletype((String)rMap.get("cut_businesssaletype"));
 			rentMonth.setAgencyfee((String)rMap.get("agencyfee"));
 			
-			User person = new User();
-			person.setId((String)rMap.get("person"));
-			person.setName((String)rMap.get("person_name"));
-			person.setUserBusitype((String)rMap.get("person_busitype"));	
+			User person = null;
+			if(StringUtils.isNotBlank((String)rMap.get("person_name"))){
+				person = new User();
+				person.setId((String)rMap.get("person"));
+				person.setName((String)rMap.get("person_name"));
+				person.setUserBusitype((String)rMap.get("person_busitype"));	
+				person.setLoginName((String)rMap.get("person_loginname"));
+			}
+
 			
 			rentMonth.setPerson(person);
 		}

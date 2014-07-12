@@ -323,7 +323,6 @@ public class User extends IdEntity<User> {
 	}
 
 	@Override
-	@Transient
 	public boolean equals(Object obj) {
 		// TODO Auto-generated method stub
 		if(obj instanceof User){
@@ -334,10 +333,12 @@ public class User extends IdEntity<User> {
 	}
 
 	@Override
-	@Transient
 	public int hashCode() {
 		// TODO Auto-generated method stub
-		return super.hashCode();
+		if(StringUtils.isNotBlank(loginName)){
+			return loginName.hashCode();
+		}
+		return 0;
 	}
 	
 	
