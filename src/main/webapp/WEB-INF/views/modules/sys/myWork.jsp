@@ -80,7 +80,7 @@
                 </tr>
               </thead>
               <tbody>
-              <c:forEach items="${rentinWRElist}" var="rentMonth">
+              <c:forEach items="${rentinWRElist.list}" var="rentMonth">
               	 <tr>
                   <td>${rentMonth.rent.business_num }</td>
                   <td><a href="${ctx}/finance/rent/form?id=${rentMonth.rent.id}">${rentMonth.rent.house.name }</a></td>
@@ -106,7 +106,7 @@
                 </tr>
               </thead>
               <tbody>
-             <c:forEach items="${rentoutWRElist}" var="rentMonth">
+             <c:forEach items="${rentoutWRElist.list}" var="rentMonth">
               	 <tr>
                   <td>${rentMonth.rent.business_num }</td>
                   <td><a href="${ctx}/finance/rent/form?id=${rentMonth.rent.id}">${rentMonth.rent.house.name }</a></td>

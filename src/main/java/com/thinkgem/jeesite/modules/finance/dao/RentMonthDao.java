@@ -11,6 +11,7 @@ import java.util.Map;
 import org.springframework.stereotype.Repository;
 
 import com.thinkgem.jeesite.common.persistence.BaseDao;
+import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.persistence.Parameter;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
@@ -55,7 +56,7 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 		pm.put("infotype", "rentout");
 		return findBySql(sql.toString(), pm, RentMonth.class);
 	}
-	public List<RentMonth> rentInListWillReachEdate(){
+	public Page<RentMonth> rentInListWillReachEdate(Page<RentMonth> pages){
 		StringBuffer sql = new StringBuffer();
 
 		sql.append("select * from (select max(rr.edate) SS,rr.* ");
@@ -66,9 +67,9 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 		Parameter pm = new Parameter();
 		pm.put("del_flag", Rent.DEL_FLAG_NORMAL);
 		pm.put("infotype", "rentin");
-		return findBySql(sql.toString(), pm, RentMonth.class);
+		return findBySql(pages,sql.toString(), pm, RentMonth.class);
 	}
-	public List<RentMonth> rentOutListWillReachEdate(){
+	public Page<RentMonth> rentOutListWillReachEdate(Page<RentMonth> pages){
 		StringBuffer sql = new StringBuffer();
 
 		sql.append("select * from (select max(rr.edate) SS,rr.* ");
@@ -79,7 +80,7 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 		Parameter pm = new Parameter();
 		pm.put("del_flag", Rent.DEL_FLAG_NORMAL);
 		pm.put("infotype", "rentout");
-		return findBySql(sql.toString(), pm, RentMonth.class);
+		return findBySql(pages,sql.toString(), pm, RentMonth.class);
 	}
 	/**
 	 * 获取业绩提成基础列表

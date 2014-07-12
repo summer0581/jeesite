@@ -424,8 +424,8 @@ public class RentMonthService extends BaseService {
 	 * @param paramMap
 	 * @return
 	 */
-	public List<RentMonth> rentInListWillReachEdate() {
-		return rentMonthDao.rentInListWillReachEdate();
+	public Page<RentMonth> rentInListWillReachEdate(Page<RentMonth> pages) {
+		return rentMonthDao.rentInListWillReachEdate(pages);
 	}
 	
 	/**
@@ -433,8 +433,8 @@ public class RentMonthService extends BaseService {
 	 * @param paramMap
 	 * @return
 	 */
-	public List<RentMonth> rentOutListWillReachEdate() {
-		return rentMonthDao.rentOutListWillReachEdate();
+	public Page<RentMonth> rentOutListWillReachEdate(Page<RentMonth> pages) {
+		return rentMonthDao.rentOutListWillReachEdate(pages);
 	}
 	
 	/**

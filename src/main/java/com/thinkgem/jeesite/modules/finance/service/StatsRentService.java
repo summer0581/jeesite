@@ -724,8 +724,8 @@ public class StatsRentService extends BaseService {
 		Map<String,Object> result = new HashMap<String,Object>();
 		result.put("rentinRentMonths", rentinRentMonths);
 		result.put("rentoutRentMonths", rentoutRentMonths);
-		result.put("totalMap", totalMap);
-			
+		result.put("totalMap", totalMap); 
+			 
 		return result;
 	}
 
@@ -739,7 +739,8 @@ public class StatsRentService extends BaseService {
 	public Map<String,Object> businessSaleCut(Map<String, Object> paramMap) throws Exception{
 
 		List<RentMonth> list = getBusinesscutBaseSqlList(paramMap); 
-		
+		Date rentout_sdate_begin = DateUtils.parseDate(paramMap.get("rentout_sdate_begin"));
+		Date rentout_sdate_end = DateUtils.parseDate(paramMap.get("rentout_sdate_end"));
 		/*******************以下开始生成提成列表数据***********************/
 		
 		List<Map<String,Object>> resultList = new ArrayList<Map<String,Object>>();
@@ -792,7 +793,14 @@ public class StatsRentService extends BaseService {
 				}else{
 					rentin_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_businesssales));
 				}
-				if((int)DateUtils.compareDates(rentinmonth.getLastpaysdate(), rentinmonth.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
+				/*此处比较的起始时间于2014.7.11改为用lastpaysdate与rentout_sdate_begin进行比较，
+				如果lastpaysdate大于rentout_sdate_begin，则用lastpaysdate，否则用rentout_sdate_begin
+				*/
+				Date agencyfeeBeginDate = rentout_sdate_begin;
+				if(DateUtils.compareDates(rentinmonth.getLastpaysdate(), rentout_sdate_begin, Calendar.DATE) > 0){
+					agencyfeeBeginDate = rentinmonth.getLastpaysdate();
+				}
+				if((int)DateUtils.compareDates(agencyfeeBeginDate, rentinmonth.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
 					rentin_cut = (rentin_cut*inmonthnumper-MathUtils.deNull(rentinmonth.getAgencyfee()))/inmonthnumper;
 				}
 				
@@ -811,7 +819,14 @@ public class StatsRentService extends BaseService {
 					}else{
 						rentout_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_businesssales));
 					}
-					if((int)DateUtils.compareDates(sameMonthRentout.getLastpaysdate(), sameMonthRentout.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
+					/*此处比较的起始时间于2014.7.11改为用lastpaysdate与rentout_sdate_begin进行比较，
+					如果lastpaysdate大于rentout_sdate_begin，则用lastpaysdate，否则用rentout_sdate_begin
+					*/
+					Date agencyfeeBeginDate = rentout_sdate_begin;
+					if(DateUtils.compareDates(rentinmonth.getLastpaysdate(), rentout_sdate_begin, Calendar.DATE) > 0){
+						agencyfeeBeginDate = rentinmonth.getLastpaysdate();
+					}
+					if((int)DateUtils.compareDates(agencyfeeBeginDate, sameMonthRentout.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
 						rentout_cut = (rentout_cut*outmonthnumper-MathUtils.deNull(sameMonthRentout.getAgencyfee()))/outmonthnumper;
 					}
 					
@@ -864,7 +879,8 @@ public class StatsRentService extends BaseService {
 	public Map<String,Object> businessSaleCut4PersonList(Map<String, Object> paramMap) throws Exception{
 
 		List<RentMonth> list = getBusinesscutBaseList(paramMap); 
-		
+		Date rentout_sdate_begin = DateUtils.parseDate(paramMap.get("rentout_sdate_begin"));
+		Date rentout_sdate_end = DateUtils.parseDate(paramMap.get("rentout_sdate_end"));
 		/*******************以下开始生成提成列表数据***********************/
 		Map<String,LinkedHashSet<User>> map = getLevelUsersWithRentinMonths(list,paramMap);
 		LinkedHashSet<User> managers = map.get("managers");
@@ -929,7 +945,14 @@ public class StatsRentService extends BaseService {
 				}else{
 					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_businesssales);
 				}
-				if((int)DateUtils.compareDates(rentinmonth.getLastpaysdate(), rentinmonth.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
+				/*此处比较的起始时间于2014.7.11改为用lastpaysdate与rentout_sdate_begin进行比较，
+				如果lastpaysdate大于rentout_sdate_begin，则用lastpaysdate，否则用rentout_sdate_begin
+				*/
+				Date agencyfeeBeginDate = rentout_sdate_begin;
+				if(DateUtils.compareDates(rentinmonth.getLastpaysdate(), rentout_sdate_begin, Calendar.DATE) > 0){
+					agencyfeeBeginDate = rentinmonth.getLastpaysdate();
+				}
+				if((int)DateUtils.compareDates(agencyfeeBeginDate, rentinmonth.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
 					tempdouble = (tempcut*inmonthnumper-MathUtils.deNull(rentinmonth.getAgencyfee()))/inmonthnumper;
 				}else{
 					tempdouble = tempcut;
@@ -949,7 +972,14 @@ public class StatsRentService extends BaseService {
 					}else{
 						tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_businesssales);
 					}
-					if((int)DateUtils.compareDates(sameMonthRentout.getLastpaysdate(), sameMonthRentout.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
+					/*此处比较的起始时间于2014.7.11改为用lastpaysdate与rentout_sdate_begin进行比较，
+					如果lastpaysdate大于rentout_sdate_begin，则用lastpaysdate，否则用rentout_sdate_begin
+					*/
+					Date agencyfeeBeginDate = rentout_sdate_begin;
+					if(DateUtils.compareDates(rentinmonth.getLastpaysdate(), rentout_sdate_begin, Calendar.DATE) > 0){
+						agencyfeeBeginDate = rentinmonth.getLastpaysdate();
+					}
+					if((int)DateUtils.compareDates(agencyfeeBeginDate, sameMonthRentout.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
 						tempdouble = (tempcut*outmonthnumper-MathUtils.deNull(sameMonthRentout.getAgencyfee()))/outmonthnumper;
 					}else{
 						tempdouble = tempcut;
@@ -1028,6 +1058,9 @@ public class StatsRentService extends BaseService {
 		User person = UserUtils.getUserById(personid);
 		
 		List<RentMonth> list = getBusinesscutBaseList(paramMap); 
+		Date rentout_sdate_begin = DateUtils.parseDate(paramMap.get("rentout_sdate_begin"));
+		Date rentout_sdate_end = DateUtils.parseDate(paramMap.get("rentout_sdate_end"));
+		
 		List<Map<String, Object>> rentinRentMonths = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> rentoutRentMonths = new ArrayList<Map<String, Object>>();
 		
@@ -1090,7 +1123,14 @@ public class StatsRentService extends BaseService {
 				}else{
 					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_businesssales);
 				}
-				if(null != sameMonthRentout && (int)DateUtils.compareDates(sameMonthRentout.getLastpaysdate(), sameMonthRentout.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
+				/*此处比较的起始时间于2014.7.11改为用lastpaysdate与rentout_sdate_begin进行比较，
+				如果lastpaysdate大于rentout_sdate_begin，则用lastpaysdate，否则用rentout_sdate_begin
+				*/
+				Date agencyfeeBeginDate = rentout_sdate_begin;
+				if(DateUtils.compareDates(rentinmonth.getLastpaysdate(), rentout_sdate_begin, Calendar.DATE) > 0){
+					agencyfeeBeginDate = rentinmonth.getLastpaysdate();
+				}
+				if(null != sameMonthRentout && (int)DateUtils.compareDates(agencyfeeBeginDate, sameMonthRentout.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
 					tempdouble = (tempcut*inmonthnumper-MathUtils.deNull(rentinmonth.getAgencyfee()))/inmonthnumper;
 				}else{
 					tempdouble = tempcut;
@@ -1111,7 +1151,14 @@ public class StatsRentService extends BaseService {
 					}else{
 						tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_businesssales);
 					}
-					if((int)DateUtils.compareDates(sameMonthRentout.getLastpaysdate(), sameMonthRentout.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
+					/*此处比较的起始时间于2014.7.11改为用lastpaysdate与rentout_sdate_begin进行比较，
+					如果lastpaysdate大于rentout_sdate_begin，则用lastpaysdate，否则用rentout_sdate_begin
+					*/
+					Date agencyfeeBeginDate = rentout_sdate_begin;
+					if(DateUtils.compareDates(rentinmonth.getLastpaysdate(), rentout_sdate_begin, Calendar.DATE) > 0){
+						agencyfeeBeginDate = rentinmonth.getLastpaysdate();
+					}
+					if((int)DateUtils.compareDates(agencyfeeBeginDate, sameMonthRentout.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
 						tempdouble = (tempcut*outmonthnumper-MathUtils.deNull(sameMonthRentout.getAgencyfee()))/outmonthnumper;
 					}else{
 						tempdouble = tempcut;

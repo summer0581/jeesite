@@ -49,18 +49,20 @@ public class MyWorkController extends BaseController {
 		paramMap.put("rentout_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 7), "yyyy-MM-dd"));
 		paramMap.put("order", "rms2.nextpaydate");
 		Page<Rent> temprentoutlist = rentService.rentOutListWillNeedPayNextMonth(page2,paramMap);
-		List<RentMonth> temprentinwillreachedatelist = rentMonthService.rentInListWillReachEdate();
-		List<RentMonth> temprentoutwillreachedatelist = rentMonthService.rentOutListWillReachEdate();
+		Page<RentMonth> page3 = new Page<RentMonth>(0,5);
+		Page<RentMonth> temprentinwillreachedatelist = rentMonthService.rentInListWillReachEdate(page3);
+		Page<RentMonth> page4 = new Page<RentMonth>(0,5);
+		Page<RentMonth> temprentoutwillreachedatelist = rentMonthService.rentOutListWillReachEdate(page4);
 		model.addAttribute("sysdate", new Date());
 		model.addAttribute("rentwarndate", DateUtils.formatDate(DateUtils.addDays(new Date(), 30), "yyyy-MM-dd"));
         model.addAttribute("rentinlistcount", temprentinlist.getCount());
         model.addAttribute("rentoutlistcount", temprentoutlist.getCount());
-        model.addAttribute("rentinWRElistcount", temprentinwillreachedatelist.size());
-        model.addAttribute("rentoutWRElistcount", temprentoutwillreachedatelist.size());
+        model.addAttribute("rentinWRElistcount", temprentinwillreachedatelist.getCount());
+        model.addAttribute("rentoutWRElistcount", temprentoutwillreachedatelist.getCount());
         model.addAttribute("rentinlist", temprentinlist);
         model.addAttribute("rentoutlist", temprentoutlist);
-        model.addAttribute("rentinWRElist", temprentinwillreachedatelist.subList(0, temprentinwillreachedatelist.size()>5?5:temprentinwillreachedatelist.size()));
-        model.addAttribute("rentoutWRElist", temprentoutwillreachedatelist.subList(0, temprentoutwillreachedatelist.size()>5?5:temprentoutwillreachedatelist.size()));
+        model.addAttribute("rentinWRElist", temprentinwillreachedatelist);
+        model.addAttribute("rentoutWRElist", temprentoutwillreachedatelist);
 		return "modules/sys/myWork";
 	}
 	

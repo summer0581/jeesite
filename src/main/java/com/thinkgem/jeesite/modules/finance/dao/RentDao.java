@@ -78,10 +78,15 @@ public class RentDao extends BaseDao<Rent> {
 				"rentin_nextpaysdate","rentin_nextpayedate","rentin_rentmonthmin","rentin_rentmonthmax",
 				"rentin_edatesdate","rentin_edateedate")){
 			sql.append("INNER JOIN ( ");
-			sql.append("select * ");
-			sql.append("from finance_rentmonth rm ");
-			sql.append("where rm.infotype = 'rentin'   ");
-			sql.append("and rm.del_flag = "+Rent.DEL_FLAG_NORMAL+" ");
+			//2014.7.12 sql 进行优化，从以前的查询要40多秒，优化到只要1秒不到，主要原因是，以前用的方式是每行去一一比对，现在是全部排序进行比对
+			sql.append("SELECT rm.* FROM  ( ");
+			sql.append("		SELECT * FROM ( ");
+			sql.append("				SELECT * FROM finance_rentmonth rm1 ");
+			sql.append("				WHERE rm1.infotype = 'rentin' AND rm1.del_flag = "+Rent.DEL_FLAG_NORMAL+" ");
+			sql.append("				ORDER BY rm1.create_date DESC ");
+			sql.append("			) rm2 GROUP BY rm2.rent_id ");
+			sql.append("	) rm where 1=1 ");
+		
 			if(null != rentin_sdatesdate){
 				sql.append("and rm.sdate >= :rentin_sdatesdate   ");
 				sqlparam.put("rentin_sdatesdate", rentin_sdatesdate);
@@ -116,7 +121,6 @@ public class RentDao extends BaseDao<Rent> {
 			}
 
 			
-			sql.append("and not exists (select 1 from finance_rentmonth rm2 where rm.rent_id=rm2.rent_id and rm2.infotype = 'rentin'  and rm.create_date < rm2.create_date) ");
 			sql.append(") rms on r.id = rms.rent_id ");
 		}
 
@@ -124,10 +128,15 @@ public class RentDao extends BaseDao<Rent> {
 				"rentout_nextpaysdate","rentout_nextpayedate","rentout_rentmonthmin","rentout_rentmonthmax","rentout_paytype",
 				"rentout_edatesdate","rentout_edateedate","rentout_cancelrentsdate","rentout_cancelrentedate")){
 			sql.append("INNER JOIN ( ");
-			sql.append("select * ");
-			sql.append("from finance_rentmonth rm ");
-			sql.append("where rm.infotype = 'rentout' ");
-			sql.append("and rm.del_flag = "+Rent.DEL_FLAG_NORMAL+" ");
+			//2014.7.12 sql 进行优化，从以前的查询要40多秒，优化到只要1秒不到，主要原因是，以前用的方式是每行去一一比对，现在是全部排序进行比对
+			sql.append("SELECT rm.* FROM  ( ");
+			sql.append("		SELECT * FROM ( ");
+			sql.append("				SELECT * FROM finance_rentmonth rm1 ");
+			sql.append("				WHERE rm1.infotype = 'rentout' AND rm1.del_flag = "+Rent.DEL_FLAG_NORMAL+" ");
+			sql.append("				ORDER BY rm1.create_date DESC ");
+			sql.append("			) rm2 GROUP BY rm2.rent_id ");
+			sql.append("	) rm where 1=1 ");
+			
 			if(null != rentout_sdatesdate){
 				sql.append("and rm.sdate >= :rentout_sdatesdate   ");
 				sqlparam.put("rentout_sdatesdate", rentout_sdatesdate);
@@ -173,7 +182,6 @@ public class RentDao extends BaseDao<Rent> {
 				sqlparam.put("rentout_paytype", rentout_paytype);
 			}
 			
-			sql.append("and not exists  (select 1 from finance_rentmonth rm2 where rm.rent_id=rm2.rent_id and rm2.infotype = 'rentout' and rm.create_date < rm2.create_date) ");
 			sql.append(") rms2 on r.id = rms2.rent_id ");
 		}
 		sql.append(" where 1=1  ");
