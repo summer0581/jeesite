@@ -88,9 +88,10 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 	 * @return
 	 */
 	public List<RentMonth> getBusinesscutBaseList(Map<String, Object> paramMap){
+		String infotype = (String)paramMap.get("infotype");
 		StringBuffer sql = new StringBuffer();
 		Parameter pm = new Parameter();
-		sql.append("select t.id,t.rent_id,h.id house_id,h.name,t.sdate,t.edate,t.lastpaysdate,t.lastpayedate,t.cut_businesssaletype,");
+		sql.append("select t.id,t.infotype,t.rent_id,h.id house_id,h.name,t.sdate,t.edate,t.lastpaysdate,t.lastpayedate,t.cut_businesssaletype,");
 		sql.append(" t.person,c_p.name person_name,c_p.login_name person_loginname,c_p.user_busitype person_busitype,");
 		sql.append(" t.busi_manager,c_m.name busi_manager_name,c_m.login_name busi_manager_loginname,");
 		sql.append(" t.busi_departleader,c_d.name busi_departleader_name,c_d.login_name busi_departleader_loginname, ");
@@ -98,7 +99,12 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 		sql.append(" r.business_num,t.agencyfee ");
 		sql.append(" from ( ");
 		sql.append("		select rm.* from finance_rentmonth rm  ");
-		sql.append("		where rm.lastpaysdate <= :lastpayedate and rm.lastpayedate >= :lastpaysdate");
+		if(StringUtils.isNotBlank(infotype) && "businessCount".equals(infotype)){//完成量统计
+			sql.append("		where rm.lastpaysdate >= :lastpaysdate and rm.lastpaysdate <= :lastpayedate");
+		}else{
+			sql.append("		where rm.lastpaysdate <= :lastpayedate and rm.lastpayedate >= :lastpaysdate");
+		}
+		
 		/*sql.append("		union  ");
 		sql.append("		select rm.*,r.name,r.business_num from finance_rentmonth rm  ");
 		sql.append("		inner join finance_rent r on r.id = rm.rent_id ");
@@ -110,8 +116,8 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 		sql.append(" left join sys_user c_d on c_d.id = t.busi_departleader ");
 		sql.append(" left join sys_user c_t on c_t.id = t.busi_teamleader ");
 		sql.append(" where t.del_flag = :del_flag ");
-		String infotype = (String)paramMap.get("infotype");
-		if(!StringUtils.isBlank(infotype) && "businessCount".equals(infotype)){//完成量统计
+		
+		if(StringUtils.isNotBlank(infotype) && "businessCount".equals(infotype)){//完成量统计
 			sql.append(" and t.lastpaysdate = t.sdate");
 		}else{
 			sql.append(" and t.infotype = 'rentin'");
@@ -146,6 +152,7 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 			House house = new House();
 			
 			rentMonth.setId((String)rMap.get("id"));
+			rentMonth.setInfotype((String)rMap.get("infotype"));
 			rentMonth.setSdate((Date)rMap.get("sdate"));
 			rentMonth.setEdate((Date)rMap.get("edate"));
 			rentMonth.setLastpaysdate((Date)rMap.get("lastpaysdate"));

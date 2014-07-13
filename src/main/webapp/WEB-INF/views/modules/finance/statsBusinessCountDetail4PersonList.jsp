@@ -73,7 +73,7 @@
 				<td>${var.rentmonth.rent.house.name}</td>
 				<td>${var.rentmonth.person.name }</td> 
 				<td><fmt:formatDate value="${var.rentmonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${var.rentmonth.edate}" pattern="yyyy-MM-dd"/></td>
-				<td><fmt:formatDate value="${var.rentmonth.lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${var.rentmonth.lastpaysdate}" pattern="yyyy-MM-dd"/></td>
+				<td><fmt:formatDate value="${var.rentmonth.lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${var.rentmonth.lastpayedate}" pattern="yyyy-MM-dd"/></td>
 			</tr>		
 		</c:forEach>
 			<tr>
