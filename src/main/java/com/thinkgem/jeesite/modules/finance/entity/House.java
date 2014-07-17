@@ -17,6 +17,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.Where;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
 
@@ -249,7 +250,7 @@ public class House extends IdEntity<House> {
 	public void setRent(Rent rent) {
 		this.rent = rent;
 	}
-	@ExcelField(title="是否可租", type=0, align=1, sort=110)
+	@ExcelField(title="是否可租", type=0, align=1, sort=110, dictType="yes_no")
 	public String getIs_canrent() {
 		return is_canrent;
 	}
@@ -257,7 +258,7 @@ public class House extends IdEntity<House> {
 	public void setIs_canrent(String is_canrent) {
 		this.is_canrent = is_canrent;
 	}
-	@ExcelField(title="是否可卖", type=0, align=1, sort=120)
+	@ExcelField(title="是否可卖", type=0, align=1, sort=120, dictType="yes_no")
 	public String getIs_cansale() {
 		return is_cansale;
 	}
@@ -320,7 +321,7 @@ public class House extends IdEntity<House> {
 		this.decorate = decorate;
 	}
 
-	@ExcelField(title="是否需要定金", type=0, align=1, sort=190)
+	@ExcelField(title="是否需要定金", type=0, align=1, sort=190, dictType="yes_no")
 	public String getIs_needdeposit() {
 		return is_needdeposit;
 	}
@@ -328,7 +329,7 @@ public class House extends IdEntity<House> {
 	public void setIs_needdeposit(String is_needdeposit) {
 		this.is_needdeposit = is_needdeposit;
 	}
-	@ExcelField(title="是否兴业银行", type=0, align=1, sort=200,groups={1})
+	@ExcelField(title="是否兴业银行", type=0, align=1, sort=200,groups={1}, dictType="yes_no")
 	public String getIs_xingyebank() {
 		return is_xingyebank;
 	}
@@ -352,7 +353,7 @@ public class House extends IdEntity<House> {
 	public void setReceive_bank(String receive_bank) {
 		this.receive_bank = receive_bank;
 	}
-	@ExcelField(title="是否同城", type=0, align=1, sort=230,groups={1})
+	@ExcelField(title="是否同城", type=0, align=1, sort=230,groups={1}, dictType="yes_no")
 	public String getIs_samecity() {
 		return is_samecity;
 	}

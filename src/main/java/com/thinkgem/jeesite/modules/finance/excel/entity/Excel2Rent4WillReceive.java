@@ -62,49 +62,53 @@ public class Excel2Rent4WillReceive extends IdEntity<Rent> {
 	public House getHouse() {
 		return house;
 	}
-
-	@ExcelField(title="出租日期", type=0, align=1, sort=30)
-	public String getRentout_date() throws Exception{
-		return "";
-	}
-
-	@ExcelField(title="月租金", type=0, align=1, sort=40)
-	public String getRentout_rentmonth() throws Exception {
-		return "";
-	}
-
-
-	@ExcelField(title="已付月份", type=0, align=1, sort=50)
-	public String getRentout_lastpaydate() throws Exception{
-		return "";
-	}
 	
-	@ExcelField(title="下次收租日期", type=0, align=1, sort=60)
-	public Date getRentout_nextpaydate() throws Exception {
-		return null;
-	}
-
-	@ExcelField(title="租出业务员", type=0, align=1, sort=70, fieldType=UserEntity.class)
+	@ExcelField(title="业务员", type=0, align=1, sort=30, fieldType=UserEntity.class)
 	public User getRentout_person() throws Exception {
 		return null;
 	}
 
-	@ExcelField(title="租户姓名", type=0, align=1, sort=80 ,fieldType= CustomerEntity.class)
+	@ExcelField(title="付款方式", type=0, align=1, sort=40, dictType="finance_rent_paytype")
+	public String getRentout_paytype() throws Exception {
+		return null;
+	}
+	
+	@ExcelField(title="出租时间", type=0, align=1, sort=50)
+	public String getRentout_date() throws Exception{
+		return "";
+	}
+
+	@ExcelField(title="已付月份", type=0, align=1, sort=60)
+	public String getRentout_lastpaydate() throws Exception{
+		return "";
+	}
+	
+	@ExcelField(title="下次收租日期", type=0, align=1, sort=70)
+	public Date getRentout_nextpaydate() throws Exception {
+		return null;
+	}
+
+	@ExcelField(title="月租金", type=0, align=1, sort=80)
+	public String getRentout_rentmonth() throws Exception {
+		return "";
+	}
+
+	@ExcelField(title="租户姓名", type=0, align=1, sort=90 ,fieldType= CustomerEntity.class)
 	public Customer getTenant() throws Exception {
 		return house.getTenant();
 	}
 
-	@ExcelField(title="租户联系方式", type=0, align=1, sort=90 )
+	@ExcelField(title="租户联系方式", type=0, align=1, sort=100 )
 	public String getTenant_telephone() throws Exception {
 		return house.getTenant_telephone();
 	}
 
-	@ExcelField(title="应收金额", type=0, align=1, sort=100)
+	@ExcelField(title="应收金额", type=0, align=1, sort=110)
 	public String getRentout_nextshouldamount() throws Exception {
 		return "";
 	}
 	
-	@ExcelField(title="备注", type=0, align=1, sort=110)
+	@ExcelField(title="备注", type=0, align=1, sort=120)
 	public String getRentout_nextshouldremark() throws Exception {
 		return "";
 	}

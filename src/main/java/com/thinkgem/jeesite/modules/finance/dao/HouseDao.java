@@ -27,7 +27,7 @@ public class HouseDao extends BaseDao<House> {
 	}
 	
 	public List<House> findByName(String name){
-		return findBySql("select * from finance_house f where f.name = :p1", new Parameter(name));
+		return findBySql("select * from finance_house f where f.name = :p1", new Parameter(name),House.class);
 	}
 	
 	/**

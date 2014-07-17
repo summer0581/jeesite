@@ -26,6 +26,7 @@ import com.thinkgem.jeesite.common.beanvalidator.BeanValidators;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.mapper.JsonMapper;
 import com.thinkgem.jeesite.common.persistence.Page;
+import com.thinkgem.jeesite.common.utils.CacheUtils;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.utils.excel.ExportExcel;
@@ -198,8 +199,19 @@ public class HouseController extends BaseController {
 			House temphouse = null;
 			for (House house : list){
 				try{
+					if(StringUtils.isBlank(house.getName()))
+						continue;
 					temphouse = houseService.findByName(house.getName());
 					if (null == temphouse){
+						if(null == house.getOffice() ){
+							house.setOffice(UserUtils.getUser().getOffice());
+						}
+						if(null != house.getLandlord() && null == house.getLandlord().getOffice()){
+							house.getLandlord().setOffice(UserUtils.getUser().getOffice());
+						}
+						if(null != house.getTenant() && null == house.getTenant().getOffice()){
+							house.getTenant().setOffice(UserUtils.getUser().getOffice());
+						}
 						BeanValidators.validateWithException(validator, house);
 						successNum++;
 					}else{
@@ -207,6 +219,7 @@ public class HouseController extends BaseController {
 						failureMsg.append("<br/>地址 "+house.getName()+" 已存在;进行更新; ");
 						failureNum++;
 					}
+
 					houseService.save4ExcelImport(house);
 				}catch(ConstraintViolationException ex){
 					failureMsg.append("<br/>地址 "+house.getName()+" 导入失败：");

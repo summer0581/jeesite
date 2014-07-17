@@ -1211,7 +1211,7 @@ public class StatsRentService extends BaseService {
 	public Map<String,Object> businessSaleCount4PersonList(Map<String, Object> paramMap) throws Exception{
 
 		paramMap.put("infotype", "businessCount");
-		List<RentMonth> list = getBusinesscutBaseSqlList(paramMap); 
+		List<RentMonth> list = getBusinessCountBaseSqlList(paramMap); 
 		
 		/*******************以下开始生成提成列表数据***********************/
 		Map<String,LinkedHashSet<User>> map = getLevelUsersWithRentinMonths(list,paramMap);
@@ -1326,7 +1326,7 @@ public class StatsRentService extends BaseService {
 		User person = UserUtils.getUserById(personid);
 		
 		paramMap.put("infotype", "businessCount");
-		List<RentMonth> list = getBusinesscutBaseSqlList(paramMap); 
+		List<RentMonth> list = getBusinessCountBaseSqlList(paramMap); 
 		List<Map<String, Object>> rentinRentMonths = new ArrayList<Map<String, Object>>();
 		List<Map<String, Object>> rentoutRentMonths = new ArrayList<Map<String, Object>>();
 		
@@ -1482,7 +1482,16 @@ public class StatsRentService extends BaseService {
 		return result;
 	}
 
-	
+	/**
+	 * 获取完成量统计基础列表
+	 * @param paramMap
+	 * @return
+	 */
+	public List<RentMonth> getBusinessCountBaseSqlList(Map<String, Object> paramMap){
+		List<RentMonth> result = rentMonthDao.getBusinessCountBaseList(paramMap);
+
+		return result;
+	}
 
 	
 	/**

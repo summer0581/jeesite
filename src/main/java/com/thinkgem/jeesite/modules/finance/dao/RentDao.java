@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.thinkgem.jeesite.common.persistence.BaseDao;
@@ -16,6 +17,7 @@ import com.thinkgem.jeesite.common.persistence.Parameter;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
 /**
  * 包租明细DAO接口
@@ -66,6 +68,17 @@ public class RentDao extends BaseDao<Rent> {
 		String rentin_rentmonthmax = (String)paramMap.get("rentin_rentmonthmax");
 		String rentout_rentmonthmin = (String)paramMap.get("rentout_rentmonthmin");
 		String rentout_rentmonthmax = (String)paramMap.get("rentout_rentmonthmax");
+		
+		String rentinperson_id = (String)paramMap.get("rentinperson_id");
+		String rentoutperson_id = (String)paramMap.get("rentoutperson_id");
+		if(StringUtils.isNotBlank(rentinperson_id)){
+			paramMap.put("rentinperson", UserUtils.getUserById(rentinperson_id));
+		}
+		if(StringUtils.isNotBlank(rentoutperson_id)){
+			paramMap.put("rentoutperson", UserUtils.getUserById(rentoutperson_id));
+		}
+		
+
 		String rentout_paytype = (String)paramMap.get("rentout_paytype");
 		
 		StringBuffer sql = new StringBuffer();
@@ -76,7 +89,7 @@ public class RentDao extends BaseDao<Rent> {
 		
 		if(!StringUtils.checkParameterIsAllBlank(paramMap, "rentin_sdatesdate","rentin_sdateedate",
 				"rentin_nextpaysdate","rentin_nextpayedate","rentin_rentmonthmin","rentin_rentmonthmax",
-				"rentin_edatesdate","rentin_edateedate")){
+				"rentin_edatesdate","rentin_edateedate","rentinperson_id")){
 			sql.append("INNER JOIN ( ");
 			//2014.7.12 sql 进行优化，从以前的查询要40多秒，优化到只要1秒不到，主要原因是，以前用的方式是每行去一一比对，现在是全部排序进行比对
 			sql.append("SELECT rm.* FROM  ( ");
@@ -119,14 +132,17 @@ public class RentDao extends BaseDao<Rent> {
 				sql.append("and rm.rentmonth <= :rentin_rentmonthmax   ");
 				sqlparam.put("rentin_rentmonthmax", StringUtils.toInteger(rentin_rentmonthmax));
 			}
-
+			if(StringUtils.isNotBlank(rentinperson_id)){
+				sql.append("and rm.person = :rentinperson_id   ");
+				sqlparam.put("rentinperson_id", rentinperson_id);
+			}
 			
 			sql.append(") rms on r.id = rms.rent_id ");
 		}
 
 		if(!StringUtils.checkParameterIsAllBlank(paramMap, "rentout_sdatesdate","rentout_sdateedate",
 				"rentout_nextpaysdate","rentout_nextpayedate","rentout_rentmonthmin","rentout_rentmonthmax","rentout_paytype",
-				"rentout_edatesdate","rentout_edateedate","rentout_cancelrentsdate","rentout_cancelrentedate")){
+				"rentout_edatesdate","rentout_edateedate","rentout_cancelrentsdate","rentout_cancelrentedate","rentoutperson_id")){
 			sql.append("INNER JOIN ( ");
 			//2014.7.12 sql 进行优化，从以前的查询要40多秒，优化到只要1秒不到，主要原因是，以前用的方式是每行去一一比对，现在是全部排序进行比对
 			sql.append("SELECT rm.* FROM  ( ");
@@ -181,6 +197,11 @@ public class RentDao extends BaseDao<Rent> {
 				sql.append("and rm.paytype = :rentout_paytype   ");
 				sqlparam.put("rentout_paytype", rentout_paytype);
 			}
+			if(StringUtils.isNotBlank(rentoutperson_id)){
+				sql.append("and rm.person = :rentoutperson_id   ");
+				sqlparam.put("rentoutperson_id", rentoutperson_id);
+			}
+			
 			
 			sql.append(") rms2 on r.id = rms2.rent_id ");
 		}

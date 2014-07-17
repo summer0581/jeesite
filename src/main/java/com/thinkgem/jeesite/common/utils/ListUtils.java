@@ -28,6 +28,20 @@ public class ListUtils {
 			return list.get(index);
 		}
 	}
+	
+	/**
+	 * 根据下标返回集合中相应的元素，如果集合为空或者集合大小小于下标，则返回为空
+	 * @param list
+	 * @param index
+	 * @return
+	 */
+	public static <E> E getElementByIndex(List<E> list,int index){
+		if(null != list && list.size() > index){
+			return list.get(index);
+		}else{
+			return null;
+		}
+	}
 	public static void main(String[] args) throws InstantiationException, IllegalAccessException {
 		List<RentMonth> ss = new ArrayList<RentMonth>();
 		RentMonth rentMonth = ListUtils.getStringWithIndex(ss, 0,RentMonth.class);

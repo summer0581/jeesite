@@ -184,21 +184,21 @@ public class RentService extends BaseService {
 		if(null != rent.getHouse() && null == rent.getHouse().getOffice()){
 			if(null != rent.getRentin_busi_departleader() && !StringUtils.isBlank(rent.getRentin_busi_departleader().getLoginName())){
 				rent.getHouse().setOffice(rent.getRentin_busi_departleader().getOffice());
-			}else{
+			}else if(null != rent.getRentin_busi_manager() && !StringUtils.isBlank(rent.getRentin_busi_manager().getLoginName())){
 				rent.getHouse().setOffice(rent.getRentin_busi_manager().getOffice());
 			}
 		}
 		if(null != rent.getLandlord() && null == rent.getLandlord().getOffice()){
 			if(null != rent.getRentin_busi_departleader() && !StringUtils.isBlank(rent.getRentin_busi_departleader().getLoginName())){
 				rent.getLandlord().setOffice(rent.getRentin_busi_departleader().getOffice());
-			}else{
+			}else if(null != rent.getRentin_busi_manager() && !StringUtils.isBlank(rent.getRentin_busi_manager().getLoginName())){
 				rent.getLandlord().setOffice(rent.getRentin_busi_manager().getOffice());
 			}
 		}
 		if(null != rent.getTenant() && null == rent.getTenant().getOffice()){
 			if(null != rent.getRentin_busi_departleader() && !StringUtils.isBlank(rent.getRentin_busi_departleader().getLoginName())){
 				rent.getTenant().setOffice(rent.getRentin_busi_departleader().getOffice());
-			}else{
+			}else if(null != rent.getRentin_busi_manager() && !StringUtils.isBlank(rent.getRentin_busi_manager().getLoginName())){
 				rent.getTenant().setOffice(rent.getRentin_busi_manager().getOffice());
 			}
 		}

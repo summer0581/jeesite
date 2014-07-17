@@ -190,6 +190,14 @@
 					value="${paramMap.rentout_nextpayedate}" onclick="WdatePicker({minDate:'#F{$dp.$D(\'rentout_nextpaysdate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
 		</div>
 		<div>
+			<label>承租业务员：</label>
+				<tags:treeselect id="rentinperson_id" name="rentinperson_id" notAllowSelectParent="true" cssClass="input-small" value="${paramMap.rentinperson.id}" labelName="rentinperson.name" labelValue="${paramMap.rentinperson.name}"
+					title="人员" url="/sys/user/treeData" />
+			<label>出租业务员：</label>
+				<tags:treeselect id="rentoutperson_id" name="rentoutperson_id" notAllowSelectParent="true" cssClass="input-small" value="${paramMap.rentoutperson.id}" labelName="rentoutperson.name" labelValue="${paramMap.rentoutperson.name}"
+					title="人员" url="/sys/user/treeData" />
+		</div>
+		<div>
 			<label>出租提前退租时间：</label>
 			<input id="rentout_cancelrentsdate" name="rentout_cancelrentsdate" type="text"  maxlength="20" class="input-small Wdate"
 					value="${paramMap.rentout_cancelrentsdate}" onclick="WdatePicker({maxDate:'#F{$dp.$D(\'rentout_cancelrentedate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
