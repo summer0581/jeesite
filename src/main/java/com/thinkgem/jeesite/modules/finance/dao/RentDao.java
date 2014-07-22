@@ -142,7 +142,8 @@ public class RentDao extends BaseDao<Rent> {
 
 		if(!StringUtils.checkParameterIsAllBlank(paramMap, "rentout_sdatesdate","rentout_sdateedate",
 				"rentout_nextpaysdate","rentout_nextpayedate","rentout_rentmonthmin","rentout_rentmonthmax","rentout_paytype",
-				"rentout_edatesdate","rentout_edateedate","rentout_cancelrentsdate","rentout_cancelrentedate","rentoutperson_id")){
+				"rentout_edatesdate","rentout_edateedate","rentout_cancelrentsdate","rentout_cancelrentedate","rentoutperson_id",
+				"notcancelrent")){
 			sql.append("INNER JOIN ( ");
 			//2014.7.12 sql 进行优化，从以前的查询要40多秒，优化到只要1秒不到，主要原因是，以前用的方式是每行去一一比对，现在是全部排序进行比对
 			sql.append("SELECT rm.* FROM  ( ");
@@ -201,7 +202,10 @@ public class RentDao extends BaseDao<Rent> {
 				sql.append("and rm.person = :rentoutperson_id   ");
 				sqlparam.put("rentoutperson_id", rentoutperson_id);
 			}
-			
+			String notcancelrent = (String)paramMap.get("notcancelrent");
+			if (StringUtils.isNotEmpty(notcancelrent) && "true".equals(notcancelrent)){
+				sql.append(" and （rm.cancelrentdate is null or rm.cancelrentdate = '')");
+			}
 			
 			sql.append(") rms2 on r.id = rms2.rent_id ");
 		}
@@ -217,6 +221,7 @@ public class RentDao extends BaseDao<Rent> {
 			sql.append(" and r.business_num = :business_num ");
 			sqlparam.put("business_num", business_num);
 		}
+
 		String order = (String)paramMap.get("order");
 		String desc = (String)paramMap.get("desc");
 		if(StringUtils.isBlank(order)){

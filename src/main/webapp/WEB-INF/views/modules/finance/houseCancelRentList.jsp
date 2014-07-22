@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+\<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <html>
 <head>
@@ -57,7 +57,9 @@
 			<th>楼盘</th>
 			<th>房东姓名</th>
 			<th>房东联系方式</th>
-			<th>转账卡号</th>
+			<th>租进租金</th>
+			<th>租出租金</th>
+			<th>租进押金</th>
 			<th>租户姓名</th>
 			<th>租户联系方式</th>
 			<th>组长</th> 
@@ -71,7 +73,9 @@
 				<td>${house.houses}</td>
 				<td>${house.landlord.name}</td>
 				<td>${house.landlord.telephone}</td>
-				<td>${house.debit_card}</td>
+				<td>${house.rent.rentin_rentmonth}</td>
+				<td>${house.rent.rentout_rentmonth}</td>
+				<td>${house.rent.rentin_deposit}</td>
 				<td>${house.tenant.name}</td>
 				<td>${house.tenant.telephone}</td>
 				<td>${house.team_leader.name}</td>

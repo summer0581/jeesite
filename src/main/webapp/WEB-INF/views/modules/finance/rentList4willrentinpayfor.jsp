@@ -26,6 +26,16 @@
 				},{buttonsFocus:1});
 				top.$('.jbox-body .jbox-icon').css('top','55px');
 			});
+			$("#btnExport4zuozhang").click(function(){
+				top.$.jBox.confirm("确认要导出房屋包租数据吗？","系统提示",function(v,h,f){
+					if(v=="ok"){
+						$("#searchForm").attr("action","${ctx}/finance/rent/export4zuozhang");
+						$("#searchForm").submit();
+					}
+				},{buttonsFocus:1});
+				top.$('.jbox-body .jbox-icon').css('top','55px');
+			});
+			
 			$("#btnImport").click(function(){
 				$.jBox($("#importBox").html(), {title:"导入数据", buttons:{"关闭":true}, 
 					bottomText:"导入文件不能超过5M，仅允许导入“xls”或“xlsx”格式文件！"});
@@ -127,6 +137,8 @@
 		&nbsp;<input id="btnShow" class="btn btn-primary" onclick="showOrHidden()" type="button" value="高级查询"/>
 		<shiro:hasPermission name="finance:house:view">
 			&nbsp;<input id="btnExport" class="btn btn-primary" type="button" value="导出"/>
+			&nbsp;<input id="btnExport4zuozhang" class="btn btn-primary" type="button" value="导出做账依据"/>
+			
 		</shiro:hasPermission>
 		<input id="autoPayfor" name="autoPayfor" class="btn btn-primary" type="button" value="批量付租"/>		</div>
 		<div id="pro_search" style="margin-top:10px;${'true' eq paramMap.showHighSearch?'':'display:none;'}">
@@ -220,9 +232,10 @@
 			<th class="th_center">下次付租时间</th>
 			<th class="th_center">月租金</th>
 			<th class="th_center">收款户名</th>
-			<th class="th_center">收款银行及营业网点</th>
+			<th class="th_center" width="55px">收款银行及营业网点</th>
 			<th class="th_center">是否为兴业银行</th>
 			<th class="th_center">应付金额</th>
+			<th class="th_center" width="25px">备注</th>
 			<shiro:hasPermission name="finance:rent:edit"><th rowspan="2" class="th_center">操作</th></shiro:hasPermission>
 		</tr>
 
@@ -246,14 +259,16 @@
 				<td>${rent.rentinMonths[0].rentmonth}</td>
 				<td>${rent.house.receive_username}</td>
 				<td>${rent.house.receive_bank}</td>
-				<td>${rent.house.is_xingyebank}</td>
+				<td>${fns:getDictLabel(rent.house.is_xingyebank, 'yes_no', '')}</td>
 				<td>${rent.rentinMonths[0].nextshouldamount}</td>
+				<td>${rent.rentinMonths[0].nextshouldremark}</td>
 				<shiro:hasPermission name="finance:rent:edit"><td>
 					<a href="#" onclick="submitBatchProcessRentMonth('${rent.id}')">一键付租</a>
     				<a href="${ctx}/finance/rent/form?id=${rent.id}">修改</a>
     				<br/>
 					<a href="${ctx}/finance/rent/delete?id=${rent.id}" onclick="return confirmx('确认要删除该包租明细吗？', this.href)">删除</a>
 				</td></shiro:hasPermission>
+
 			</tr>
 		</c:forEach>		</tbody>
 	</table>

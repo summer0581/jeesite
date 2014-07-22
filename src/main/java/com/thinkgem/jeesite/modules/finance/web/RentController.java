@@ -36,6 +36,7 @@ import com.thinkgem.jeesite.modules.finance.entity.House;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.finance.excel.entity.Excel2House4BatchBank;
+import com.thinkgem.jeesite.modules.finance.excel.entity.Excel2House4ZuoZhang;
 import com.thinkgem.jeesite.modules.finance.excel.entity.Excel2Rent4WillReceive;
 import com.thinkgem.jeesite.modules.finance.service.RentService;
 import com.thinkgem.jeesite.modules.sys.entity.User;
@@ -128,6 +129,8 @@ public class RentController extends BaseController {
 			paramMap.put("rentout_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 7), "yyyy-MM-dd"));
 		}
 		paramMap.put("order", "rms2.nextpaydate");
+		paramMap.put("notcancelrent", "true");
+		
 		Page<Rent> pages = new Page<Rent>(request, response);
 		pages.setPageSize(50);
 		Page<Rent> page = rentService.rentOutListWillNeedPayNextMonth(pages,paramMap);
@@ -150,6 +153,9 @@ public class RentController extends BaseController {
 	@RequestMapping(value = "quickluruhetongform")
 	public String quickluruhetongform(Rent rent, Model model) {
 		model.addAttribute("rent", rent);
+		if(StringUtils.isBlank(rent.getId())){
+			rent.setBusiness_num(rentService.getMaxBusinessNum());
+		}
 		return "modules/finance/rentQuickLuruHetongForm";
 	}
 
@@ -262,6 +268,25 @@ public class RentController extends BaseController {
 		}
 		return "redirect:"+Global.getAdminPath()+"/finance/rentList/?repage";
     }
+	
+	@RequiresPermissions("finance:rent:view")
+    @RequestMapping(value = "export4zuozhang", method=RequestMethod.POST)
+    public String exportFile4Zuozhang(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
+		try {
+            String fileName = "房屋数据(做账依据)"+DateUtils.getDate("yyyyMMddHHmmss")+".xlsx"; 
+            Page<Rent> pages = new Page<Rent>(request, response, -1);
+            pages.setPageSize(2500);
+            Page<Rent> page = rentService.rentInListWillNeedPayNextMonth(pages, paramMap); 
+            List<Rent> rentList = page.getList();
+
+    		new ExportExcel("房屋数据(做账依据)", Excel2House4ZuoZhang.class).setDataList(rentList).write(response, fileName).dispose();
+    		return null;
+		} catch (Exception e) {
+			addMessage(redirectAttributes, "导出房屋失败！失败信息："+e.getMessage());
+		}
+		return "redirect:"+Global.getAdminPath()+"/finance/rentList/?repage";
+    }
+
 	@RequiresPermissions("finance:rent:edit")
     @RequestMapping(value = "import", method=RequestMethod.POST)
     public String importFile(MultipartFile file, RedirectAttributes redirectAttributes) {

@@ -87,7 +87,7 @@ public class Excel2House4BatchBank extends IdEntity<House> {
 		this.temp_index = temp_index;
 	}
 
-	@ExcelField(title="是否兴业银行账户", type=0, align=1, sort=10)
+	@ExcelField(title="是否兴业银行账户", type=0, align=1, sort=10, dictType="yes_no")
 	public String getIs_xingyebank() {
 		return is_xingyebank;
 	}
@@ -119,7 +119,7 @@ public class Excel2House4BatchBank extends IdEntity<House> {
 		this.receive_bank = receive_bank;
 	}
 	
-	@ExcelField(title="是否同城", type=0, align=1, sort=50)
+	@ExcelField(title="是否同城", type=0, align=1, sort=50, dictType="yes_no")
 	public String getIs_samecity() {
 		return is_samecity;
 	}
