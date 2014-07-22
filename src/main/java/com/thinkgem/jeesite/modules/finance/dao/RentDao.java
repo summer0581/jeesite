@@ -204,7 +204,7 @@ public class RentDao extends BaseDao<Rent> {
 			}
 			String notcancelrent = (String)paramMap.get("notcancelrent");
 			if (StringUtils.isNotEmpty(notcancelrent) && "true".equals(notcancelrent)){
-				sql.append(" and （rm.cancelrentdate is null or rm.cancelrentdate = '')");
+				sql.append(" and (rm.cancelrentdate is null or rm.cancelrentdate = '') ");
 			}
 			
 			sql.append(") rms2 on r.id = rms2.rent_id ");
