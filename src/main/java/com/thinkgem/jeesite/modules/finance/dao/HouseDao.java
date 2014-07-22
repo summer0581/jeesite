@@ -111,7 +111,7 @@ public class HouseDao extends BaseDao<House> {
 		sql.append("LEFT JOIN finance_customer c on c.id = h.landlord_name ");
 		sql.append("LEFT JOIN finance_rent r on r.house_id = h.id ");
 		sql.append("LEFT JOIN ( ");
-		sql.append("		SELECT * FROM ( ");
+		sql.append("		SELECT * FROM ( "); 
 		sql.append("				SELECT * FROM finance_rentmonth rm1 ");
 		sql.append("				WHERE rm1.infotype = 'rentout' AND rm1.del_flag = :del_flag ");
 		sql.append("				ORDER BY rm1.create_date DESC ");

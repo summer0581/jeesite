@@ -140,6 +140,9 @@ public class RentController extends BaseController {
 	@RequestMapping(value = "form")
 	public String form(Rent rent, Model model) {
 		model.addAttribute("rent", rent);
+		if(StringUtils.isBlank(rent.getId())){
+			rent.setBusiness_num(rentService.getMaxBusinessNum());
+		}
 		return "modules/finance/rentForm";
 	}
 	//快速录入合同

@@ -218,6 +218,100 @@
 			</div>
 		</div>
 		<div class="control-group">
+			<label class="control-label">产权证号:</label>
+			<div class="controls">
+				<form:input path="prop_certno" htmlEscape="false" maxlength="64" class=""/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">国土证号:</label>
+			<div class="controls">
+				<form:input path="land_certno" htmlEscape="false" maxlength="64" class=""/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">家电家具:</label>
+			<div class="controls">
+				<form:input path="house_elec" htmlEscape="false" maxlength="200" class="input-xxlarge"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">水:</label>
+			<div class="controls">
+				<form:input path="water_num" htmlEscape="false" maxlength="64" class="input-mini digits"/>顿
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">电:</label>
+			<div class="controls">
+				<form:input path="decorate" htmlEscape="false" maxlength="64" class="input-mini digits"/>度
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">户型:</label>
+			<div class="controls">
+				<form:input path="house_layout" htmlEscape="false" maxlength="64" class="input-xxlarge"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">物业用途:</label>
+			<div class="controls">
+				<form:input path="wy_useful" htmlEscape="false" maxlength="200" class="input-xxlarge"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">付款方式:</label>
+			<div class="controls">
+				<form:select path="paytype">
+					<form:option value="" label="请选择"/>
+					<form:options items="${fns:getDictList('finance_rent_paytype')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+				</form:select>
+				
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">结构:</label>
+			<div class="controls">
+				<form:input path="structure" htmlEscape="false" maxlength="200" class="input-xxlarge"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">周边环境:</label>
+			<div class="controls">
+				<form:input path="arrond_environ" htmlEscape="false" maxlength="200" class="input-xxlarge"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">房屋设施:</label>
+			<div class="controls">
+				<form:input path="housing_facilities" htmlEscape="false" maxlength="200" class="input-xxlarge"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">面积描述:</label>
+			<div class="controls">
+				<form:input path="areadescribe" htmlEscape="false" maxlength="200" class="input-xxlarge"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">交通情况:</label>
+			<div class="controls">
+				<form:input path="traffic_condition" htmlEscape="false" maxlength="200" class="input-xxlarge"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">委托门店:</label>
+			<div class="controls">
+				<form:input path="entrust_store" htmlEscape="false" maxlength="64" class=""/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">登记门店:</label>
+			<div class="controls">
+				<form:input path="regist_store" htmlEscape="false" maxlength="64" class=""/>
+			</div>
+		</div>
+		<div class="control-group">
 			<label class="control-label">是否需要下定金:</label>
 			<div class="controls">
 				<form:select path="is_needdeposit">

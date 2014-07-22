@@ -230,4 +230,19 @@ public class RentDao extends BaseDao<Rent> {
 		return findBySql(page, sql.toString(),sqlparam, Rent.class);
 	}
 
+	/**
+	 * 获取系统最大的编号但不包括5位数的
+	 * @return
+	 */
+	public int getMaxBusinessNum(){
+		StringBuffer sql = new StringBuffer();
+		sql.append("select max(r.business_num) maxnum from finance_rent r where LENGTH(r.business_num) <5");
+		List<Map<String,Integer>> resultlist = findBySql(sql.toString(),null,Map.class);
+		if(null != resultlist && resultlist.size()>0){
+			return resultlist.get(0).get("maxnum");
+		}else{
+			return 0;
+		}
+	}
+	
 }

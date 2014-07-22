@@ -68,6 +68,21 @@ public class House extends IdEntity<House> {
 	private String is_samecity;//是否同城
 	private String remit_address;//汇入地址
 	private String house_source;//房屋来源
+	private String prop_certno;//产权证号',
+	private String land_certno;//国土证号',
+	private String house_elec;//家电家具',
+	private String water_num;//水',
+	private String elec_num;//电',
+	private String house_layout;//户型',
+	private String wy_useful;//物业用途',
+	private String paytype;//付款方式',
+	private String structure;//结构',
+	private String arrond_environ;//周边环境',
+	private String housing_facilities;//房屋设施',
+	private String areadescribe;//面积描述',
+	private String traffic_condition;//交通情况',
+	private String entrust_store;//委托门店',
+	private String regist_store;//登记门店',
 	
 	
 	private User team_leader;
@@ -391,6 +406,128 @@ public class House extends IdEntity<House> {
 	public void setHouse_source(String house_source) {
 		this.house_source = house_source;
 	}
+	
+	
+	public String getProp_certno() {
+		return prop_certno;
+	}
+
+	public void setProp_certno(String prop_certno) {
+		this.prop_certno = prop_certno;
+	}
+
+	public String getLand_certno() {
+		return land_certno;
+	}
+
+	public void setLand_certno(String land_certno) {
+		this.land_certno = land_certno;
+	}
+
+	public String getHouse_elec() {
+		return house_elec;
+	}
+
+	public void setHouse_elec(String house_elec) {
+		this.house_elec = house_elec;
+	}
+
+	public String getWater_num() {
+		return water_num;
+	}
+
+	public void setWater_num(String water_num) {
+		this.water_num = water_num;
+	}
+
+	public String getElec_num() {
+		return elec_num;
+	}
+
+	public void setElec_num(String elec_num) {
+		this.elec_num = elec_num;
+	}
+
+	public String getHouse_layout() {
+		return house_layout;
+	}
+
+	public void setHouse_layout(String house_layout) {
+		this.house_layout = house_layout;
+	}
+
+	public String getWy_useful() {
+		return wy_useful;
+	}
+
+	public void setWy_useful(String wy_useful) {
+		this.wy_useful = wy_useful;
+	}
+
+	public String getPaytype() {
+		return paytype;
+	}
+
+	public void setPaytype(String paytype) {
+		this.paytype = paytype;
+	}
+
+	public String getStructure() {
+		return structure;
+	}
+
+	public void setStructure(String structure) {
+		this.structure = structure;
+	}
+
+	public String getArrond_environ() {
+		return arrond_environ;
+	}
+
+	public void setArrond_environ(String arrond_environ) {
+		this.arrond_environ = arrond_environ;
+	}
+
+	public String getHousing_facilities() {
+		return housing_facilities;
+	}
+
+	public void setHousing_facilities(String housing_facilities) {
+		this.housing_facilities = housing_facilities;
+	}
+
+	public String getAreadescribe() {
+		return areadescribe;
+	}
+
+	public void setAreadescribe(String areadescribe) {
+		this.areadescribe = areadescribe;
+	}
+
+	public String getTraffic_condition() {
+		return traffic_condition;
+	}
+
+	public void setTraffic_condition(String traffic_condition) {
+		this.traffic_condition = traffic_condition;
+	}
+
+	public String getEntrust_store() {
+		return entrust_store;
+	}
+
+	public void setEntrust_store(String entrust_store) {
+		this.entrust_store = entrust_store;
+	}
+
+	public String getRegist_store() {
+		return regist_store;
+	}
+
+	public void setRegist_store(String regist_store) {
+		this.regist_store = regist_store;
+	}
+
 	@Transient
 	public String getRent_state() {
 		return rent_state;
@@ -399,6 +536,8 @@ public class House extends IdEntity<House> {
 	public void setRent_state(String rent_state) {
 		this.rent_state = rent_state;
 	}
+	
+	
 	
 }
 

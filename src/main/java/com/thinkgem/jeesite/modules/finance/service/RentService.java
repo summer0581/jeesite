@@ -403,6 +403,13 @@ public class RentService extends BaseService {
 		return (rents.size()>0)?rentDao.findByName(name).get(0):null;
 	}
 	
+	/**
+	 * 获取系统最大的编号但不包括5位数的
+	 * @return
+	 */
+	public int getMaxBusinessNum(){
 
+		return rentDao.getMaxBusinessNum();
+	}
 	
 }
