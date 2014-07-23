@@ -244,7 +244,7 @@
 		<div class="control-group">
 			<label class="control-label">电:</label>
 			<div class="controls">
-				<form:input path="decorate" htmlEscape="false" maxlength="64" class="input-mini digits"/>度
+				<form:input path="elec_num" htmlEscape="false" maxlength="64" class="input-mini digits"/>度
 			</div>
 		</div>
 		<div class="control-group">

@@ -233,7 +233,7 @@
 				<td><fmt:formatDate value="${rent.rentoutMonths[0].nextpaydate}"  pattern="yyyy-MM-dd" /></td>
 				<td>${rent.rentoutMonths[0].rentmonth}</td>
 				<td>${rent.house.tenant.name}(${rent.house.tenant.telephone})</td>
-				<td>${rent.rentinMonths[0].nextshouldamount}</td>
+				<td>${rent.rentoutMonths[0].nextshouldamount}</td>
 				<shiro:hasPermission name="finance:rent:edit"><td>
 					<a href="#" onclick="submitBatchProcessRentMonth('${rent.id}')">一键收租</a>
     				<a href="${ctx}/finance/rent/form?id=${rent.id}">修改</a>

@@ -4,6 +4,7 @@
 package com.thinkgem.jeesite.modules.finance.web;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -61,14 +62,15 @@ public class HouseController extends BaseController {
 	}
 	@RequiresPermissions("finance:house:view")
 	@RequestMapping(value = {"list", ""})
-	public String list(House house, HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String list(@RequestParam Map<String, Object> paramMap,House house, HttpServletRequest request, HttpServletResponse response, Model model) {
 		User user = UserUtils.getUser();
 		if (!user.isAdmin()){
 			house.setCreateBy(user);
 		}
 		Page<House> page = new Page<House>(request, response);
-        page = houseService.find(page, house); 
+        page = houseService.find(page, house, paramMap); 
         model.addAttribute("page", page);
+        model.addAttribute("paramMap",paramMap);
 		return "modules/finance/houseList";
 	}
 	
@@ -161,7 +163,7 @@ public class HouseController extends BaseController {
             String fileName = "房屋数据"+DateUtils.getDate("yyyyMMddHHmmss")+".xlsx"; 
             Page<House> pages = new Page<House>(request, response, -1);
             pages.setPageSize(500);
-    		 Page<House> page = houseService.find(pages, house); 
+    		 Page<House> page = houseService.find(pages, house,null); 
     		new ExportExcel("房屋数据", Excel2House4BatchBank.class).setDataList(page.getList()).write(response, fileName).dispose();
     		return null;
 		} catch (Exception e) {
@@ -177,7 +179,7 @@ public class HouseController extends BaseController {
             String fileName = "房屋数据(为批量导入银行)"+DateUtils.getDate("yyyyMMddHHmmss")+".xlsx"; 
             Page<House> pages = new Page<House>(request, response, -1);
             pages.setPageSize(500);
-    		Page<House> page = houseService.find(pages, house); 
+    		Page<House> page = houseService.find(pages, house,null); 
     		new ExportExcel("房屋数据(为批量导入银行)", House.class, 1,1).setDataList(page.getList()).write(response, fileName).dispose();
     		return null;
 		} catch (Exception e) {

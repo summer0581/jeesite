@@ -235,7 +235,7 @@
 			<th class="th_center" width="55px">收款银行及营业网点</th>
 			<th class="th_center">是否为兴业银行</th>
 			<th class="th_center">应付金额</th>
-			<th class="th_center" width="25px">备注</th>
+			<th class="th_center" >备注</th>
 			<shiro:hasPermission name="finance:rent:edit"><th rowspan="2" class="th_center">操作</th></shiro:hasPermission>
 		</tr>
 

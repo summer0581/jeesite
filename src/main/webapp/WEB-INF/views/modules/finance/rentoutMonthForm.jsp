@@ -100,7 +100,7 @@
 		<div class="control-group">
 			<label class="control-label">下次应收金额:</label>
 			<div class="controls">
-			<form:input path="nextshouldamount" htmlEscape="false" maxlength="64" class="digits"/>		
+			<form:input path="nextshouldamount" htmlEscape="false" maxlength="64" class="number"/>		
 			</div>
 		</div>	
 		<div class="control-group">
@@ -134,7 +134,7 @@
 		<div class="control-group">
 			<label class="control-label">已收金额:</label>
 			<div class="controls">
-				<form:input path="amountreceived" htmlEscape="false" maxlength="64" class="digits"/>
+				<form:input path="amountreceived" htmlEscape="false" maxlength="64" class="number"/>
 			</div>
 		</div>	
 
