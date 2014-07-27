@@ -18,6 +18,7 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.finance.entity.Customer;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.dao.CustomerDao;
+import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
 /**
  * 客户信息Service
@@ -37,7 +38,12 @@ public class CustomerService extends BaseService {
 	
 	public Customer findByName(String name) {
 		List<Customer> customers = customerDao.findByName(name);
-		return (customers.size()>0)?customerDao.findByName(name).get(0):null;
+		return (customers.size()>0)?customers.get(0):null;
+	}
+	
+	public Customer findByNameAndTelephone(String name,String telephone) {
+		List<Customer> customers = customerDao.findByNameAndTelephone(name,telephone);
+		return (customers.size()>0)?customers.get(0):null;
 	}
 	
 	public Page<Customer> find(Page<Customer> page, Customer customer) {
@@ -45,7 +51,9 @@ public class CustomerService extends BaseService {
 		if (StringUtils.isNotEmpty(customer.getName())){
 			dc.add(Restrictions.like("name", "%"+customer.getName()+"%"));
 		}
+		dc.createAlias("office", "office");
 		dc.add(Restrictions.eq(Customer.FIELD_DEL_FLAG, Customer.DEL_FLAG_NORMAL));
+		dc.add(dataScopeFilter(UserUtils.getUser(), "office", ""));
 		dc.addOrder(Order.desc("id"));
 		return customerDao.find(page, dc);
 	}

@@ -260,7 +260,7 @@
 				<td>${rent.house.receive_username}</td>
 				<td>${rent.house.receive_bank}</td>
 				<td>${fns:getDictLabel(rent.house.is_xingyebank, 'yes_no', '')}</td>
-				<td>${rent.rentinMonths[0].nextshouldamount}</td>
+				<td>${rent.rentin_nextshouldamountBydefault}</td>
 				<td>${rent.rentinMonths[0].nextshouldremark}</td>
 				<shiro:hasPermission name="finance:rent:edit"><td>
 					<a href="#" onclick="submitBatchProcessRentMonth('${rent.id}')">一键付租</a>
@@ -270,7 +270,20 @@
 				</td></shiro:hasPermission>
 
 			</tr>
-		</c:forEach>		</tbody>
+		</c:forEach>		
+		
+			<tr>
+				<td colspan="8">总计：</td>
+				<td>${rentsum.rentrentmonthsum}</td>
+				<td></td>
+				<td></td>
+				<td></td>
+				<td>${rentsum.rentnextshouldpaysum}</td>
+				<td></td>
+				<td></td>
+				
+			</tr>
+		</tbody>
 	</table>
 	<div class="pagination">${page}</div>
 </body>

@@ -22,4 +22,8 @@ public class CustomerDao extends BaseDao<Customer> {
 	public List<Customer> findByName(String name){
 		return findBySql("select * from finance_customer c where c.name = :p1", new Parameter(name),Customer.class);
 	}
+	
+	public List<Customer> findByNameAndTelephone(String name,String telephone){
+		return findBySql("select * from finance_customer c where c.name = :p1 and c.telephone = :p2", new Parameter(name,telephone),Customer.class);
+	}
 }

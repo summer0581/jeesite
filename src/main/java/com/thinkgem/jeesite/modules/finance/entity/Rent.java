@@ -794,6 +794,15 @@ public class Rent extends IdEntity<Rent> {
 	public void setLandlord_vacantPeriodsTemp(String vacantPeriods) throws Exception {
 		landlord_vacantPeriodsTemp = vacantPeriods;
 	}
+	//带默认值的租进下次应收金额
+	@Transient
+	public String getRentin_nextshouldamountBydefault() throws Exception {
+		if(StringUtils.isNotBlank(getRentin_nextshouldamount())){
+			return getRentin_nextshouldamount();
+		}else{
+			return getRentin_rentmonth();
+		}
+	}
 
 	
 	public static void main(String[] args){

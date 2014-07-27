@@ -213,8 +213,7 @@
 			<th rowspan="2" class="th_center">编号</th>
 			<th rowspan="2" class="th_center">房屋地址</th>
 			<th colspan="6" class="th_center">承租情况</th>
-			<th colspan="8" class="th_center">出租情况</th>
-			<th rowspan="2" class="th_center">每月利润</th>
+			<th colspan="9" class="th_center">出租情况</th>
 			<shiro:hasPermission name="finance:rent:edit"><th rowspan="2" class="th_center">操作</th></shiro:hasPermission>
 		</tr>
 		<tr>
@@ -228,6 +227,7 @@
 			<th>业务员</th>
 			<th>付款方式</th>
 			<th>出租时间</th>
+			<th>押金</th>
 			<th>月租金</th>
 			<th>已付月份</th>
 			<th>已收金额</th>
@@ -250,12 +250,12 @@
 				<td>${rent.rentoutMonths[0].person.name}</td>
 				<td>${fns:getDictLabel(rent.rentoutMonths[0].paytype, 'finance_rent_paytype', '')}</td>
 				<td><fmt:formatDate value="${rent.rentoutMonths[0].sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentoutMonths[0].edate}" pattern="yyyy-MM-dd"/></td>
+				<td>${rent.rentoutMonths[0].deposit}</td>
 				<td>${rent.rentoutMonths[0].rentmonth}</td>
 				<td><fmt:formatDate value="${rent.rentoutMonths[0].lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentoutMonths[0].lastpayedate}" pattern="yyyy-MM-dd"/></td>
 				<td>${rent.rentoutMonths[0].amountreceived}</td>
 				<td><fmt:formatDate value="${rent.rentoutMonths[0].nextpaydate}"  pattern="yyyy-MM-dd" /></td>
 				<td><fmt:formatDate value="${rent.rentoutMonths[0].cancelrentdate}"  pattern="yyyy-MM-dd" /></td>
-				<td>${rent.rentoutMonths[0].rentmonth-rent.rentinMonths[0].rentmonth}</td>
 				<shiro:hasPermission name="finance:rent:edit"><td>
     				<a href="${ctx}/finance/rent/form?id=${rent.id}">修改</a>
     				<br/>

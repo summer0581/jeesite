@@ -21,6 +21,7 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.finance.dao.CustomerDao;
 import com.thinkgem.jeesite.modules.finance.dao.HouseDao;
 import com.thinkgem.jeesite.modules.finance.dao.RentMonthDao;
+import com.thinkgem.jeesite.modules.finance.entity.Customer;
 import com.thinkgem.jeesite.modules.finance.entity.House;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
@@ -251,11 +252,9 @@ public class HouseService extends BaseService {
 	
 	@Transactional(readOnly = false)
 	public void save4ExcelImport(House house) {
-		List<House> hlist = houseDao.findByName(house.getName());
-		House temphouse = null;
-		if(null != hlist && hlist.size() > 0){
-			temphouse = hlist.get(0);
-		}
+
+		House temphouse = findByName(house.getName());
+
 		if(null == house.getOffice()){//当新增记录时，将组长的部门设置给当前房子。
 			if(null != temphouse){
 				house.setOffice(temphouse.getOffice());
@@ -266,11 +265,28 @@ public class HouseService extends BaseService {
 			if(null != temphouse){
 				house.setLandlord(temphouse.getLandlord());
 			}
+		}else{//如果是带了房东，则要根据姓名和电话进行查询，看此房东是否已经存在
+			List<Customer> tempcustomer = customerDao.findByNameAndTelephone(house.getLandlord().getName(), house.getLandlord().getTelephone());
+			if(tempcustomer.size()>0){
+				house.getLandlord().setId(tempcustomer.get(0).getId());
+				if(null != temphouse.getOffice()){
+					house.getLandlord().setOffice(temphouse.getOffice());
+				}
+			}
 		}
 		if(null == house.getTenant() ){//租户很有可能只带有id，需要在这里自动查询一次
 			if(null != temphouse){
 				house.setTenant(temphouse.getTenant());
 			}
+		}else{//如果是带了房东，则要根据姓名和电话进行查询，看此房东是否已经存在
+			List<Customer> tempcustomer = customerDao.findByNameAndTelephone(house.getTenant().getName(), house.getTenant().getTelephone());
+			if(tempcustomer.size()>0){
+				house.getTenant().setId(tempcustomer.get(0).getId());
+				if(null != temphouse.getOffice()){
+					house.getTenant().setOffice(temphouse.getOffice());
+				}
+			}
+
 		}
 		houseDao.save(house);
 	}

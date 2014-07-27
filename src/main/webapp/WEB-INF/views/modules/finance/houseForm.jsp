@@ -88,6 +88,12 @@
 			</div>
 		</div>
 		<div class="control-group">
+			<label class="control-label">房东联系电话:</label>
+			<div class="controls">
+				<form:input path="landlord.telephone" htmlEscape="false" maxlength="64" class=""/>
+			</div>
+		</div>
+		<div class="control-group">
 			<label class="control-label">转帐卡号:</label>
 			<div class="controls">
 				<form:input path="debit_card" htmlEscape="false" maxlength="64" class="input-xxlarge"/>
@@ -122,6 +128,12 @@
 						});
 					});
 				</script>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">租户联系电话:</label>
+			<div class="controls">
+				<form:input path="tenant.telephone" htmlEscape="false" maxlength="64" class=""/>
 			</div>
 		</div>
 		<div class="control-group">

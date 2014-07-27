@@ -4,10 +4,10 @@
 package com.thinkgem.jeesite.modules.finance.dao;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.thinkgem.jeesite.common.persistence.BaseDao;
@@ -17,6 +17,7 @@ import com.thinkgem.jeesite.common.persistence.Parameter;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
+import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
 /**
@@ -48,7 +49,44 @@ public class RentDao extends BaseDao<Rent> {
 	 * @return
 	 */
 	public Page<Rent> rentList(Page<Rent> page,Map<String, Object> paramMap) {
+		Map<String,Object> result = createRentListBaseSql("r.*",paramMap);
+		String sql = (String)result.get("sql"); 
+		Parameter sqlparam = (Parameter)result.get("sqlparam"); 
+		
+		return findBySql(page, sql,sqlparam, Rent.class);
+	}
+	
+	/**
+	 * 包租表的承租金额字段总计查询合查询
+	 * @param page
+	 * @param paramMap
+	 * @return
+	 */
+	public Map<String,String> rentListSumColumn(Map<String, Object> paramMap,RentMonth.INFOTYPE infotype) {
+		String sumcolumnSql = "";
+		if(RentMonth.INFOTYPE.rentin.equals(infotype)){
+			sumcolumnSql = "sum(rms.rentmonth) rentrentmonthsum,sum(if(''=rms.nextshouldamount,rms.rentmonth,rms.nextshouldamount)) rentnextshouldpaysum";
+		}else{
+			sumcolumnSql = "sum(rms2.rentmonth) rentrentmonthsum,sum(rms2.nextshouldamount) rentnextshouldpaysum";
+		}
+		Map<String,Object> result = createRentListBaseSql(sumcolumnSql,paramMap);
+		String sql = (String)result.get("sql"); 
+		Parameter sqlparam = (Parameter)result.get("sqlparam"); 
+		List<Map<String,String>> resultList = findBySql(sql,sqlparam, Map.class);
+		if(null != resultList && resultList.size() > 0){
+			return resultList.get(0);
+		}
+		return new HashMap<String,String>();
+	}
 
+	
+	/**
+	 * 构建rentlist的基本查询语句
+	 * @param selectcolumn
+	 * @param paramMap
+	 * @return
+	 */
+	public Map<String,Object> createRentListBaseSql(String selectcolumn,Map<String, Object> paramMap){
 		Date rentin_sdatesdate = DateUtils.parseDate(paramMap.get("rentin_sdatesdate"));
 		Date rentin_sdateedate = DateUtils.parseDate(paramMap.get("rentin_sdateedate"));
 		Date rentout_sdatesdate = DateUtils.parseDate(paramMap.get("rentout_sdatesdate"));
@@ -82,9 +120,10 @@ public class RentDao extends BaseDao<Rent> {
 		String rentout_paytype = (String)paramMap.get("rentout_paytype");
 		
 		StringBuffer sql = new StringBuffer();
-		Parameter sqlparam = new Parameter(); 
+		Parameter sqlparam = new Parameter();
+		Map<String,Object> result = new HashMap<String,Object>();
 		sql.append(" ");
-		sql.append("select r.* ");
+		sql.append("select "+selectcolumn+" ");
 		sql.append("from finance_rent r ");
 		
 		if(!StringUtils.checkParameterIsAllBlank(paramMap, "rentin_sdatesdate","rentin_sdateedate",
@@ -231,8 +270,9 @@ public class RentDao extends BaseDao<Rent> {
 			desc = "";
 		}
 		sql.append("order by "+order+" "+desc);
-		
-		return findBySql(page, sql.toString(),sqlparam, Rent.class);
+		result.put("sql", sql.toString());
+		result.put("sqlparam", sqlparam);
+		return result;
 	}
 
 	/**

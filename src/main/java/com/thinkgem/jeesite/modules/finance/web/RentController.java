@@ -110,9 +110,11 @@ public class RentController extends BaseController {
 		Page<Rent> pages = new Page<Rent>(request, response);
 		pages.setPageSize(50);
 		Page<Rent> page = rentService.rentInListWillNeedPayNextMonth(pages,paramMap);
+		Map<String,String> rentsum = rentService.rentListSumColumn(paramMap,RentMonth.INFOTYPE.rentin);
 		model.addAttribute("page", page);
 		model.addAttribute("sysdate", new Date());
 		model.addAttribute("paramMap", paramMap);
+		model.addAttribute("rentsum", rentsum);
 		return "modules/finance/rentList4willrentinpayfor";
 	}
 
@@ -134,9 +136,11 @@ public class RentController extends BaseController {
 		Page<Rent> pages = new Page<Rent>(request, response);
 		pages.setPageSize(50);
 		Page<Rent> page = rentService.rentOutListWillNeedPayNextMonth(pages,paramMap);
+		Map<String,String> rentsum = rentService.rentListSumColumn(paramMap,RentMonth.INFOTYPE.rentout);
 		model.addAttribute("page", page);
 		model.addAttribute("sysdate", new Date());
 		model.addAttribute("paramMap", paramMap);
+		model.addAttribute("rentsum", rentsum);
 		return "modules/finance/rentList4willrentoutreceive";
 	}
 	@RequiresPermissions("finance:rent:view")

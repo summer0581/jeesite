@@ -331,6 +331,16 @@ public class RentService extends BaseService {
 		Page<Rent> pagerent = rentDao.rentList(pages, paramMap);
 		return pagerent;
 	}
+	
+	/**
+	 * 获取包租列表字段总计数
+	 * @param paramMap
+	 * @return
+	 */
+	public Map<String,String> rentListSumColumn(Map<String, Object> paramMap,RentMonth.INFOTYPE infotype){
+		return rentDao.rentListSumColumn( paramMap,infotype);
+	}
+	
 
 	
 	public Page<Rent> rentList(Page<Rent> page,Map<String, Object> paramMap) {

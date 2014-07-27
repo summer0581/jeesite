@@ -241,7 +241,17 @@
 					<a href="${ctx}/finance/rent/delete?id=${rent.id}" onclick="return confirmx('确认要删除该包租明细吗？', this.href)">删除</a>
 				</td></shiro:hasPermission>
 			</tr>
-		</c:forEach>		</tbody>
+		</c:forEach>
+			<tr>
+				<td colspan="8">总计：</td>
+				<td>${rentsum.rentrentmonthsum}</td>
+				<td></td>
+				<td>${rentsum.rentnextshouldpaysum}</td>
+				<td></td>
+				<td></td>
+			</tr>
+				
+		</tbody>
 	</table>
 	<div class="pagination">${page}</div>
 </body>

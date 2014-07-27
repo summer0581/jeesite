@@ -55,7 +55,7 @@ public class Excel2House4ZuoZhang extends IdEntity<House> {
 	}
 
 	@ExcelField(title="应付金额", type=0, align=1, sort=60)
-	public String getRentin_nextshouldamount() throws Exception {
+	public String getRentin_nextshouldamountBydefault() throws Exception {
 		return "";
 	}
 
