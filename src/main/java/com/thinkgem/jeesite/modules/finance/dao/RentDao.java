@@ -284,7 +284,7 @@ public class RentDao extends BaseDao<Rent> {
 		sql.append("select max(r.business_num) maxnum from finance_rent r where LENGTH(r.business_num) <5");
 		List<Map<String,Integer>> resultlist = findBySql(sql.toString(),null,Map.class);
 		if(null != resultlist && resultlist.size()>0){
-			return resultlist.get(0).get("maxnum");
+			return resultlist.get(0).get("maxnum")+1;
 		}else{
 			return 0;
 		}

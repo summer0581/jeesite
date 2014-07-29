@@ -114,7 +114,7 @@ public class House extends IdEntity<House> {
 		this.busi_id = busi_id;
 	}
 	
-	@ExcelField(title="序号", type=1, align=1, sort=10,groups={1})
+	
 	@Transient
 	public int getTemp_index() {
 		return temp_index;
@@ -124,7 +124,7 @@ public class House extends IdEntity<House> {
 		this.temp_index = temp_index;
 	}
 
-	@ExcelField(title="地址", type=0, align=1, sort=20,groups={1})
+	@ExcelField(title="地址", type=0, align=1, sort=20)
 	public String getName() {
 		return name;
 	}
@@ -134,7 +134,7 @@ public class House extends IdEntity<House> {
 	}
 	
 	@Transient
-	@ExcelField(title="承租租金", type=1, align=1, sort=25,groups={1})
+	@ExcelField(title="承租租金", type=1, align=1, sort=25)
 	public String getRentin_rentmonth() throws Exception {
 		return rent.getRentin_rentmonth();
 	}
@@ -352,7 +352,7 @@ public class House extends IdEntity<House> {
 	public void setIs_xingyebank(String is_xingyebank) {
 		this.is_xingyebank = is_xingyebank;
 	}
-	@ExcelField(title="收款户名", type=0, align=1, sort=210,groups={1})
+	@ExcelField(title="收款户名", type=0, align=1, sort=210)
 	public String getReceive_username() {
 		return receive_username;
 	}
@@ -360,7 +360,7 @@ public class House extends IdEntity<House> {
 	public void setReceive_username(String receive_username) {
 		this.receive_username = receive_username;
 	}
-	@ExcelField(title="收款银行及营业网点", type=0, align=1, sort=220,groups={1})
+	@ExcelField(title="收款银行及营业网点", type=0, align=1, sort=220)
 	public String getReceive_bank() {
 		return receive_bank;
 	}
@@ -368,7 +368,7 @@ public class House extends IdEntity<House> {
 	public void setReceive_bank(String receive_bank) {
 		this.receive_bank = receive_bank;
 	}
-	@ExcelField(title="是否同城", type=0, align=1, sort=230,groups={1}, dictType="yes_no")
+	@ExcelField(title="是否同城", type=0, align=1, sort=230, dictType="yes_no")
 	public String getIs_samecity() {
 		return is_samecity;
 	}
@@ -376,7 +376,7 @@ public class House extends IdEntity<House> {
 	public void setIs_samecity(String is_samecity) {
 		this.is_samecity = is_samecity;
 	}
-	@ExcelField(title="汇入地址", type=0, align=1, sort=240,groups={1})
+	@ExcelField(title="汇入地址", type=0, align=1, sort=240)
 	public String getRemit_address() {
 		return remit_address;
 	}
@@ -385,7 +385,7 @@ public class House extends IdEntity<House> {
 		this.remit_address = remit_address;
 	}
 	@Transient
-	@ExcelField(title="应付金额", type=1, align=1, sort=245,groups={1})
+	@ExcelField(title="应付金额", type=1, align=1, sort=245)
 	public String getRent_nextshouldpay() throws Exception {
 		if(StringUtils.isNotBlank(rent.getRentin().getNextshouldamount())){
 			return rent.getRentin().getNextshouldamount();
@@ -394,7 +394,7 @@ public class House extends IdEntity<House> {
 		}
 	}
 	@Transient
-	@ExcelField(title="应付备注", type=1, align=1, sort=247,groups={1})
+	@ExcelField(title="应付备注", type=1, align=1, sort=247)
 	public String getRent_remarks() throws Exception {
 		return rent.getRentin().getRemarks();
 	}
@@ -407,7 +407,7 @@ public class House extends IdEntity<House> {
 		this.house_source = house_source;
 	}
 	
-	
+	@ExcelField(title="产权证号", type=0, align=1, sort=260)
 	public String getProp_certno() {
 		return prop_certno;
 	}
@@ -415,7 +415,7 @@ public class House extends IdEntity<House> {
 	public void setProp_certno(String prop_certno) {
 		this.prop_certno = prop_certno;
 	}
-
+	@ExcelField(title="国土证号", type=0, align=1, sort=270)
 	public String getLand_certno() {
 		return land_certno;
 	}
@@ -423,7 +423,7 @@ public class House extends IdEntity<House> {
 	public void setLand_certno(String land_certno) {
 		this.land_certno = land_certno;
 	}
-
+	@ExcelField(title="家电家具", type=0, align=1, sort=280)
 	public String getHouse_elec() {
 		return house_elec;
 	}
@@ -431,7 +431,7 @@ public class House extends IdEntity<House> {
 	public void setHouse_elec(String house_elec) {
 		this.house_elec = house_elec;
 	}
-
+	@ExcelField(title="水", type=0, align=1, sort=290)
 	public String getWater_num() {
 		return water_num;
 	}
@@ -439,7 +439,7 @@ public class House extends IdEntity<House> {
 	public void setWater_num(String water_num) {
 		this.water_num = water_num;
 	}
-
+	@ExcelField(title="电", type=0, align=1, sort=300)
 	public String getElec_num() {
 		return elec_num;
 	}
@@ -447,7 +447,7 @@ public class House extends IdEntity<House> {
 	public void setElec_num(String elec_num) {
 		this.elec_num = elec_num;
 	}
-
+	@ExcelField(title="户型", type=0, align=1, sort=310)
 	public String getHouse_layout() {
 		return house_layout;
 	}
@@ -455,7 +455,7 @@ public class House extends IdEntity<House> {
 	public void setHouse_layout(String house_layout) {
 		this.house_layout = house_layout;
 	}
-
+	@ExcelField(title="物业用途", type=0, align=1, sort=320)
 	public String getWy_useful() {
 		return wy_useful;
 	}
@@ -463,7 +463,7 @@ public class House extends IdEntity<House> {
 	public void setWy_useful(String wy_useful) {
 		this.wy_useful = wy_useful;
 	}
-
+	@ExcelField(title="付款方式", type=0, align=1, sort=330)
 	public String getPaytype() {
 		return paytype;
 	}
@@ -471,7 +471,7 @@ public class House extends IdEntity<House> {
 	public void setPaytype(String paytype) {
 		this.paytype = paytype;
 	}
-
+	@ExcelField(title="结构", type=0, align=1, sort=340)
 	public String getStructure() {
 		return structure;
 	}
@@ -479,7 +479,7 @@ public class House extends IdEntity<House> {
 	public void setStructure(String structure) {
 		this.structure = structure;
 	}
-
+	@ExcelField(title="周边环境", type=0, align=1, sort=350)
 	public String getArrond_environ() {
 		return arrond_environ;
 	}
@@ -487,7 +487,7 @@ public class House extends IdEntity<House> {
 	public void setArrond_environ(String arrond_environ) {
 		this.arrond_environ = arrond_environ;
 	}
-
+	@ExcelField(title="房屋设置", type=0, align=1, sort=360)
 	public String getHousing_facilities() {
 		return housing_facilities;
 	}
@@ -495,7 +495,7 @@ public class House extends IdEntity<House> {
 	public void setHousing_facilities(String housing_facilities) {
 		this.housing_facilities = housing_facilities;
 	}
-
+	@ExcelField(title="面积描述", type=0, align=1, sort=370)
 	public String getAreadescribe() {
 		return areadescribe;
 	}
@@ -503,7 +503,7 @@ public class House extends IdEntity<House> {
 	public void setAreadescribe(String areadescribe) {
 		this.areadescribe = areadescribe;
 	}
-
+	@ExcelField(title="交通情况", type=0, align=1, sort=380)
 	public String getTraffic_condition() {
 		return traffic_condition;
 	}
@@ -511,7 +511,7 @@ public class House extends IdEntity<House> {
 	public void setTraffic_condition(String traffic_condition) {
 		this.traffic_condition = traffic_condition;
 	}
-
+	@ExcelField(title="委托门店", type=0, align=1, sort=390)
 	public String getEntrust_store() {
 		return entrust_store;
 	}
@@ -519,7 +519,7 @@ public class House extends IdEntity<House> {
 	public void setEntrust_store(String entrust_store) {
 		this.entrust_store = entrust_store;
 	}
-
+	@ExcelField(title="登记门店", type=0, align=1, sort=400)
 	public String getRegist_store() {
 		return regist_store;
 	}

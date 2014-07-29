@@ -164,7 +164,7 @@ public class HouseController extends BaseController {
             Page<House> pages = new Page<House>(request, response, -1);
             pages.setPageSize(500);
     		 Page<House> page = houseService.find(pages, house,null); 
-    		new ExportExcel("房屋数据", Excel2House4BatchBank.class).setDataList(page.getList()).write(response, fileName).dispose();
+    		new ExportExcel("房屋数据", House.class).setDataList(page.getList()).write(response, fileName).dispose();
     		return null;
 		} catch (Exception e) {
 			addMessage(redirectAttributes, "导出房屋失败！失败信息："+e.getMessage());
@@ -180,7 +180,7 @@ public class HouseController extends BaseController {
             Page<House> pages = new Page<House>(request, response, -1);
             pages.setPageSize(500);
     		Page<House> page = houseService.find(pages, house,null); 
-    		new ExportExcel("房屋数据(为批量导入银行)", House.class, 1,1).setDataList(page.getList()).write(response, fileName).dispose();
+    		new ExportExcel("房屋数据(为批量导入银行)", Excel2House4BatchBank.class, 1,1).setDataList(page.getList()).write(response, fileName).dispose();
     		return null;
 		} catch (Exception e) {
 			addMessage(redirectAttributes, "导出房屋失败！失败信息："+e.getMessage());
