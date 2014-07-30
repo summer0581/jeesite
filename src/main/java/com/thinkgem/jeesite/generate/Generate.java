@@ -44,9 +44,9 @@ public class Generate {
 		
 		String moduleName = "finance";			// 模块名，例：sys
 		String subModuleName = "";				// 子模块名（可选） 
-		String className = "Cutconfig";			// 类名，例：user
+		String className = "HouseAreaRole";			// 类名，例：user
 		String classAuthor = "夏天";		// 类作者，例：ThinkGem
-		String functionName = "包租提成设置";			// 功能名，例：用户
+		String functionName = "房屋区域权限设置";			// 功能名，例：用户
 
 		// 是否启用生成工具
 		Boolean isEnable = true;			

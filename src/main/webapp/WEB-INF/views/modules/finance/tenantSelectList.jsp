@@ -19,9 +19,9 @@
 					}
 				}
 				$(this).click(function(){
-					var id = $(this).val(), title = $(this).attr("title");
+					var id = $(this).val(), title = $(this).attr("title"), telephone = $(this).attr("telephone");
 					if (top.mainFrame.financeMainFrame){
-						top.mainFrame.financeMainFrame.tenantSelectAddOrDel(id, title);
+						top.mainFrame.financeMainFrame.tenantSelectAddOrDel(id, title, telephone);
 					}else{
 						top.mainFrame.tenantSelectAddOrDel(id, title);
 					}
@@ -58,7 +58,7 @@
 		<tbody>
 		<c:forEach items="${page.list}" var="customer">
 			<tr>
-				<td style="text-align:center;"><input type="radio" name="id" value="${customer.id}" title="${fns:abbr(customer.name,40)}" /></td>
+				<td style="text-align:center;"><input type="radio" name="id" value="${customer.id}" title="${fns:abbr(customer.name,40)}" telephone="${customer.telephone}"/></td>
 				<td>${customer.name}</td>
 				<td>${fns:getDictLabel(customer.sex, 'sys_user_sex', '未知')}</td>
 				<td>${customer.telephone}</td>

@@ -18,12 +18,12 @@
 						this.checked = true;
 					}
 				}
-				$(this).click(function(){
-					var id = $(this).val(), title = $(this).attr("title");
+				$(this).click(function(){debugger;
+					var id = $(this).val(), title = $(this).attr("title"), telephone = $(this).attr("telephone");
 					if (top.mainFrame.financeMainFrame){
-						top.mainFrame.financeMainFrame.customerSelectAddOrDel(id, title);
+						top.mainFrame.financeMainFrame.customerSelectAddOrDel(id, title, telephone);
 					}else{
-						top.mainFrame.customerSelectAddOrDel(id, title);
+						top.mainFrame.customerSelectAddOrDel(id, title, telephone);
 					}
 				});
 			});
@@ -57,7 +57,7 @@
 		<tbody>
 		<c:forEach items="${page.list}" var="customer">
 			<tr>
-				<td style="text-align:center;"><input type="radio" name="id" value="${customer.id}" title="${fns:abbr(customer.name,40)}" /></td>
+				<td style="text-align:center;"><input type="radio" name="id" value="${customer.id}" title="${fns:abbr(customer.name,40)}" telephone="${customer.telephone}"/></td>
 				<td>${customer.name}</td>
 				<td>${fns:getDictLabel(customer.sex, 'sys_user_sex', '未知')}</td>
 				<td>${customer.telephone}</td>

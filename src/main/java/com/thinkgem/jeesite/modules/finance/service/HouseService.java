@@ -19,10 +19,12 @@ import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.BaseService;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.finance.dao.CustomerDao;
+import com.thinkgem.jeesite.modules.finance.dao.HouseAreaRoleDao;
 import com.thinkgem.jeesite.modules.finance.dao.HouseDao;
 import com.thinkgem.jeesite.modules.finance.dao.RentMonthDao;
 import com.thinkgem.jeesite.modules.finance.entity.Customer;
 import com.thinkgem.jeesite.modules.finance.entity.House;
+import com.thinkgem.jeesite.modules.finance.entity.HouseAreaRole;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
 /**
@@ -39,6 +41,9 @@ public class HouseService extends BaseService {
 	
 	@Autowired
 	private CustomerDao customerDao;
+	
+	@Autowired
+	private HouseAreaRoleDao houseAreaRoleDao;
 	
 	@Autowired
 	private RentMonthDao rentMonthDao;
@@ -166,8 +171,15 @@ public class HouseService extends BaseService {
 		
 		dc.createAlias("landlord", "landlord", JoinType.LEFT_OUTER_JOIN);
 		dc.createAlias("tenant", "tenant", JoinType.LEFT_OUTER_JOIN);
+		
+		HouseAreaRole houseAreaRole = houseAreaRoleDao.findByPerson(UserUtils.getUser().getId());
+		if(null == houseAreaRole || StringUtils.isBlank(houseAreaRole.getAreas())){//房屋查询可以设置区域查询权限
+			dc.add(dataScopeFilter(UserUtils.getUser(), "office", ""));
+		}else{
+			dc.add(Restrictions.or(dataScopeFilter(UserUtils.getUser(), "office", ""),Restrictions.in("houses", houseAreaRole.getAreas().split(","))));
+		}
 
-		dc.add(dataScopeFilter(UserUtils.getUser(), "office", ""));
+		
 		dc.add(Restrictions.eq(House.FIELD_DEL_FLAG, House.DEL_FLAG_NORMAL));
 		dc.addOrder(Order.desc("id"));
 		return houseDao.find(page, dc);
@@ -241,9 +253,32 @@ public class HouseService extends BaseService {
 				house.setLandlord(customerDao.get(house.getLandlord().getId()));
 			}
 		}
+		if(null != house.getLandlord() ){
+			if(StringUtils.isBlank(house.getLandlord().getName())){//如果没有房东姓名，则说明，房东为空
+				house.setLandlord(null);
+			}else if(StringUtils.isBlank(house.getLandlord().getId())){//如果姓名不为空，但id为空，则是直接在界面上面输入的姓名，为快速添加客户
+				List<Customer> customerlist = customerDao.findByNameAndTelephone(house.getLandlord().getName(), house.getLandlord().getTelephone());
+				if(customerlist.size() > 0){
+					house.setLandlord(customerlist.get(0));
+				}
+				
+			}
+			
+		}
 		if(null == house.getTenant() || null == house.getTenant().getOffice()){//租户很有可能只带有id，需要在这里自动查询一次
 			if(StringUtils.isNotBlank(house.getTenant().getId())){
 				house.setTenant(customerDao.get(house.getTenant().getId()));
+			}
+		}
+		if(null != house.getTenant()){
+			if(StringUtils.isBlank(house.getTenant().getName())){//如果没有租户姓名，则说明，租户为空
+				house.setTenant(null);
+			}else if(StringUtils.isBlank(house.getTenant().getId())){//如果姓名不为空，但id为空，则是直接在界面上面输入的姓名，为快速添加客户
+				List<Customer> customerlist = customerDao.findByNameAndTelephone(house.getTenant().getName(), house.getTenant().getTelephone());
+				if(customerlist.size() > 0){
+					house.setTenant(customerlist.get(0));
+				}
+				
 			}
 		}
 		houseDao.save(house);

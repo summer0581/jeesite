@@ -22,6 +22,16 @@
 					}
 				}
 			});
+			
+			$("#relationButton_landlordadd").click(function(){
+				$("#landlord_name").removeAttr("readonly");
+				alert("请直接填写【房东姓名】和【房东号码】即可，会自动添加或引用系统中的一个客户");
+			});
+			
+			$("#relationButton_tenantadd").click(function(){
+				$("#tenant_name").removeAttr("readonly");
+				alert("请直接填写【租户姓名】和【租户号码】即可，会自动添加或引用系统中的一个客户");
+			});
 		});
 	</script>
 </head>
@@ -59,13 +69,14 @@
 			<label class="control-label">房东:</label>
 			<div class="controls">
 				<form:hidden id="landlord_id" path="landlord.id" htmlEscape="false" maxlength="64" class="input-xlarge"/>
-				<input id="landlord_name" type="text" value="${house.landlord.name }" maxlength="64" class="input-xlarge" readonly="readonly"/>
+				<input id="landlord_name" name="landlord.name" type="text" value="${house.landlord.name }" maxlength="64" class="input-xlarge" readonly="readonly"/>
 				<a id="relationButton_landlord" href="javascript:" class="btn">选择房东</a>
+				<a id="relationButton_landlordadd" href="javascript:" class="btn">添加房东</a>
 				<script type="text/javascript">
 					var landlordSelect = [];
-					function landlordSelectAddOrDel(id,title){
+					function landlordSelectAddOrDel(id,title,telephone){
 						landlordSelect = []
-						landlordSelect.push([id,title]);
+						landlordSelect.push([id,title,telephone]);
 						landlordSelectRefresh();
 					}
 					function landlordSelectRefresh(){
@@ -74,6 +85,7 @@
 						if(landlordSelect.length > 0){
 							$("#landlord_name").val(landlordSelect[landlordSelect.length-1][1]);
 							$("#landlord_id").val(landlordSelect[landlordSelect.length-1][0]);
+							$("#landlord_telephone").val(landlordSelect[landlordSelect.length-1][2]);
 						}
 					}
 					$("#relationButton_landlord").click(function(){
@@ -90,7 +102,7 @@
 		<div class="control-group">
 			<label class="control-label">房东联系电话:</label>
 			<div class="controls">
-				<form:input path="landlord.telephone" htmlEscape="false" maxlength="64" class=""/>
+				<form:input id="landlord_telephone" path="landlord.telephone" htmlEscape="false" maxlength="64" class=""/>
 			</div>
 		</div>
 		<div class="control-group">
@@ -103,8 +115,9 @@
 			<label class="control-label">租户:</label>
 			<div class="controls">
 				<form:hidden id="tenant_id" path="tenant.id" htmlEscape="false" maxlength="64" class="input-xlarge"/>
-				<input id="tenant_name" type="text" value="${house.tenant.name }" maxlength="64" class="input-xlarge" readonly="readonly"/>
-				<a id="relationButton_tenant" href="javascript:" class="btn">选择房屋</a>
+				<input id="tenant_name" name="tenant.name" type="text" value="${house.tenant.name }" maxlength="64" class="input-xlarge" readonly="readonly"/>
+				<a id="relationButton_tenant" href="javascript:" class="btn">选择租户</a>
+				<a id="relationButton_tenantadd" href="javascript:" class="btn">添加租户</a>
 				<script type="text/javascript">
 					var tenantSelect = [];
 					function tenantSelectAddOrDel(id,title){

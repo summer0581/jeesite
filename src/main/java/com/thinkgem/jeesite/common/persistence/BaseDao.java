@@ -301,8 +301,12 @@ public class BaseDao<T> {
 	 * @param id
 	 * @return
 	 */
-	public int deleteById(Serializable id){
+/*	public int deleteById(Serializable id){
 		return update("update "+entityClass.getSimpleName()+" set delFlag='" + BaseEntity.DEL_FLAG_DELETE + "' where id = :p1", 
+				new Parameter(id));
+	}*/
+	public int deleteById(Serializable id){
+		return update("delete from "+entityClass.getSimpleName()+" where id = :p1", 
 				new Parameter(id));
 	}
 	

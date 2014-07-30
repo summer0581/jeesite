@@ -210,7 +210,7 @@
 			<th class="th_center">业务员</th>
 			<th class="th_center">付款方式</th>
 			<th class="th_center">出租时间</th>
-			<th class="th_center">已付月份</th>
+			<th class="th_center">已收月份</th>
 			<th class="th_center">下次收租时间</th>
 			<th class="th_center">月租金</th>
 			<th class="th_center">租户姓名(电话)</th>
