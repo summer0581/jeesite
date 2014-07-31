@@ -74,6 +74,14 @@ public class RentService extends BaseService {
 	
 	@Transactional(readOnly = false)
 	public void save(Rent rent) {
+		if(null != rent.getHouse() && StringUtils.isNotBlank(rent.getHouse().getName())){
+			//rent.setName(rent.getHouse().getName());
+			if(StringUtils.isNotBlank(rent.getHouse().getId())){
+				rent.setHouse(houseDao.get(rent.getHouse().getId()));
+			}
+		}
+
+		
 		if(null != rent.getSalesman_vacantperiods())
 			for(VacantPeriod vp: rent.getSalesman_vacantperiods()){//批量设置业务员空置期
 				vp.setRent(rent);
@@ -90,6 +98,10 @@ public class RentService extends BaseService {
 				}
 				
 			}
+		if(StringUtils.isBlank(rent.getId())){
+			rent.setRentinMonths(null);
+			rent.setRentoutMonths(null);
+		}
 		if(null != rent.getRentinMonths())
 			for(int i = 0 ;  i < rent.getRentinMonths().size(); i++){//批量设置承租月明细
 				RentMonth r = rent.getRentinMonths().get(i);
@@ -294,10 +306,10 @@ public class RentService extends BaseService {
 	
 	@Transactional(readOnly = false)
 	public void delete(String id) {
-				Rent rent = get(id);
-		rent.getHouse().setId("");
+				//Rent rent = get(id);
+		//rent.getHouse().setId("");
 		//rent.setDelFlag(BaseEntity.DEL_FLAG_DELETE);
-		rentDao.save(rent);
+		//rentDao.save(rent);
 		rentDao.deleteById(id);
 		//rentDao.deleteRent(id);
 	}

@@ -260,6 +260,9 @@ public class HouseService extends BaseService {
 				List<Customer> customerlist = customerDao.findByNameAndTelephone(house.getLandlord().getName(), house.getLandlord().getTelephone());
 				if(customerlist.size() > 0){
 					house.setLandlord(customerlist.get(0));
+				}else{
+					house.getLandlord().prePersist();
+					house.getLandlord().setOffice(UserUtils.getUserById(house.getTeam_leader().getId()).getOffice());
 				}
 				
 			}
@@ -272,11 +275,14 @@ public class HouseService extends BaseService {
 		}
 		if(null != house.getTenant()){
 			if(StringUtils.isBlank(house.getTenant().getName())){//如果没有租户姓名，则说明，租户为空
-				house.setTenant(null);
+				house.setTenant(null); 
 			}else if(StringUtils.isBlank(house.getTenant().getId())){//如果姓名不为空，但id为空，则是直接在界面上面输入的姓名，为快速添加客户
 				List<Customer> customerlist = customerDao.findByNameAndTelephone(house.getTenant().getName(), house.getTenant().getTelephone());
 				if(customerlist.size() > 0){
 					house.setTenant(customerlist.get(0));
+				}else{
+					house.getTenant().prePersist();
+					house.getTenant().setOffice(UserUtils.getUserById(house.getTeam_leader().getId()).getOffice());
 				}
 				
 			}
