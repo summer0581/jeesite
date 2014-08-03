@@ -170,6 +170,7 @@
 			<th>租户姓名</th>
 			<th>租户联系方式</th>
 			<th>组长</th>
+			<th>备注</th>
 			<shiro:hasPermission name="finance:house:edit"><th>操作</th></shiro:hasPermission></tr></thead>
 		<tbody>
 		<c:forEach items="${page.list}" var="house">
@@ -182,6 +183,7 @@
 				<td>${house.tenant.name}</td>
 				<td>${house.tenant.telephone}</td>
 				<td>${house.team_leader.name}</td>
+				<td>${house.remarks}</td>
 				<shiro:hasPermission name="finance:house:edit"><td>
     				<a href="${ctx}/finance/house/form?id=${house.id}">修改</a>
 					<a href="${ctx}/finance/house/delete?id=${house.id}" onclick="return confirmx('确认要删除该房屋明细吗？', this.href)">删除</a>

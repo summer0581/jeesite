@@ -361,7 +361,6 @@ public class Rent extends IdEntity<Rent> {
 	}
 	
 	@Transient
-	@ExcelField(title="承租空置期方案设置", type=0, align=1, sort=105, fieldType=CutconfigEntity.class)
 	public String getRentin_Cut_vacantperiodtype() throws Exception{
 		return getRentin().getCut_vacantperiodtype();
 	}
@@ -371,7 +370,6 @@ public class Rent extends IdEntity<Rent> {
 	}
 	
 	@Transient
-	@ExcelField(title="承租业绩提成方案设置", type=0, align=1, sort=110, fieldType=CutconfigEntity.class)
 	public String getRentin_Cut_businesssaletype() throws Exception{
 		return getRentin().getCut_businesssaletype();
 	}
@@ -399,7 +397,6 @@ public class Rent extends IdEntity<Rent> {
 		getRentin().setNextshouldremark(nextshouldremark);
 	}
 	@Transient
-	@ExcelField(title="承租第几个头期", type=0, align=1, sort=120)
 	public String getRentin_firstmonth_num() throws Exception{
 		return getRentin().getFirstmonth_num();
 	}
@@ -561,6 +558,27 @@ public class Rent extends IdEntity<Rent> {
 	public void setRentout_firstmonth_num(String firstmonth_num) throws Exception {
 		getRentout().setFirstmonth_num(firstmonth_num);
 	}
+	
+	@Transient
+	@ExcelField(title="出租空置期方案设置", type=0, align=1, sort=292, fieldType=CutconfigEntity.class)
+	public String getRentout_Cut_vacantperiodtype() throws Exception{
+		return getRentout().getCut_vacantperiodtype();
+	}
+	
+	public void setRentout_Cut_vacantperiodtype(String cut_vacantperiodtype) throws Exception {
+		getRentout().setCut_vacantperiodtype(cut_vacantperiodtype);
+	}
+	
+	@Transient
+	@ExcelField(title="出租业绩提成方案设置", type=0, align=1, sort=293, fieldType=CutconfigEntity.class)
+	public String getRentout_Cut_businesssaletype() throws Exception{
+		return getRentout().getCut_businesssaletype();
+	}
+	
+	public void setRentout_Cut_businesssaletype(String cut_businesssaletype) throws Exception {
+		getRentout().setCut_businesssaletype(cut_businesssaletype);
+	}
+	
 	@Transient
 	@ExcelField(title="出租下次应收金额", type=0, align=1, sort=295)
 	public String getRentout_nextshouldamount() throws Exception {
@@ -589,6 +607,17 @@ public class Rent extends IdEntity<Rent> {
 	public void setRentout_cancelrentdate(Date cancelrentdate) throws Exception {
 		getRentout().setCancelrentdate(cancelrentdate);
 	}	
+	
+	@Transient
+	@ExcelField(title="出租提前退租备注", type=0, align=1, sort=303)
+	public String getRentout_cancelrentremark() throws Exception {
+		return getRentout().getCancelrentremark();
+	}
+
+	public void setRentout_cancelrentremark(String cancelrentremark) throws Exception {
+		getRentout().setCancelrentremark(cancelrentremark);
+	}	
+
 	
 	@Transient
 	@ExcelField(title="业务员空置期", type=0, align=1, sort=305)

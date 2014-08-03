@@ -23,10 +23,10 @@ public class CutconfigDao extends BaseDao<Cutconfig> {
 	}
 	
 	public List<String> findCutcodeList(){
-		return find("select cut_code from Cutconfig where delFlag=:p1 group by cut_code", new Parameter(Cutconfig.DEL_FLAG_NORMAL));
+		return find("select cut_code from Cutconfig where delFlag=:p1 group by cut_code order by SUBSTR(cut_code,1,4) desc", new Parameter(Cutconfig.DEL_FLAG_NORMAL));
 	}
 	
 	public List<Cutconfig> findCutcodeList(String cut_type){
-		return find("from Cutconfig where delFlag=:p1 and cut_type=:p2 group by cut_code", new Parameter(Cutconfig.DEL_FLAG_NORMAL,cut_type));
+		return findBySql("select * from finance_cutconfig where del_flag=:p1 and cut_type=:p2 group by cut_code order by SUBSTR(cut_code,1,4) desc", new Parameter(Cutconfig.DEL_FLAG_NORMAL,cut_type),Cutconfig.class);
 	}
 }

@@ -23,13 +23,24 @@
 				}
 			});
 			
+			$("#areas_str").focusout(function(i,e){
+				var areas_strs = ","+$("#areas_str").val()+","; 
+				checkByValues($(":checkbox[name='areas']"),areas_strs);
+			})
+			
 			var areas_value = ","+$("#areas_value").val()+","; 
-			$(":checkbox[name='areas']").each(function(i,e){
-				if(areas_value.indexOf(","+$(this).val()+",") != -1){
+			checkByValues($(":checkbox[name='areas']"),areas_value);
+
+		});
+		
+		function checkByValues(checkboxs,values){
+			$(checkboxs).removeAttr("checked");
+			$(checkboxs).each(function(i,e){
+				if(values.indexOf(","+$(this).val()+",") != -1){
 					$(this).attr("checked","true");
 				}
 			})
-		});
+		}
 	</script>
 </head>
 <body>
@@ -50,11 +61,17 @@
 			
 		</div>
 		<div class="control-group">
+			<label class="control-label">快速授予权限的区域<b style="color:red;">（请以[区域,区域,区域]的格式输入指定的区域内容,填写完后请用鼠标点击一下其他地方）</b>:</label>
+			<div class="controls">
+				<form:textarea path="areas_str" htmlEscape="false" rows="4" maxlength="500" style="width:100%;" class="input-xxlarge"/>
+			</div>
+			
+		</div>
+		<div class="control-group">
 			<label class="control-label">授予的查看区域:</label>
 			<div class="controls">
 				<form:checkboxes path="areas" items="${allareas}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 			</div>
-			
 		</div>
 
 		<div class="form-actions">

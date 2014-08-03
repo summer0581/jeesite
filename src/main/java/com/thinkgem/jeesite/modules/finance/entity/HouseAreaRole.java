@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -33,6 +34,7 @@ public class HouseAreaRole extends IdEntity<HouseAreaRole> {
 	
 	private User roleperson;//'权限授予人',
 	private String areas;//'授予的查看区域',
+	private String areas_str;//'授予的查看区域字符串'
 	
 
 	public HouseAreaRole() {
@@ -74,6 +76,15 @@ public class HouseAreaRole extends IdEntity<HouseAreaRole> {
 
 	public void setAreas(String areas) {
 		this.areas = areas;
+	}
+
+	@Transient
+	public String getAreas_str() {
+		return areas;
+	}
+
+	public void setAreas_str(String areas_str) {
+		this.areas_str = areas_str;
 	}
 	
 	

@@ -64,6 +64,7 @@ public class RentMonth extends IdEntity<RentMonth> {
 	private String cut_vacantperiodtype;//空置期提成方案
 	private String cut_businesssaletype;//业绩提成方案
 	private Date cancelrentdate;//提前退租时间
+	private String cancelrentremark;//提前退租备注
 	private String nextshouldamount;//下次应收应付金额
 	private String nextshouldremark;//应收应付备注
 	
@@ -267,6 +268,15 @@ public class RentMonth extends IdEntity<RentMonth> {
 
 	public void setCancelrentdate(Date cancelrentdate) {
 		this.cancelrentdate = cancelrentdate;
+	}
+
+	
+	public String getCancelrentremark() {
+		return cancelrentremark;
+	}
+
+	public void setCancelrentremark(String cancelrentremark) {
+		this.cancelrentremark = cancelrentremark;
 	}
 
 	public String getNextshouldamount() {

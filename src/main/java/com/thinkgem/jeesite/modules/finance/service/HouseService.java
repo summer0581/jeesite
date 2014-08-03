@@ -310,7 +310,7 @@ public class HouseService extends BaseService {
 			List<Customer> tempcustomer = customerDao.findByNameAndTelephone(house.getLandlord().getName(), house.getLandlord().getTelephone());
 			if(tempcustomer.size()>0){
 				house.getLandlord().setId(tempcustomer.get(0).getId());
-				if(null != temphouse.getOffice()){
+				if(null != temphouse && null != temphouse.getOffice()){
 					house.getLandlord().setOffice(temphouse.getOffice());
 				}
 			}
@@ -323,7 +323,7 @@ public class HouseService extends BaseService {
 			List<Customer> tempcustomer = customerDao.findByNameAndTelephone(house.getTenant().getName(), house.getTenant().getTelephone());
 			if(tempcustomer.size()>0){
 				house.getTenant().setId(tempcustomer.get(0).getId());
-				if(null != temphouse.getOffice()){
+				if(null != temphouse && null != temphouse.getOffice()){
 					house.getTenant().setOffice(temphouse.getOffice());
 				}
 			}

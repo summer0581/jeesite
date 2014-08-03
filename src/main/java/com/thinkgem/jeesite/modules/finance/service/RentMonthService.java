@@ -299,7 +299,7 @@ public class RentMonthService extends BaseService {
 				rentMonth.setLastpaysdate(willlastpaysdate);
 				rentMonth.setLastpayedate(willlastpayedate);
 				if(null != rentMonth.getNextpaydate() && null != rentMonth.getLastpayedate())
-					rentMonth.setNextpaydate(DateUtils.addMonths(rentMonth.getLastpayedate(), -RentMonthConstant.PAYFOR_REMIND_DAYS));
+					rentMonth.setNextpaydate(DateUtils.addDays(rentMonth.getLastpayedate(), -RentMonthConstant.PAYFOR_REMIND_DAYS));
 				
 				String amountReceived = String.valueOf(MathUtils.sumInt(rentMonth.getAmountreceived(),String.valueOf(Integer.valueOf(StringUtils.defaultIfBlank(rentMonth.getRentmonth(), "0"))*addMonth)));
 				if(StringUtils.isNotBlank(rentMonth.getNextshouldamount())){//如果设置了下次应付金额，则已收总计是用下次应付金额来累加

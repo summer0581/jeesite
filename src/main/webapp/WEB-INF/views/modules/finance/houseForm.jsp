@@ -25,11 +25,13 @@
 			
 			$("#relationButton_landlordadd").click(function(){
 				$("#landlord_name").removeAttr("readonly");
+				$("#landlord_name,#landlord_id,#landlord_telephone").val("");
 				alert("请直接填写【房东姓名】和【房东号码】即可，会自动添加或引用系统中的一个客户");
 			});
 			
 			$("#relationButton_tenantadd").click(function(){
 				$("#tenant_name").removeAttr("readonly");
+				$("#tenant_name,#tenant_id,#tenant_telephone").val("");
 				alert("请直接填写【租户姓名】和【租户号码】即可，会自动添加或引用系统中的一个客户");
 			});
 		});
