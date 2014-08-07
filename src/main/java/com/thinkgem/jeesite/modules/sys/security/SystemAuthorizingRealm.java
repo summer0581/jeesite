@@ -34,6 +34,7 @@ import com.thinkgem.jeesite.common.servlet.ValidateCodeServlet;
 import com.thinkgem.jeesite.common.utils.Encodes;
 import com.thinkgem.jeesite.common.utils.SpringContextHolder;
 import com.thinkgem.jeesite.modules.sys.entity.Menu;
+import com.thinkgem.jeesite.modules.sys.entity.Role;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.service.SystemService;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
@@ -95,6 +96,13 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 					}
 				}
 			}
+			List<Role> roles = user.getRoleList();
+			for(Role role : roles){
+				if(StringUtils.isNotBlank(role.getName())){
+					info.addRole(role.getName());
+				}
+			}
+			
 			// 更新登录IP和时间
 			getSystemService().updateUserLoginInfo(user.getId());
 			return info;

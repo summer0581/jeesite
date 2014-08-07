@@ -27,16 +27,15 @@ import com.thinkgem.jeesite.common.beanvalidator.BeanValidators;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.mapper.JsonMapper;
 import com.thinkgem.jeesite.common.persistence.Page;
-import com.thinkgem.jeesite.common.utils.CacheUtils;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.utils.excel.ExportExcel;
 import com.thinkgem.jeesite.common.utils.excel.ImportExcel;
 import com.thinkgem.jeesite.common.web.BaseController;
 import com.thinkgem.jeesite.modules.finance.entity.House;
-import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.finance.excel.entity.Excel2House4BatchBank;
 import com.thinkgem.jeesite.modules.finance.service.HouseService;
+import com.thinkgem.jeesite.modules.sys.entity.Role;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
@@ -67,6 +66,11 @@ public class HouseController extends BaseController {
 		if (!user.isAdmin()){
 			house.setCreateBy(user);
 		}
+		List<Role> roles = user.getRoleList();
+		if(user.isAdmin() || !(0 == roles.size() || (1 == roles.size() && Role.DATA_SCOPE_SELF.equals(roles.get(0).getDataScope())))){
+			model.addAttribute("allColumnShow", "true");
+		}
+		
 		Page<House> page = new Page<House>(request, response);
         page = houseService.find(page, house, paramMap); 
         model.addAttribute("page", page);
@@ -107,6 +111,12 @@ public class HouseController extends BaseController {
 	@RequiresPermissions("finance:house:view")
 	@RequestMapping(value = "form")
 	public String form(House house, Model model) {
+		User user = UserUtils.getUser();
+		List<Role> roles = user.getRoleList();
+		if(user.isAdmin() || !(0 == roles.size() || (1 == roles.size() && Role.DATA_SCOPE_SELF.equals(roles.get(0).getDataScope())))){
+			model.addAttribute("allColumnShow", "true");
+		}
+		model.addAttribute("isSuperEditRole", houseService.isSuperEditRole());
 		model.addAttribute("house", house);
 		return "modules/finance/houseForm";
 	}
@@ -205,9 +215,6 @@ public class HouseController extends BaseController {
 						continue;
 					temphouse = houseService.findByName(house.getName());
 					if (null == temphouse){
-						if(null == house.getOffice() ){
-							house.setOffice(UserUtils.getUser().getOffice());
-						}
 						if(null != house.getLandlord() && null == house.getLandlord().getOffice()){
 							house.getLandlord().setOffice(UserUtils.getUser().getOffice());
 						}

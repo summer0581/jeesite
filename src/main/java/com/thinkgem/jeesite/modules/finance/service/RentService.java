@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.service.BaseService;
-import com.thinkgem.jeesite.common.utils.CacheUtils;
 import com.thinkgem.jeesite.common.utils.EntityUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.finance.dao.CustomerDao;
@@ -28,6 +27,7 @@ import com.thinkgem.jeesite.modules.finance.dao.VacantPeriodDao;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.finance.entity.VacantPeriod;
+import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
 /**
@@ -133,7 +133,6 @@ public class RentService extends BaseService {
 		rent.setLandlord_vacantPeriods(rent.getLandlord_vacantPeriodsTemp());
 		if(null != rent.getHouse() && StringUtils.isNotBlank(rent.getHouse().getName()) && StringUtils.isBlank(rent.getHouse().getId())){//房子如果是新增的，则初始化
 			rent.getHouse().prePersist();
-			rent.getHouse().setOffice(rent.getRentin_busi_departleader().getOffice());
 			rent.setName(rent.getHouse().getName());
 			
 			if(null != rent.getHouse().getLandlord() && StringUtils.isNotBlank(rent.getHouse().getLandlord().getName()) && StringUtils.isBlank(rent.getHouse().getLandlord().getId())){
@@ -169,7 +168,7 @@ public class RentService extends BaseService {
 		if(null != rent.getRentinMonths())
 			for(int i = 0 ;  i < rent.getRentinMonths().size(); i++){//批量设置承租月明细
 				RentMonth r = rent.getRentinMonths().get(i);
-				rent.getHouse().setTeam_leader(r.getBusi_departleader());//将租进月明细中的部长设置给房子的部长。
+				rent.getHouse().setRentin_user(rent.getRentin_person());//将租进月明细中的租进业务员设置给房子的租进业务员。
 				if(StringUtils.isBlank(r.getId())){
 					r.prePersist();
 				}
@@ -179,7 +178,7 @@ public class RentService extends BaseService {
 		if(null != rent.getRentoutMonths())
 			for(int i = 0 ;  i < rent.getRentoutMonths().size(); i++){//批量设置承租月明细
 				RentMonth r = rent.getRentoutMonths().get(i);
-
+				rent.getHouse().setRentout_user(rent.getRentout_person());//将租出月明细中的租出业务员设置给房子的租出业务员。
 				if(StringUtils.isBlank(r.getId())){
 					r.prePersist();
 				}
@@ -193,25 +192,33 @@ public class RentService extends BaseService {
 	
 	@Transactional(readOnly = false)
 	public void save4Excel(Rent rent) throws Exception {
-		if(null != rent.getHouse() && null == rent.getHouse().getOffice()){
-			if(null != rent.getRentin_busi_departleader() && !StringUtils.isBlank(rent.getRentin_busi_departleader().getLoginName())){
-				rent.getHouse().setOffice(rent.getRentin_busi_departleader().getOffice());
-			}else if(null != rent.getRentin_busi_manager() && !StringUtils.isBlank(rent.getRentin_busi_manager().getLoginName())){
-				rent.getHouse().setOffice(rent.getRentin_busi_manager().getOffice());
-			}
-		}
+
 		if(null != rent.getLandlord() && null == rent.getLandlord().getOffice()){
-			if(null != rent.getRentin_busi_departleader() && !StringUtils.isBlank(rent.getRentin_busi_departleader().getLoginName())){
-				rent.getLandlord().setOffice(rent.getRentin_busi_departleader().getOffice());
+			User landlord_tempuser = null;
+			if(null != rent.getRentin_person() && !StringUtils.isBlank(rent.getRentin_person().getLoginName())){
+				landlord_tempuser = rent.getRentin_person();
+			}else if(null != rent.getRentin_busi_departleader() && !StringUtils.isBlank(rent.getRentin_busi_departleader().getLoginName())){
+				landlord_tempuser = rent.getRentin_busi_departleader();
 			}else if(null != rent.getRentin_busi_manager() && !StringUtils.isBlank(rent.getRentin_busi_manager().getLoginName())){
-				rent.getLandlord().setOffice(rent.getRentin_busi_manager().getOffice());
+				landlord_tempuser = rent.getRentin_busi_manager();
+			}
+			if(null != landlord_tempuser){
+				rent.getLandlord().setOffice(landlord_tempuser.getOffice());
+				rent.getHouse().setRentin_user(landlord_tempuser);
 			}
 		}
 		if(null != rent.getTenant() && null == rent.getTenant().getOffice()){
-			if(null != rent.getRentin_busi_departleader() && !StringUtils.isBlank(rent.getRentin_busi_departleader().getLoginName())){
-				rent.getTenant().setOffice(rent.getRentin_busi_departleader().getOffice());
+			User tenant_tempuser = null;
+			if(null != rent.getRentout_person() && !StringUtils.isBlank(rent.getRentout_person().getLoginName())){
+				tenant_tempuser = rent.getRentout_person();
+			}else if(null != rent.getRentin_busi_departleader() && !StringUtils.isBlank(rent.getRentin_busi_departleader().getLoginName())){
+				tenant_tempuser = rent.getRentin_busi_departleader();
 			}else if(null != rent.getRentin_busi_manager() && !StringUtils.isBlank(rent.getRentin_busi_manager().getLoginName())){
-				rent.getTenant().setOffice(rent.getRentin_busi_manager().getOffice());
+				tenant_tempuser = rent.getRentin_busi_manager();
+			}
+			if(null != tenant_tempuser){
+				rent.getTenant().setOffice(tenant_tempuser.getOffice());
+				rent.getHouse().setRentout_user(tenant_tempuser);
 			}
 		}
 		if(null != rent.getSalesman_vacantperiods())

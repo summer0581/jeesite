@@ -98,7 +98,7 @@ public class UserUtils extends BaseService {
 			User user = getUser();
 			DetachedCriteria dc = userDao.createDetachedCriteria();
 			dc.createAlias("office", "office");
-			dc.add(dataScopeFilter(user, "office",""));
+			dc.add(dataScopeFilter(user, "office",dc.getAlias()));
 			dc.add(Restrictions.eq(User.FIELD_DEL_FLAG, User.DEL_FLAG_NORMAL));
 			dc.addOrder(Order.asc("name"));
 			list = userDao.find(dc);
@@ -222,6 +222,27 @@ public class UserUtils extends BaseService {
 		}
 		return userlist;
 	}
+	
+	/**
+	 * 判断用户是否有权限
+	 * @param permittedStr
+	 * @return
+	 */
+	public static boolean isPermitted(String permittedStr){
+		Subject user = SecurityUtils.getSubject();
+		return user.isPermitted(permittedStr);
+	}
+	
+	/**
+	 * 判断用户是否有角色
+	 * @param permittedStr
+	 * @return
+	 */
+	public static boolean hasRole(String roleIdentifier){
+		Subject user = SecurityUtils.getSubject();
+		return user.hasRole(roleIdentifier);
+	}
+	
 	
 	// ============== User Cache ==============
 	

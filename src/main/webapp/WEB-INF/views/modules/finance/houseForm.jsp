@@ -66,7 +66,8 @@
 				</form:select>
 			</div>
 		</div>
-
+		<!-- 当租进业务员为空，或者租进业务员等于当前业务员时，才能查看 -->
+		<c:if test="${allColumnShow or empty house.rentin_user or house.rentin_user eq fns:getUser()}">
 		<div class="control-group">
 			<label class="control-label">房东:</label>
 			<div class="controls">
@@ -113,6 +114,9 @@
 				<form:input path="debit_card" htmlEscape="false" maxlength="64" class="input-xxlarge"/>
 			</div>
 		</div>
+		</c:if>
+		<!-- 当租出业务员为空，或者租出业务员等于当前业务员时，才能查看 -->
+		<c:if test="${allColumnShow or empty house.rentout_user or house.rentout_user eq fns:getUser()}">
 		<div class="control-group">
 			<label class="control-label">租户:</label>
 			<div class="controls">
@@ -151,6 +155,7 @@
 				<form:input path="tenant.telephone" htmlEscape="false" maxlength="64" class=""/>
 			</div>
 		</div>
+		</c:if>
 		<div class="control-group">
 			<label class="control-label">是否可租:</label>
 			<div class="controls">
@@ -347,11 +352,42 @@
 				</form:select>
 			</div>
 		</div>
+		<!-- 当租进业务员为空，或者租进业务员等于当前业务员时，才能查看 -->
+		
 		<div class="control-group">
-			<label class="control-label">部长:</label>
+			<label class="control-label">租进业务员:</label>
 			<div class="controls">
-				<tags:treeselect id="team_leader" name="team_leader.id" notAllowSelectParent="true" value="${house.team_leader.id}" labelName="team_leader.name" labelValue="${house.team_leader.name}"
+			<c:choose>
+				<c:when test="${empty house.rentin_user or isSuperEditRole}">
+					<tags:treeselect id="rentin_user" name="rentin_user.id" notAllowSelectParent="true" value="${house.rentin_user.id}" labelName="rentin_user.name" labelValue="${house.rentin_user.name}"
 					title="人员" url="/sys/user/treeData" cssClass=""/>
+				</c:when>
+				<c:otherwise>
+					<input type="text" value="${house.rentin_user.name}" readonly/>
+				</c:otherwise>
+			</c:choose>
+			</div>
+		</div>
+		
+		<!-- 当租进业务员为空，或者租进业务员等于当前业务员时，才能查看 -->
+		<div class="control-group">
+			<label class="control-label">租出业务员:</label>
+			<div class="controls">
+			<c:choose>
+				<c:when test="${empty house.rentout_user or isSuperEditRole}">
+					<tags:treeselect id="rentout_user" name="rentout_user.id" notAllowSelectParent="true" value="${house.rentout_user.id}" labelName="rentout_user.name" labelValue="${house.rentout_user.name}"
+					title="人员" url="/sys/user/treeData" cssClass=""/>
+				</c:when>
+				<c:otherwise>
+					<input type="text" value="${house.rentout_user.name}" readonly/>
+				</c:otherwise>
+			</c:choose>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">创建者:</label>
+			<div class="controls">
+				<input type="text" value="${house.createBy.name}" readonly/>
 			</div>
 		</div>
 		<div class="control-group">

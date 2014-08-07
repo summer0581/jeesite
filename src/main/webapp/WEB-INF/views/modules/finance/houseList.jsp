@@ -169,7 +169,9 @@
 			<th>转账卡号</th>
 			<th>租户姓名</th>
 			<th>租户联系方式</th>
-			<th>组长</th>
+			<th>租进业务员</th>
+			<th>租出业务员</th>
+			<th>创建者</th>
 			<th>备注</th>
 			<shiro:hasPermission name="finance:house:edit"><th>操作</th></shiro:hasPermission></tr></thead>
 		<tbody>
@@ -177,12 +179,14 @@
 			<tr>
 				<td><a href="${ctx}/finance/house/form?id=${house.id}">${house.name}</a></td>
 				<td>${house.houses}</td>
-				<td>${house.landlord.name}</td>
-				<td>${house.landlord.telephone}</td>
-				<td>${house.debit_card}</td>
-				<td>${house.tenant.name}</td>
-				<td>${house.tenant.telephone}</td>
-				<td>${house.team_leader.name}</td>
+				<td>${allColumnShow or empty house.rentin_user or house.rentin_user eq fns:getUser()?house.landlord.name:''}</td>
+				<td>${allColumnShow or empty house.rentin_user or house.rentin_user eq fns:getUser()?house.landlord.telephone:''}</td>
+				<td>${allColumnShow or empty house.rentin_user or house.rentin_user eq fns:getUser()?house.debit_card:''}</td>
+				<td>${allColumnShow or empty house.rentout_user or house.rentout_user eq fns:getUser()?house.tenant.name:''}</td>
+				<td>${allColumnShow or empty house.rentout_user or house.rentout_user eq fns:getUser()?house.tenant.telephone:''}</td>
+				<td>${house.rentin_user.name}</td>
+				<td>${house.rentout_user.name}</td>
+				<td>${house.createBy.name}</td>
 				<td>${house.remarks}</td>
 				<shiro:hasPermission name="finance:house:edit"><td>
     				<a href="${ctx}/finance/house/form?id=${house.id}">修改</a>

@@ -166,17 +166,28 @@ public class HouseService extends BaseService {
 			}
 		}
 
-		
-		dc.createAlias("office", "office");
+		dc.createAlias("rentin_user", "rentin_user", JoinType.LEFT_OUTER_JOIN);
+		dc.createAlias("rentout_user", "rentout_user", JoinType.LEFT_OUTER_JOIN);
+		dc.createAlias("rentin_user.office", "rentin_office", JoinType.LEFT_OUTER_JOIN);
+		dc.createAlias("rentout_user.office", "rentout_office", JoinType.LEFT_OUTER_JOIN);
 		
 		dc.createAlias("landlord", "landlord", JoinType.LEFT_OUTER_JOIN);
 		dc.createAlias("tenant", "tenant", JoinType.LEFT_OUTER_JOIN);
 		
 		HouseAreaRole houseAreaRole = houseAreaRoleDao.findByPerson(UserUtils.getUser().getId());
 		if(null == houseAreaRole || StringUtils.isBlank(houseAreaRole.getAreas())){//房屋查询可以设置区域查询权限
-			dc.add(dataScopeFilter(UserUtils.getUser(), "office", ""));
+			if(isSuperEditRole()){
+				//dc.add(Restrictions.or(Restrictions.isNull("rentin_office.id"),Restrictions.isNull("rentout_office.id"),dataScopeFilter(UserUtils.getUser(), "rentin_office", "rentin_user"),dataScopeFilter(UserUtils.getUser(), "rentout_office", "rentout_user")));
+			}else{
+				dc.add(Restrictions.or(dataScopeFilter(UserUtils.getUser(), "rentin_office", "rentin_user"),dataScopeFilter(UserUtils.getUser(), "rentout_office", "rentout_user")));
+			}
 		}else{
-			dc.add(Restrictions.or(dataScopeFilter(UserUtils.getUser(), "office", ""),Restrictions.in("houses", houseAreaRole.getAreas().split(","))));
+			if(isSuperEditRole()){
+				//dc.add(Restrictions.or(Restrictions.isNull("rentin_office.id"),Restrictions.isNull("rentout_office.id"),dataScopeFilter(UserUtils.getUser(), "rentin_office", "rentin_user"),dataScopeFilter(UserUtils.getUser(), "rentout_office", "rentout_user"),Restrictions.in("houses", houseAreaRole.getAreas().split(","))));
+			}else{
+				dc.add(Restrictions.or(dataScopeFilter(UserUtils.getUser(), "rentin_office", "rentin_user"),dataScopeFilter(UserUtils.getUser(), "rentout_office", "rentout_user"),Restrictions.in("houses", houseAreaRole.getAreas().split(","))));
+			}
+			
 		}
 
 		
@@ -245,9 +256,7 @@ public class HouseService extends BaseService {
 	
 	@Transactional(readOnly = false)
 	public void save(House house) {
-		if(StringUtils.isBlank(house.getId())){//当新增记录时，将组长的部门设置给当前房子。
-			house.setOffice(UserUtils.getUserById(house.getTeam_leader().getId()).getOffice());
-		}
+
 		if(null == house.getLandlord() || null == house.getLandlord().getOffice()){//房东很有可能只带有id，需要在这里自动查询一次
 			if(StringUtils.isNotBlank(house.getLandlord().getId())){
 				house.setLandlord(customerDao.get(house.getLandlord().getId()));
@@ -262,7 +271,7 @@ public class HouseService extends BaseService {
 					house.setLandlord(customerlist.get(0));
 				}else{
 					house.getLandlord().prePersist();
-					house.getLandlord().setOffice(UserUtils.getUserById(house.getTeam_leader().getId()).getOffice());
+					house.getLandlord().setOffice(UserUtils.getUserById(house.getRentin_user().getId()).getOffice());
 				}
 				
 			}
@@ -282,7 +291,7 @@ public class HouseService extends BaseService {
 					house.setTenant(customerlist.get(0));
 				}else{
 					house.getTenant().prePersist();
-					house.getTenant().setOffice(UserUtils.getUserById(house.getTeam_leader().getId()).getOffice());
+					house.getTenant().setOffice(UserUtils.getUserById(house.getRentout_user().getId()).getOffice());
 				}
 				
 			}
@@ -295,12 +304,6 @@ public class HouseService extends BaseService {
 	public void save4ExcelImport(House house) {
 
 		House temphouse = findByName(house.getName());
-
-		if(null == house.getOffice()){//当新增记录时，将组长的部门设置给当前房子。
-			if(null != temphouse){
-				house.setOffice(temphouse.getOffice());
-			}
-		}
 		
 		if(null == house.getLandlord() ){//房东很有可能只带有id，需要在这里自动查询一次
 			if(null != temphouse){
@@ -308,10 +311,18 @@ public class HouseService extends BaseService {
 			}
 		}else{//如果是带了房东，则要根据姓名和电话进行查询，看此房东是否已经存在
 			List<Customer> tempcustomer = customerDao.findByNameAndTelephone(house.getLandlord().getName(), house.getLandlord().getTelephone());
-			if(tempcustomer.size()>0){
+			if(tempcustomer.size()>0){//如果搜索到了相应的客户
 				house.getLandlord().setId(tempcustomer.get(0).getId());
-				if(null != temphouse && null != temphouse.getOffice()){
-					house.getLandlord().setOffice(temphouse.getOffice());
+				if(null != house.getRentin_user()){
+					house.getLandlord().setOffice(house.getRentin_user().getOffice());
+				}else{
+					house.getLandlord().setOffice(tempcustomer.get(0).getOffice());
+				}
+			}else{
+				if(null != house.getRentin_user()){
+					house.getLandlord().setOffice(house.getRentin_user().getOffice());
+				}else{
+					house.getLandlord().setOffice(UserUtils.getUser().getOffice());
 				}
 			}
 		}
@@ -323,8 +334,16 @@ public class HouseService extends BaseService {
 			List<Customer> tempcustomer = customerDao.findByNameAndTelephone(house.getTenant().getName(), house.getTenant().getTelephone());
 			if(tempcustomer.size()>0){
 				house.getTenant().setId(tempcustomer.get(0).getId());
-				if(null != temphouse && null != temphouse.getOffice()){
-					house.getTenant().setOffice(temphouse.getOffice());
+				if(null != house.getRentout_user()){
+					house.getTenant().setOffice(house.getRentout_user().getOffice());
+				}else{
+					house.getTenant().setOffice(tempcustomer.get(0).getOffice());
+				}
+			}else{
+				if(null != house.getRentout_user()){
+					house.getTenant().setOffice(house.getRentout_user().getOffice());
+				}else{
+					house.getTenant().setOffice(UserUtils.getUser().getOffice());
 				}
 			}
 
@@ -335,6 +354,13 @@ public class HouseService extends BaseService {
 	@Transactional(readOnly = false)
 	public void delete(String id) {
 		houseDao.deleteById(id);
+	}
+	/**
+	 * 是否拥有超级编辑权限
+	 * @return
+	 */
+	public boolean isSuperEditRole(){
+		return UserUtils.getUser().isAdmin() || UserUtils.hasRole("财务管理员");
 	}
 	
 }

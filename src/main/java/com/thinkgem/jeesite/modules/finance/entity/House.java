@@ -85,7 +85,8 @@ public class House extends IdEntity<House> {
 	private String regist_store;//登记门店',
 	
 	
-	private User team_leader;
+	private User rentin_user;//租进业务员
+	private User rentout_user;//租出业务员
 	
 	private Rent rent;
 	private String rent_state;//出租状态
@@ -219,30 +220,32 @@ public class House extends IdEntity<House> {
 	*/
 
 	@ManyToOne
-	@JoinColumn(name="team_leader")
+	@JoinColumn(name="rentin_user")
 	@NotFound(action = NotFoundAction.IGNORE)
 	@IndexedEmbedded
-	@ExcelField(title="组长", type=0, align=1, sort=90, fieldType=UserEntity.class)
-	public User getTeam_leader() {
-		return team_leader;
+	@ExcelField(title="租进业务员", type=0, align=1, sort=90, fieldType=UserEntity.class)
+	public User getRentin_user() {
+		return rentin_user;
 	}
 
-	public void setTeam_leader(User team_leader) {
-		this.team_leader = team_leader;
+	public void setRentin_user(User rentin_user) {
+		this.rentin_user = rentin_user;
 	}
-
+	
 	@ManyToOne
-	@JoinColumn(name="office_id")
+	@JoinColumn(name="rentout_user")
 	@NotFound(action = NotFoundAction.IGNORE)
 	@IndexedEmbedded
-	@ExcelField(title="所属部门", type=0, align=1, sort=100, fieldType=OfficeType.class)
-	public Office getOffice() {
-		return office;
+	@ExcelField(title="租出业务员", type=0, align=1, sort=100, fieldType=UserEntity.class)
+	public User getRentout_user() {
+		return rentout_user;
 	}
 
-	public void setOffice(Office office) {
-		this.office = office;
+	public void setRentout_user(User rentout_user) {
+		this.rentout_user = rentout_user;
 	}
+
+
 	public String getImage() {
 		return image;
 	}

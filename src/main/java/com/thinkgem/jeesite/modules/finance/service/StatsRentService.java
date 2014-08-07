@@ -120,7 +120,7 @@ public class StatsRentService extends BaseService {
 			
 			long rentout_rentmonth = Long.parseLong(StringUtils.defaultIfEmpty((String)rentmonth.getRentmonth(), "0"));
 
-			cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(sameMonthRentin.getCut_vacantperiodtype());
+			cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentmonth.getCut_vacantperiodtype());
 			rentin_cut = Math.round(rentout_rentmonth/DaysPerMonth * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
 			rentout_cut = Math.round(rentout_rentmonth/DaysPerMonth * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
 			teamleader_cut = Math.round(rentout_rentmonth/DaysPerMonth  * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
@@ -223,7 +223,7 @@ public class StatsRentService extends BaseService {
 				cutlevel = getVacantPeriodCutLevel(rentmonth, recentVacantType, (int)vacantperiod);
 				
 				long rentout_rentmonth = Long.parseLong(StringUtils.defaultIfEmpty((String)rentmonth.getRentmonth(), "0"));
-				cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(sameMonthRentin.getCut_vacantperiodtype());
+				cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentmonth.getCut_vacantperiodtype());
 				rentin_cut = Math.round(rentout_rentmonth/DaysPerMonth * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
 				rentout_cut = Math.round(rentout_rentmonth/DaysPerMonth * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
 				teamleader_cut = Math.round(rentout_rentmonth/DaysPerMonth  * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
@@ -379,7 +379,7 @@ public class StatsRentService extends BaseService {
 				resultMap.put("vacantperiod_type", recentVacantType);//空置期提成类型
 
 
-				cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(sameMonthRentin.getCut_vacantperiodtype());
+				cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentmonth.getCut_vacantperiodtype());
 				if(null != sameMonthRentin){//如果没设置进去记录，则无法找到对应的经理，部长，组长，租进业务员
 					if(person.equals(sameMonthRentin.getBusi_manager())){//判断此人是不是经理
 						manager_cut = Math.round(rentout_rentmonth/DaysPerMonth * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel );
@@ -507,7 +507,7 @@ public class StatsRentService extends BaseService {
 				cutlevel = getVacantPeriodCutLevel(rentmonth, recentVacantType, (int)vacantperiod);
 				
 				long rentout_rentmonth = Long.parseLong(StringUtils.defaultIfEmpty((String)rentmonth.getRentmonth(), "0"));
-				cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(sameMonthRentin.getCut_vacantperiodtype());
+				cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentmonth.getCut_vacantperiodtype());
 				rentin_cut = Math.round(rentout_rentmonth/DaysPerMonth * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
 				rentout_cut = Math.round(rentout_rentmonth/DaysPerMonth * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
 				teamleader_cut = Math.round(rentout_rentmonth/DaysPerMonth  * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
@@ -671,7 +671,7 @@ public class StatsRentService extends BaseService {
 				resultMap.put("vacantperiod_type", recentVacantType);//空置期提成类型
 
 				double perlevel = 1.0/(double)totalpaymonth;
-				cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(sameMonthRentin.getCut_vacantperiodtype());
+				cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentmonth.getCut_vacantperiodtype());
 				if(null != sameMonthRentin){//如果没设置进去记录，则无法找到对应的经理，部长，组长，租进业务员
 					if(person.equals(sameMonthRentin.getBusi_manager())){//判断此人是不是经理
 						manager_cut = Math.round(rentout_rentmonth/DaysPerMonth * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);

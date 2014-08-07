@@ -89,6 +89,70 @@ public abstract class BaseService {
 		}
 		return junction;
 	}
+	/**
+	 * 给value都加上''，否则sql拼接的语句查不出值
+	 * @param user
+	 * @param officeAlias
+	 * @param userAlias
+	 * @return
+	 */
+	protected static Junction dataScopeFilterAddSyn(User user, String officeAlias, String userAlias) {
+
+		// 进行权限过滤，多个角色权限范围之间为或者关系。
+		List<String> dataScope = Lists.newArrayList();
+		Junction junction = Restrictions.disjunction();
+		
+		// 超级管理员，跳过权限过滤
+		if (!user.isAdmin()){
+			for (Role r : user.getRoleList()){
+				if (!dataScope.contains(r.getDataScope()) && StringUtils.isNotBlank(officeAlias)){
+					boolean isDataScopeAll = false;
+					if (Role.DATA_SCOPE_ALL.equals(r.getDataScope())){
+						isDataScopeAll = true;
+					}
+					else if (Role.DATA_SCOPE_COMPANY_AND_CHILD.equals(r.getDataScope())){
+						junction.add(Restrictions.eq(officeAlias+".id", "'"+user.getCompany().getId()+"'"));
+						junction.add(Restrictions.like(officeAlias+".parent_ids", "'"+user.getCompany().getParentIds()+user.getCompany().getId()+",%'"));
+					}
+					else if (Role.DATA_SCOPE_COMPANY.equals(r.getDataScope())){
+						junction.add(Restrictions.eq(officeAlias+".id", "'"+user.getCompany().getId()+"'"));
+						junction.add(Restrictions.and(Restrictions.eq(officeAlias+".parent.id", "'"+user.getCompany().getId()+"'"),
+								Restrictions.eq(officeAlias+".type", "2"))); // 包括本公司下的部门
+					}
+					else if (Role.DATA_SCOPE_OFFICE_AND_CHILD.equals(r.getDataScope())){
+						junction.add(Restrictions.eq(officeAlias+".id", "'"+user.getOffice().getId()+"'"));
+						junction.add(Restrictions.like(officeAlias+".parent_ids", "'"+user.getOffice().getParentIds()+user.getOffice().getId()+",%'"));
+					}
+					else if (Role.DATA_SCOPE_OFFICE.equals(r.getDataScope())){
+						junction.add(Restrictions.eq(officeAlias+".id", "'"+user.getOffice().getId()+"'"));
+					}
+					else if (Role.DATA_SCOPE_CUSTOM.equals(r.getDataScope())){
+						int tempint = r.getOfficeIdList().size();
+						String[] ids = new String[tempint];
+						for(int i = 0 ; i < tempint ; i ++){
+							ids[i] = "'"+r.getOfficeIdList().get(i)+"'";
+						}
+						junction.add(Restrictions.in(officeAlias+".id", ids));
+					}
+					//else if (Role.DATA_SCOPE_SELF.equals(r.getDataScope())){
+					if (!isDataScopeAll){
+						if (StringUtils.isNotBlank(userAlias)){
+							junction.add(Restrictions.eq(userAlias+".id", "'"+user.getId()+"'"));
+						}else {
+							junction.add(Restrictions.isNull(officeAlias+".id"));
+						}
+					}else{
+						// 如果包含全部权限，则去掉之前添加的所有条件，并跳出循环。
+						junction = Restrictions.disjunction();
+						break;
+					}
+					dataScope.add(r.getDataScope());
+				}
+			}
+		}
+		return junction;
+	}
+
 	
 	/**
 	 * 数据范围过滤
@@ -98,7 +162,7 @@ public abstract class BaseService {
 	 * @return ql查询字符串
 	 */
 	protected static String dataScopeFilterString(User user, String officeAlias, String userAlias) {
-		Junction junction = dataScopeFilter(user, officeAlias, userAlias);
+		Junction junction = dataScopeFilterAddSyn(user, officeAlias, userAlias);
 		Iterator<Criterion> it = junction.conditions().iterator();
 		StringBuilder ql = new StringBuilder();
 		ql.append(" and (");
@@ -131,4 +195,6 @@ public abstract class BaseService {
 		}
 		return idList;
 	}
+	
+
 }

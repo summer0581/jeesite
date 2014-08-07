@@ -87,7 +87,22 @@
     <function-signature>java.lang.Object getCache(java.lang.String, java.lang.Object)</function-signature>
     <example>${fns:getCache(cacheName, defaultValue)}</example>  
   </function>
-	
+  
+  <function>
+    <description>判断当前用户是否具有此权限</description>
+    <name>isPermitted</name>
+    <function-class>com.thinkgem.jeesite.modules.sys.utils.UserUtils</function-class>
+    <function-signature>boolean isPermitted(java.lang.String)</function-signature>
+    <example>${fns:isPermitted(permittedStr)}</example>  
+  </function>
+
+  <function>
+    <description>判断当前用户是否具有此角色</description>
+    <name>hasRole</name>
+    <function-class>com.thinkgem.jeesite.modules.sys.utils.UserUtils</function-class>
+    <function-signature>boolean hasRole(java.lang.String)</function-signature>
+    <example>${fns:hasRole(roleStr)}</example>  
+  </function>	
   <!-- DictUtils -->
   <function>
     <description>获取字典标签</description>

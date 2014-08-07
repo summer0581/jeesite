@@ -62,7 +62,8 @@
 			<th>租进押金</th>
 			<th>租户姓名</th>
 			<th>租户联系方式</th>
-			<th>组长</th> 
+			<th>租进业务员</th> 
+			<th>租出业务员</th> 
 			<th>到期时间</th>
 			<th>退租时间</th>
 			<th>退租备注</th>
@@ -79,7 +80,8 @@
 				<td>${house.rent.rentin_deposit}</td>
 				<td>${house.tenant.name}</td>
 				<td>${house.tenant.telephone}</td>
-				<td>${house.team_leader.name}</td>
+				<td>${house.rentin_user.name}</td>
+				<td>${house.rentout_user.name}</td>
 				<td><fmt:formatDate value="${house.rent.rentout_edate}"  pattern="yyyy-MM-dd" /></td>
 				<td><fmt:formatDate value="${house.rent.rentout_cancelrentdate}"  pattern="yyyy-MM-dd" /></td>
 				<td>${house.rent.rentout.cancelrentremark}</td>
