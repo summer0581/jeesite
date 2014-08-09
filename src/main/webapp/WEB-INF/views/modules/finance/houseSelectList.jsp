@@ -56,7 +56,7 @@
 			<th>转账卡号</th>
 			<th>租户姓名</th>
 			<th>租户联系方式</th>
-			<th>组长</th>
+			
 		<tbody>
 		<c:forEach items="${page.list}" var="house">
 			<tr>
@@ -68,7 +68,6 @@
 				<td>${house.debit_card}</td>
 				<td>${house.tenant.name}</td>
 				<td>${house.tenant.telephone}</td>
-				<td>${house.team_leader.name}</td>
 				
 			</tr>
 		</c:forEach>

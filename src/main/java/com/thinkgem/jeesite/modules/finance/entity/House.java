@@ -50,7 +50,6 @@ public class House extends IdEntity<House> {
 	private String debit_card;
 	private Customer tenant;
 	//private String tenant_telephone;
-	private Office office;//所属部门
 	private String image;//图片
 	
 	private String is_canrent;//'是否可租',
@@ -83,6 +82,9 @@ public class House extends IdEntity<House> {
 	private String traffic_condition;//交通情况',
 	private String entrust_store;//委托门店',
 	private String regist_store;//登记门店',
+	
+	private String key_saveplace;//钥匙存放地址
+	private String doc_place;//档案位置
 	
 	
 	private User rentin_user;//租进业务员
@@ -529,6 +531,24 @@ public class House extends IdEntity<House> {
 
 	public void setRegist_store(String regist_store) {
 		this.regist_store = regist_store;
+	}
+	
+	
+
+	public String getKey_saveplace() {
+		return key_saveplace;
+	}
+
+	public void setKey_saveplace(String key_saveplace) {
+		this.key_saveplace = key_saveplace;
+	}
+
+	public String getDoc_place() {
+		return doc_place;
+	}
+
+	public void setDoc_place(String doc_place) {
+		this.doc_place = doc_place;
 	}
 
 	@Transient

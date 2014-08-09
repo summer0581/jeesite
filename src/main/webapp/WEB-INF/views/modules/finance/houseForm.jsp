@@ -23,6 +23,20 @@
 				}
 			});
 			
+			//是否不能修改进房信息
+			var notCanEditHouseInInfo = ${!allColumnShow and not empty house.rentin_user and house.rentin_user ne fns:getUser()};
+			if(notCanEditHouseInInfo){
+				$("select,input").not("#btnSubmit,#btnCancel").not("[name='tenant.telephone']").attr("disabled","disabled");
+				$("[id^=relationButton]").not("#relationButton_tenant,#relationButton_tenantadd").hide();
+				$("[onclick^=image]").hide();
+			}
+			//是否不能修改出房信息
+			var notCanEditHouseOutInfo = ${!allColumnShow and not empty house.rentout_user and house.rentout_user ne fns:getUser()};
+			if(notCanEditHouseOutInfo){
+				$("[name='tenant.telephone']").attr("disabled","disabled");
+				$("#relationButton_tenant,#relationButton_tenantadd").hide();
+				
+			}
 			$("#relationButton_landlordadd").click(function(){
 				$("#landlord_name").removeAttr("readonly");
 				$("#landlord_name,#landlord_id,#landlord_telephone").val("");
@@ -352,6 +366,18 @@
 				</form:select>
 			</div>
 		</div>
+		<div class="control-group">
+			<label class="control-label">钥匙存放地址:</label>
+			<div class="controls">
+				<form:input path="key_saveplace" htmlEscape="false" maxlength="200" class="input-xxlarge"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">档案位置:</label>
+			<div class="controls">
+				<form:input path="doc_place" htmlEscape="false" maxlength="200" class="input-xxlarge"/>
+			</div>
+		</div>
 		<!-- 当租进业务员为空，或者租进业务员等于当前业务员时，才能查看 -->
 		
 		<div class="control-group">
@@ -396,6 +422,14 @@
 				<form:textarea path="remarks" htmlEscape="false" rows="4" maxlength="200" class="input-xxlarge"/>
 			</div>
 		</div>
+		<c:if test="${not empty house.id}">
+		<div class="control-group">
+			<label class="control-label">房屋跟进:</label>
+			<div class="controls" style="height:300px;">
+				<iframe src="${ctx}/finance/houseIdea/innerList?house.id=${house.id}"  style="border:0px;width:100%;height:100%;"></iframe>
+			</div>
+		</div>
+		</c:if>
 		<div class="control-group">
 			<label class="control-label">户型图:</label>
 			<div class="controls">

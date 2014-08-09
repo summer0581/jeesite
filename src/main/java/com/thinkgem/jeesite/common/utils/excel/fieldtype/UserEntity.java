@@ -5,6 +5,8 @@
  */
 package com.thinkgem.jeesite.common.utils.excel.fieldtype;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
@@ -24,10 +26,8 @@ public class UserEntity {
 				return e;
 			}
 		}
-		User user = new User();
-		user.prePersist();
-		user.setName(val);
-		return user;
+
+		return null;
 	}
 
 	/**

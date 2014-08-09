@@ -31,7 +31,7 @@
         	return false;
         }
         function resets(){
-			$("input[type=text]","#searchForm").val("");
+			$("input[type=text],input[type=hidden],select","#searchForm").not("#pageNo,#pageSize").val("");
 			page();
 		}
 	</script>

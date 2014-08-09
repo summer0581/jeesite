@@ -128,7 +128,14 @@
 				</form:select>
 			</div>
 		</div>
-		
+		<div class="control-group">
+			<label class="control-label">入职时间:</label>
+			<div class="controls">
+				<input id="entryDate" name="entryDate" type="text"  maxlength="20" class="input-medium Wdate"
+					value="<fmt:formatDate value="${user.entryDate}" pattern="yyyy-MM-dd"/>"
+					onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+			</div>
+		</div>	
 		<div class="control-group">
 			<label class="control-label">用户角色:</label>
 			<div class="controls">

@@ -55,8 +55,7 @@
 		<thead><tr>
 			<th>地址</th>
 			<th>楼盘</th>
-			<th>房东姓名</th>
-			<th>房东联系方式</th>
+			<th>钥匙存放地址</th>
 			<th>租进租金</th>
 			<th>租出租金</th>
 			<th>租进押金</th>
@@ -67,14 +66,14 @@
 			<th>到期时间</th>
 			<th>退租时间</th>
 			<th>退租备注</th>
+			<th>房屋备注</th>
 			<shiro:hasPermission name="finance:house:edit"><th>操作</th></shiro:hasPermission></tr></thead>
 		<tbody>
 		<c:forEach items="${page.list}" var="house">
 			<tr>
 				<td><a href="${ctx}/finance/house/form?id=${house.id}">${house.name}</a></td>
 				<td>${house.houses}</td>
-				<td>${house.landlord.name}</td>
-				<td>${house.landlord.telephone}</td>
+				<td>${house.key_saveplace}</td>
 				<td>${house.rent.rentin_rentmonth}</td>
 				<td>${house.rent.rentout_rentmonth}</td>
 				<td>${house.rent.rentin_deposit}</td>
@@ -85,6 +84,7 @@
 				<td><fmt:formatDate value="${house.rent.rentout_edate}"  pattern="yyyy-MM-dd" /></td>
 				<td><fmt:formatDate value="${house.rent.rentout_cancelrentdate}"  pattern="yyyy-MM-dd" /></td>
 				<td>${house.rent.rentout.cancelrentremark}</td>
+				<td>${house.remarks}</td>
 				<shiro:hasPermission name="finance:house:edit"><td>
     				<a href="${ctx}/finance/house/form?id=${house.id}">修改</a>
 					<a href="${ctx}/finance/house/delete?id=${house.id}" onclick="return confirmx('确认要删除该房屋明细吗？', this.href)">删除</a>

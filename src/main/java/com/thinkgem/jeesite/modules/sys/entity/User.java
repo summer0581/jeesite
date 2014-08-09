@@ -67,6 +67,7 @@ public class User extends IdEntity<User> {
 	private String mobile;	// 手机
 	private String userType;// 用户类型
 	private String userBusitype;// 用户业务类型
+	private Date entryDate;//入职时间
 	private String loginIp;	// 最后登陆IP
 	private Date loginDate;	// 最后登陆日期
 	
@@ -229,6 +230,14 @@ public class User extends IdEntity<User> {
 
 	public void setLoginDate(Date loginDate) {
 		this.loginDate = loginDate;
+	}
+
+	public Date getEntryDate() {
+		return entryDate;
+	}
+
+	public void setEntryDate(Date entryDate) {
+		this.entryDate = entryDate;
 	}
 
 	@ManyToMany(fetch = FetchType.EAGER)

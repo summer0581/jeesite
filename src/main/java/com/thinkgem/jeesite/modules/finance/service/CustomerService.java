@@ -81,7 +81,7 @@ public class CustomerService extends BaseService {
 			sql.append("		where 1=1  ");
 			sql.append(dataScopeFilterString(UserUtils.getUser(), "o", "u"));
 			HouseAreaRole houseAreaRole = houseAreaRoleDao.findByPerson(UserUtils.getUser().getId());
-			if(null != houseAreaRole || StringUtils.isNotBlank(houseAreaRole.getAreas())){//房屋查询可以设置区域查询权限
+			if(null != houseAreaRole && StringUtils.isNotBlank(houseAreaRole.getAreas())){//房屋查询可以设置区域查询权限
 				sql.append("		union ALL ");
 				sql.append("		select c.*,h.name house_name from finance_customer c  ");
 				sql.append("		inner join finance_house h on h.landlord_name = c.id  ");

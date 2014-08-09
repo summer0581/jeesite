@@ -9,6 +9,7 @@
 	</script>
 </head>
 <body>
-	<tags:message content="操作成功!"/>
+	<tags:message content="${not empty message?message : '操作成功!'}"/>
+	<div>请点击关闭按钮进行当前窗口关闭！</div>
 </body>
 </html>

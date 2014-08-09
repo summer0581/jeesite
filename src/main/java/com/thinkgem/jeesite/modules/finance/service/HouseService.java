@@ -313,13 +313,13 @@ public class HouseService extends BaseService {
 			List<Customer> tempcustomer = customerDao.findByNameAndTelephone(house.getLandlord().getName(), house.getLandlord().getTelephone());
 			if(tempcustomer.size()>0){//如果搜索到了相应的客户
 				house.getLandlord().setId(tempcustomer.get(0).getId());
-				if(null != house.getRentin_user()){
+				if(null != house.getRentin_user() && StringUtils.isNotBlank(house.getRentin_user().getName())){
 					house.getLandlord().setOffice(house.getRentin_user().getOffice());
 				}else{
 					house.getLandlord().setOffice(tempcustomer.get(0).getOffice());
 				}
 			}else{
-				if(null != house.getRentin_user()){
+				if(null != house.getRentin_user() && StringUtils.isNotBlank(house.getRentin_user().getName())){
 					house.getLandlord().setOffice(house.getRentin_user().getOffice());
 				}else{
 					house.getLandlord().setOffice(UserUtils.getUser().getOffice());
@@ -334,13 +334,13 @@ public class HouseService extends BaseService {
 			List<Customer> tempcustomer = customerDao.findByNameAndTelephone(house.getTenant().getName(), house.getTenant().getTelephone());
 			if(tempcustomer.size()>0){
 				house.getTenant().setId(tempcustomer.get(0).getId());
-				if(null != house.getRentout_user()){
+				if(null != house.getRentout_user() && StringUtils.isNotBlank(house.getRentout_user().getName())){
 					house.getTenant().setOffice(house.getRentout_user().getOffice());
 				}else{
 					house.getTenant().setOffice(tempcustomer.get(0).getOffice());
 				}
 			}else{
-				if(null != house.getRentout_user()){
+				if(null != house.getRentout_user() && StringUtils.isNotBlank(house.getRentout_user().getName())){
 					house.getTenant().setOffice(house.getRentout_user().getOffice());
 				}else{
 					house.getTenant().setOffice(UserUtils.getUser().getOffice());
