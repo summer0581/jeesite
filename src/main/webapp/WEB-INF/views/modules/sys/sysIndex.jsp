@@ -23,9 +23,13 @@
 				}
 			});
 		});
+/* 		window.onbeforeunload = checkLeave;
+		function checkLeave(){
+			alert("1111111");
+		} */
 	</script>
 </head>
-<body>
+<body >
 	<div id="main">
 		<div id="header" class="navbar navbar-fixed-top">
 	      <div class="navbar-inner">

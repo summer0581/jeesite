@@ -6,6 +6,7 @@
 package com.thinkgem.jeesite.modules.sys.security;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,12 +28,16 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.SimplePrincipalCollection;
 import org.apache.shiro.util.ByteSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 
 import com.thinkgem.jeesite.common.servlet.ValidateCodeServlet;
 import com.thinkgem.jeesite.common.utils.Encodes;
 import com.thinkgem.jeesite.common.utils.SpringContextHolder;
+import com.thinkgem.jeesite.modules.sys.dao.LogDao;
+import com.thinkgem.jeesite.modules.sys.dao.UserDao;
+import com.thinkgem.jeesite.modules.sys.entity.Log;
 import com.thinkgem.jeesite.modules.sys.entity.Menu;
 import com.thinkgem.jeesite.modules.sys.entity.Role;
 import com.thinkgem.jeesite.modules.sys.entity.User;
@@ -46,8 +51,9 @@ import com.thinkgem.jeesite.modules.sys.web.LoginController;
  * @version 2013-5-29
  */
 @Service
-@DependsOn({"userDao","roleDao","menuDao"})
+@DependsOn({"userDao","roleDao","menuDao","logDao"})
 public class SystemAuthorizingRealm extends AuthorizingRealm {
+	//private static LogDao logDao = SpringContextHolder.getBean(LogDao.class);
 
 	private SystemService systemService;
 
@@ -102,13 +108,32 @@ public class SystemAuthorizingRealm extends AuthorizingRealm {
 					info.addRole(role.getName());
 				}
 			}
-			
+			Log log = new Log();
+			log.setType(Log.TYPE_LOGINOUT);
+			log.setCreateBy(user);
+			log.setCreateDate(new Date());
+			log.setParams("用户登陆！");
+			systemService.saveLogInfo(log);
 			// 更新登录IP和时间
 			getSystemService().updateUserLoginInfo(user.getId());
 			return info;
 		} else {
 			return null;
 		}
+	}
+	
+	@Override
+	public void onLogout(PrincipalCollection principals) {
+		// TODO Auto-generated method stub
+		super.onLogout(principals);
+		Principal principal = (Principal) getAvailablePrincipal(principals);
+		User user = getSystemService().getUserByLoginName(principal.getLoginName());
+		Log log = new Log();
+		log.setType(Log.TYPE_LOGINOUT);
+		log.setCreateBy(user);
+		log.setCreateDate(new Date());
+		log.setParams("用户登出！");
+		systemService.saveLogInfo(log);
 	}
 	
 	/**

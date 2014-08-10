@@ -231,7 +231,7 @@ public class User extends IdEntity<User> {
 	public void setLoginDate(Date loginDate) {
 		this.loginDate = loginDate;
 	}
-
+	@ExcelField(title="入职时间", type=0, align=1, sort=120)
 	public Date getEntryDate() {
 		return entryDate;
 	}

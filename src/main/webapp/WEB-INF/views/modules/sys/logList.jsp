@@ -29,11 +29,12 @@
 			<label>结束日期：</label><input id="endDate" name="endDate" type="text" readonly="readonly" maxlength="20" class="input-small Wdate"
 				value="${endDate}" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
 			<label for="exception"><input id="exception" name="exception" type="checkbox"${exception eq '1'?' checked':''} value="1"/>异常信息</label>
+			<label for="loginout"><input id="loginout" name="loginout" type="checkbox"${loginout eq '1'?' checked':''} value="1"/>登陆登出信息</label>
 			&nbsp;&nbsp;<input id="btnSubmit" class="btn btn-primary" type="submit" value="查询"/>
 		</div>
 	</form:form>
 	<tags:message content="${message}"/>
-	<table id="contentTable" class="table table-striped table-bordered table-condensed">
+	<table id="contentTable" class="table table-striped table-bordered table-condensed" >
 		<thead><tr><th>所在公司</th><th>所在部门</th><th>操作用户</th><th>URI</th><th>提交方式</th><th>操作者IP</th><th>创建时间</th></thead>
 		<tbody>
 		<c:forEach items="${page.list}" var="log">
@@ -47,7 +48,7 @@
 				<td><fmt:formatDate value="${log.createDate}" type="both"/></td>
 			</tr>
 			<tr>
-				<td colspan="8">用户代理: ${log.userAgent}<br/>提交参数: ${fns:escapeHtml(log.params)}
+				<td style="word-break:break-all" colspan="8">用户代理: ${log.userAgent}<br/>提交参数: ${fns:escapeHtml(log.params)}
 				<c:if test="${not empty log.exception}"><br/>异常信息: <br/><%request.setAttribute("strEnter", "\n"); %>
 				${fn:replace(fns:escapeHtml(log.exception), strEnter, '<br/>')}</c:if></td>
 			</tr>

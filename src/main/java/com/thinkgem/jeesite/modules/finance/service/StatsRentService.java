@@ -479,6 +479,8 @@ public class StatsRentService extends BaseService {
 			for(RentMonth rentmonth : list){
 				//判断，房子出租的起始日期距离选择的起始日期是否为 设置的 支付月总数，因空置期提成支付改成了分6个月支付
 				long xmonth = DateUtils.compareDates(themonthdate,rentmonth.getLastpaysdate(), Calendar.MONTH);
+
+
 				if(xmonth < 0 || xmonth >= totalpaymonth){
 					continue;
 				}
@@ -516,10 +518,24 @@ public class StatsRentService extends BaseService {
 				
 				/**************************以下是空置期合计的计算**********************/
 				double perlevel = 1.0/(double)totalpaymonth;
+				double rentinSalePerlevel = perlevel;//租进业务员分期付款百分比
+				double rentoutSalePerlevel = perlevel;//租出业务员分期付款百分比
+
 				if(null != sameMonthRentin){//如果没设置进去记录，则无法找到对应的经理，部长，组长，租进业务员
 					if(null != sameMonthRentin.getPerson()){
+						long hasEntriedMonth = -1;
+						//判断租出业务员的入职时间是否大于等于2014年8月1日
+						if(null!= rentmonth.getPerson() && null != rentmonth.getPerson().getEntryDate() && DateUtils.compareDates(DateUtils.parseDate("2014-08-01"),rentmonth.getPerson().getEntryDate(), Calendar.MONTH) >= 0){
+							hasEntriedMonth = DateUtils.compareDates(rentmonth.getPerson().getEntryDate(),rentmonth.getLastpaysdate(), Calendar.MONTH)+1;
+							//判断房子租进时间，是否在新员工入职后的六个月内，如果是六个月内，则1月租出的只能在距离租出一个月内查到，2月租出的只能在距离租出二个月内查到，以此类推
+							if(-1 != hasEntriedMonth && hasEntriedMonth < 6 && xmonth <= hasEntriedMonth){
+								rentinSalePerlevel = 1.0/hasEntriedMonth;
+							}else{
+								rentinSalePerlevel = 0.0;
+							}
+						}
 						username_temp = sameMonthRentin.getPerson().getLoginName();
-						rentinPeriod.put(username_temp, MathUtils.deNull(rentinPeriod.get(username_temp))+(int)(Math.round(rentin_cut*perlevel)));//通过用户名(承租业务员)，去累加他的承租空置期提成
+						rentinPeriod.put(username_temp, MathUtils.deNull(rentinPeriod.get(username_temp))+(int)(Math.round(rentin_cut*rentinSalePerlevel)));//通过用户名(承租业务员)，去累加他的承租空置期提成
 					}
 					if(null != sameMonthRentin.getBusi_departleader()){//如果有部长
 						username_temp = sameMonthRentin.getBusi_departleader().getLoginName();
@@ -537,7 +553,18 @@ public class StatsRentService extends BaseService {
 				}
 				if(null != rentmonth.getPerson()){
 					username_temp = rentmonth.getPerson().getLoginName();
-					rentoutPeriod.put(username_temp, MathUtils.deNull(rentoutPeriod.get(username_temp))+(int)(Math.round(rentout_cut*perlevel)));//通过用户名(出租业务员)，去累加他的出租租空置期提成
+					long hasEntriedMonth = -1;
+					//判断租出业务员的入职时间是否大于等于2014年8月1日
+					if(null!= rentmonth.getPerson() && null != rentmonth.getPerson().getEntryDate() && DateUtils.compareDates(DateUtils.parseDate("2014-08-01"),rentmonth.getPerson().getEntryDate(), Calendar.MONTH) >= 0){
+						hasEntriedMonth = DateUtils.compareDates(rentmonth.getPerson().getEntryDate(),rentmonth.getLastpaysdate(), Calendar.MONTH)+1;
+						//判断房子租进时间，是否在新员工入职后的六个月内，如果是六个月内，则1月租出的只能在距离租出一个月内查到，2月租出的只能在距离租出二个月内查到，以此类推
+						if(-1 != hasEntriedMonth && hasEntriedMonth < 6 && xmonth <= hasEntriedMonth){
+							rentoutSalePerlevel = 1.0/hasEntriedMonth;
+						}else{
+							rentoutSalePerlevel = 0.0;
+						}
+					}
+					rentoutPeriod.put(username_temp, MathUtils.deNull(rentoutPeriod.get(username_temp))+(int)(Math.round(rentout_cut*rentoutSalePerlevel)));//通过用户名(出租业务员)，去累加他的出租租空置期提成
 				}
 				
 			}
@@ -602,6 +629,7 @@ public class StatsRentService extends BaseService {
 	public Map<String,Object> vacantPeriodDetail4PersonByMonth(Map<String, Object> paramMap) throws Exception{
 		String personid = (String)paramMap.get("personid");
 		User person = UserUtils.getUserById(personid);
+		//paramMap.put("name", "凯轩云顶809");
 
 		List<RentMonth> list = getVacantperiodBaseAllList(paramMap); 
 		String themonth = (String)paramMap.get("rentout_sdate_begin");
@@ -635,6 +663,15 @@ public class StatsRentService extends BaseService {
 			for(RentMonth rentmonth : list){
 				//判断，房子出租的起始日期距离选择的起始日期是否为 设置的 支付月总数，因空置期提成支付改成了分6个月支付
 				long xmonth = DateUtils.compareDates(themonthdate,rentmonth.getLastpaysdate(), Calendar.MONTH);
+				long hasEntriedMonth = -1;
+				//判断租出业务员的入职时间是否大于等于2014年8月1日
+				if(null!= rentmonth.getPerson() && null != person.getEntryDate() && DateUtils.compareDates(DateUtils.parseDate("2014-08-01"),person.getEntryDate(), Calendar.MONTH) >= 0){
+					hasEntriedMonth = DateUtils.compareDates(person.getEntryDate(),rentmonth.getLastpaysdate(), Calendar.MONTH)+1;
+					//判断房子租进时间，是否在新员工入职后的六个月内，如果是六个月内，则1月租出的只能在距离租出一个月内查到，2月租出的只能在距离租出二个月内查到，以此类推
+					if(hasEntriedMonth < 6 && xmonth > hasEntriedMonth){
+						continue;
+					}
+				}
 				if(xmonth < 0 || xmonth >= totalpaymonth){
 					continue;
 				}
@@ -671,6 +708,9 @@ public class StatsRentService extends BaseService {
 				resultMap.put("vacantperiod_type", recentVacantType);//空置期提成类型
 
 				double perlevel = 1.0/(double)totalpaymonth;
+				if(-1 != hasEntriedMonth && hasEntriedMonth < 6){//如果已入职月份已设值，则按已入职月份计算分月支付折扣。
+					perlevel = 1.0/hasEntriedMonth;
+				}
 				cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentmonth.getCut_vacantperiodtype());
 				if(null != sameMonthRentin){//如果没设置进去记录，则无法找到对应的经理，部长，组长，租进业务员
 					if(person.equals(sameMonthRentin.getBusi_manager())){//判断此人是不是经理
@@ -1524,18 +1564,21 @@ public class StatsRentService extends BaseService {
 			Map<String,Object> paramMap1 = new HashMap<String,Object>();
 			paramMap1.put("infotype", "rentin");
 			paramMap1.put("rent", rentmonth.getRent());
-			paramMap1.put("sdate_begin", rentmonth.getLastpaysdate());
+			paramMap1.put("sdate_begin", rentmonth.getLastpayedate());
 			List<RentMonth> tempList = rentMonthService.findSameRentinByRentout(paramMap1);
 			if(null != tempList && tempList.size() > 0){
 				sameMonthRentin = tempList.get(0);
 				if(null != sameMonthRentin.getBusi_manager()){
 					managers.add(sameMonthRentin.getBusi_manager());
+					salers.remove(sameMonthRentin.getBusi_manager());
 				}
 				if(null != sameMonthRentin.getBusi_departleader()){
 					departleaders.add(sameMonthRentin.getBusi_departleader());
+					salers.remove(sameMonthRentin.getBusi_departleader());
 				}
 				if(null != sameMonthRentin.getBusi_teamleader()){
 					teamleaders.add(sameMonthRentin.getBusi_teamleader());
+					salers.remove(sameMonthRentin.getBusi_teamleader());
 				}
 				if(null != sameMonthRentin.getPerson() && !managers.contains(sameMonthRentin.getPerson()) && !departleaders.contains(sameMonthRentin.getPerson()) && !teamleaders.contains(sameMonthRentin.getPerson())){
 					salers.add(sameMonthRentin.getPerson());
@@ -1543,7 +1586,6 @@ public class StatsRentService extends BaseService {
 
 			}
 
-			
 			if(null != rentmonth.getPerson() && !managers.contains(rentmonth.getPerson()) && !departleaders.contains(rentmonth.getPerson()) && !teamleaders.contains(rentmonth.getPerson())){
 				salers.add(rentmonth.getPerson());
 			}

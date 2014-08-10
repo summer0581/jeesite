@@ -53,6 +53,7 @@ public class Log extends BaseEntity<Area> {
 	
 	public static final String TYPE_ACCESS = "1";
 	public static final String TYPE_EXCEPTION = "2";
+	public static final String TYPE_LOGINOUT = "3";//登陆登出
 	
 	public Log(){
 		super();

@@ -27,9 +27,11 @@ import com.thinkgem.jeesite.common.service.BaseService;
 import com.thinkgem.jeesite.common.utils.Collections3;
 import com.thinkgem.jeesite.common.utils.Encodes;
 import com.thinkgem.jeesite.common.utils.StringUtils;
+import com.thinkgem.jeesite.modules.sys.dao.LogDao;
 import com.thinkgem.jeesite.modules.sys.dao.MenuDao;
 import com.thinkgem.jeesite.modules.sys.dao.RoleDao;
 import com.thinkgem.jeesite.modules.sys.dao.UserDao;
+import com.thinkgem.jeesite.modules.sys.entity.Log;
 import com.thinkgem.jeesite.modules.sys.entity.Menu;
 import com.thinkgem.jeesite.modules.sys.entity.Role;
 import com.thinkgem.jeesite.modules.sys.entity.User;
@@ -55,6 +57,8 @@ public class SystemService extends BaseService  {
 	private RoleDao roleDao;
 	@Autowired
 	private MenuDao menuDao;
+	@Autowired
+	private LogDao logDao;
 	@Autowired
 	private SystemAuthorizingRealm systemRealm;
 	
@@ -143,6 +147,11 @@ public class SystemService extends BaseService  {
 	@Transactional(readOnly = false)
 	public void updateUserLoginInfo(String id) {
 		userDao.updateLoginInfo(SecurityUtils.getSubject().getSession().getHost(), new Date(), id);
+	}
+	@Transactional(readOnly = false)
+	public void saveLogInfo(Log log){
+		logDao.save(log);
+		logDao.flush();
 	}
 	
 	/**

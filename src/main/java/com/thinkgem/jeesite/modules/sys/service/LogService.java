@@ -47,6 +47,11 @@ public class LogService extends BaseService {
 			dc.add(Restrictions.eq("createBy.id", createById));
 		}
 		
+		String createByName = ObjectUtils.toString(paramMap.get("createByName"));
+		if (createById > 0){
+			dc.add(Restrictions.like("createBy.name", "%"+createByName+"%"));
+		}
+		
 		String requestUri = ObjectUtils.toString(paramMap.get("requestUri"));
 		if (StringUtils.isNotBlank(requestUri)){
 			dc.add(Restrictions.like("requestUri", "%"+requestUri+"%"));
@@ -55,6 +60,11 @@ public class LogService extends BaseService {
 		String exception = ObjectUtils.toString(paramMap.get("exception"));
 		if (StringUtils.isNotBlank(exception)){
 			dc.add(Restrictions.eq("type", Log.TYPE_EXCEPTION));
+		}
+		
+		String loginout = ObjectUtils.toString(paramMap.get("loginout"));
+		if (StringUtils.isNotBlank(loginout)){
+			dc.add(Restrictions.eq("type", Log.TYPE_LOGINOUT));
 		}
 		
 		Date beginDate = DateUtils.parseDate(paramMap.get("beginDate"));
