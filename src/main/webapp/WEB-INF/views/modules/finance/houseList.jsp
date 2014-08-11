@@ -166,7 +166,7 @@
 			<th>楼盘</th>
 			<th>房东姓名</th>
 			<th>房东联系方式</th>
-			<th>转账卡号</th>
+			
 			<th>租户姓名</th>
 			<th>租户联系方式</th>
 			<th>租进业务员</th>
@@ -181,7 +181,7 @@
 				<td>${house.houses}</td>
 				<td>${allColumnShow or empty house.rentin_user or house.rentin_user eq fns:getUser()?house.landlord.name:''}</td>
 				<td>${allColumnShow or empty house.rentin_user or house.rentin_user eq fns:getUser()?house.landlord.telephone:''}</td>
-				<td>${allColumnShow or empty house.rentin_user or house.rentin_user eq fns:getUser()?house.debit_card:''}</td>
+				
 				<td>${allColumnShow or empty house.rentout_user or house.rentout_user eq fns:getUser()?house.tenant.name:''}</td>
 				<td>${allColumnShow or empty house.rentout_user or house.rentout_user eq fns:getUser()?house.tenant.telephone:''}</td>
 				<td>${house.rentin_user.name}</td>

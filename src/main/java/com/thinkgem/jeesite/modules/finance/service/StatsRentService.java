@@ -828,24 +828,27 @@ public class StatsRentService extends BaseService {
 			}
 
 			if(null != rentinmonth.getPerson() && StringUtils.isNotBlank(rentinmonth.getPerson().getName())){
-				tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler_old, CutConfigTypeConstant.cut_businesssales);
-				
-				if(User.Busi_type.oldbusier.toString().equals(rentinmonth.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
-					rentin_cut = Math.round(tempcut);
+				if(StringUtils.isNotBlank(rentinmonth.getPerson_fixedcut())){//2014.8.11改为：如果设置了业绩提成固定值，则优先用固定值作为提成金额
+					rentin_cut = Integer.valueOf(rentinmonth.getPerson_fixedcut());
 				}else{
-					rentin_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_businesssales));
+					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler_old, CutConfigTypeConstant.cut_businesssales);
+					
+					if(User.Busi_type.oldbusier.toString().equals(rentinmonth.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
+						rentin_cut = Math.round(tempcut);
+					}else{
+						rentin_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_businesssales));
+					}
+					/*此处比较的起始时间于2014.7.11改为用lastpaysdate与rentout_sdate_begin进行比较，
+					如果lastpaysdate大于rentout_sdate_begin，则用lastpaysdate，否则用rentout_sdate_begin
+					*/
+					Date agencyfeeBeginDate = rentout_sdate_begin;
+					if(DateUtils.compareDates(rentinmonth.getLastpaysdate(), rentout_sdate_begin, Calendar.DATE) > 0){
+						agencyfeeBeginDate = rentinmonth.getLastpaysdate();
+					}
+					if((int)DateUtils.compareDates(agencyfeeBeginDate, rentinmonth.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
+						rentin_cut = (rentin_cut*inmonthnumper-MathUtils.deNull(rentinmonth.getAgencyfee()))/inmonthnumper;
+					}
 				}
-				/*此处比较的起始时间于2014.7.11改为用lastpaysdate与rentout_sdate_begin进行比较，
-				如果lastpaysdate大于rentout_sdate_begin，则用lastpaysdate，否则用rentout_sdate_begin
-				*/
-				Date agencyfeeBeginDate = rentout_sdate_begin;
-				if(DateUtils.compareDates(rentinmonth.getLastpaysdate(), rentout_sdate_begin, Calendar.DATE) > 0){
-					agencyfeeBeginDate = rentinmonth.getLastpaysdate();
-				}
-				if((int)DateUtils.compareDates(agencyfeeBeginDate, rentinmonth.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
-					rentin_cut = (rentin_cut*inmonthnumper-MathUtils.deNull(rentinmonth.getAgencyfee()))/inmonthnumper;
-				}
-				
 			}
 			if(null != sameMonthRentout ){
 				outmonthnumper = (int)DateUtils.compareDates(sameMonthRentout.getEdate(), sameMonthRentout.getSdate(), Calendar.DATE)/DaysPerMonth;
@@ -856,34 +859,53 @@ public class StatsRentService extends BaseService {
 					outmonthnumper = AgencyfeeMonthMax;
 				}
 				if(null != sameMonthRentout.getPerson() && StringUtils.isNotBlank(sameMonthRentout.getPerson().getName())){
-					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler_old, CutConfigTypeConstant.cut_businesssales);
-					if(User.Busi_type.oldbusier.toString().equals(sameMonthRentout.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
-						rentout_cut = Math.round(tempcut);
+					if(StringUtils.isNotBlank(sameMonthRentout.getPerson_fixedcut())){//2014.8.11改为：如果设置了业绩提成固定值，则优先用固定值作为提成金额
+						rentout_cut = Integer.valueOf(sameMonthRentout.getPerson_fixedcut());
 					}else{
-						rentout_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_businesssales));
+						tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler_old, CutConfigTypeConstant.cut_businesssales);
+						if(User.Busi_type.oldbusier.toString().equals(sameMonthRentout.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
+							rentout_cut = Math.round(tempcut);
+						}else{
+							rentout_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_businesssales));
+						}
+						/*此处比较的起始时间于2014.7.11改为用lastpaysdate与rentout_sdate_begin进行比较，
+						如果lastpaysdate大于rentout_sdate_begin，则用lastpaysdate，否则用rentout_sdate_begin
+						*/
+						Date agencyfeeBeginDate = rentout_sdate_begin;
+						if(DateUtils.compareDates(rentinmonth.getLastpaysdate(), rentout_sdate_begin, Calendar.DATE) > 0){
+							agencyfeeBeginDate = rentinmonth.getLastpaysdate();
+						}
+						if((int)DateUtils.compareDates(agencyfeeBeginDate, sameMonthRentout.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
+							rentout_cut = (rentout_cut*outmonthnumper-MathUtils.deNull(sameMonthRentout.getAgencyfee()))/outmonthnumper;
+						}
 					}
-					/*此处比较的起始时间于2014.7.11改为用lastpaysdate与rentout_sdate_begin进行比较，
-					如果lastpaysdate大于rentout_sdate_begin，则用lastpaysdate，否则用rentout_sdate_begin
-					*/
-					Date agencyfeeBeginDate = rentout_sdate_begin;
-					if(DateUtils.compareDates(rentinmonth.getLastpaysdate(), rentout_sdate_begin, Calendar.DATE) > 0){
-						agencyfeeBeginDate = rentinmonth.getLastpaysdate();
-					}
-					if((int)DateUtils.compareDates(agencyfeeBeginDate, sameMonthRentout.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
-						rentout_cut = (rentout_cut*outmonthnumper-MathUtils.deNull(sameMonthRentout.getAgencyfee()))/outmonthnumper;
-					}
+					
 					
 				}
 
 			}
 			if(null != rentinmonth.getBusi_teamleader() && StringUtils.isNotBlank(rentinmonth.getBusi_teamleader().getName())){
-				teamleader_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_businesssales));				
+				if(StringUtils.isNotBlank(rentinmonth.getTeamleader_fixedcut())){//2014.8.11改为：如果设置了业绩提成固定值，则优先用固定值作为提成金额
+					teamleader_cut = Integer.valueOf(rentinmonth.getTeamleader_fixedcut());
+				}else{
+					teamleader_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_businesssales));
+				}
+								
 			}
 			if(null != rentinmonth.getBusi_departleader() && StringUtils.isNotBlank(rentinmonth.getBusi_departleader().getName())){
-				departleader_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.departleader, CutConfigTypeConstant.cut_businesssales));				
+				if(StringUtils.isNotBlank(rentinmonth.getDeparter_fixedcut())){//2014.8.11改为：如果设置了业绩提成固定值，则优先用固定值作为提成金额
+					departleader_cut = Integer.valueOf(rentinmonth.getDeparter_fixedcut());
+				}else{
+					departleader_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.departleader, CutConfigTypeConstant.cut_businesssales));
+				}
+								
 			}
 			if(null != rentinmonth.getBusi_manager() && StringUtils.isNotBlank(rentinmonth.getBusi_manager().getName())){
-				manager_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_businesssales));	
+				if(StringUtils.isNotBlank(rentinmonth.getManager_fixedcut())){//2014.8.11改为：如果设置了业绩提成固定值，则优先用固定值作为提成金额
+					manager_cut = Integer.valueOf(rentinmonth.getManager_fixedcut());
+				}else{
+					manager_cut = Math.round(cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_businesssales));
+				}
 			}
 
 			resultMap.put("rentin_cut", rentin_cut);//租进业务员提成
@@ -971,38 +993,55 @@ public class StatsRentService extends BaseService {
 			}
 			if(null != rentinmonth.getBusi_manager() && StringUtils.isNotBlank(rentinmonth.getBusi_manager().getName())){
 				username_temp = rentinmonth.getBusi_manager().getLoginName();
-				tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_businesssales);
+				if(StringUtils.isNotBlank(rentinmonth.getManager_fixedcut())){//2014.8.11改为：如果设置了业绩提成固定值，则优先用固定值作为提成金额
+					tempdouble = Integer.valueOf(rentinmonth.getManager_fixedcut());
+				}else{
+					tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_businesssales);
+				}
 				managerCutMap.put(username_temp, MathUtils.deNull(managerCutMap.get(username_temp))+tempdouble);
 			}
 			if(null != rentinmonth.getBusi_departleader() && StringUtils.isNotBlank(rentinmonth.getBusi_departleader().getName())){
 				username_temp = rentinmonth.getBusi_departleader().getLoginName();
-				tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.departleader, CutConfigTypeConstant.cut_businesssales);
+				if(StringUtils.isNotBlank(rentinmonth.getDeparter_fixedcut())){//2014.8.11改为：如果设置了业绩提成固定值，则优先用固定值作为提成金额
+					tempdouble = Integer.valueOf(rentinmonth.getDeparter_fixedcut());
+				}else{
+					tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.departleader, CutConfigTypeConstant.cut_businesssales);
+				}
 				departleaderCutMap.put(username_temp, MathUtils.deNull(departleaderCutMap.get(username_temp))+tempdouble);
 			}
 			if(null != rentinmonth.getBusi_teamleader() && StringUtils.isNotBlank(rentinmonth.getBusi_teamleader().getName())){
 				username_temp = rentinmonth.getBusi_teamleader().getLoginName();
-				tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_businesssales);
+				if(StringUtils.isNotBlank(rentinmonth.getTeamleader_fixedcut())){//2014.8.11改为：如果设置了业绩提成固定值，则优先用固定值作为提成金额
+					tempdouble = Integer.valueOf(rentinmonth.getTeamleader_fixedcut());
+				}else{
+					tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_businesssales);
+				}
+				
 				teamleaderCutMap.put(username_temp, MathUtils.deNull(teamleaderCutMap.get(username_temp))+tempdouble);
 			}
 			if(null != rentinmonth.getPerson() && StringUtils.isNotBlank(rentinmonth.getPerson().getName())){
 				username_temp = rentinmonth.getPerson().getLoginName();
-				tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler_old, CutConfigTypeConstant.cut_businesssales);
-				if(User.Busi_type.oldbusier.toString().equals(rentinmonth.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
+				if(StringUtils.isNotBlank(rentinmonth.getPerson_fixedcut())){//2014.8.11改为：如果设置了业绩提成固定值，则优先用固定值作为提成金额
+					tempdouble = Integer.valueOf(rentinmonth.getPerson_fixedcut());
+				}else{
+					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler_old, CutConfigTypeConstant.cut_businesssales);
+					if(User.Busi_type.oldbusier.toString().equals(rentinmonth.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
 
-				}else{
-					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_businesssales);
-				}
-				/*此处比较的起始时间于2014.7.11改为用lastpaysdate与rentout_sdate_begin进行比较，
-				如果lastpaysdate大于rentout_sdate_begin，则用lastpaysdate，否则用rentout_sdate_begin
-				*/
-				Date agencyfeeBeginDate = rentout_sdate_begin;
-				if(DateUtils.compareDates(rentinmonth.getLastpaysdate(), rentout_sdate_begin, Calendar.DATE) > 0){
-					agencyfeeBeginDate = rentinmonth.getLastpaysdate();
-				}
-				if((int)DateUtils.compareDates(agencyfeeBeginDate, rentinmonth.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
-					tempdouble = (tempcut*inmonthnumper-MathUtils.deNull(rentinmonth.getAgencyfee()))/inmonthnumper;
-				}else{
-					tempdouble = tempcut;
+					}else{
+						tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_businesssales);
+					}
+					/*此处比较的起始时间于2014.7.11改为用lastpaysdate与rentout_sdate_begin进行比较，
+					如果lastpaysdate大于rentout_sdate_begin，则用lastpaysdate，否则用rentout_sdate_begin
+					*/
+					Date agencyfeeBeginDate = rentout_sdate_begin;
+					if(DateUtils.compareDates(rentinmonth.getLastpaysdate(), rentout_sdate_begin, Calendar.DATE) > 0){
+						agencyfeeBeginDate = rentinmonth.getLastpaysdate();
+					}
+					if((int)DateUtils.compareDates(agencyfeeBeginDate, rentinmonth.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
+						tempdouble = (tempcut*inmonthnumper-MathUtils.deNull(rentinmonth.getAgencyfee()))/inmonthnumper;
+					}else{
+						tempdouble = tempcut;
+					}
 				}
 
 				rentinCutMap.put(username_temp, MathUtils.deNull(rentinCutMap.get(username_temp))+tempdouble);
@@ -1018,25 +1057,28 @@ public class StatsRentService extends BaseService {
 				}
 				if(null != sameMonthRentout.getPerson() && StringUtils.isNotBlank(sameMonthRentout.getPerson().getName())){
 					username_temp = sameMonthRentout.getPerson().getLoginName();
-					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler_old, CutConfigTypeConstant.cut_businesssales);
-					if(User.Busi_type.oldbusier.toString().equals(sameMonthRentout.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
-
+					if(StringUtils.isNotBlank(sameMonthRentout.getPerson_fixedcut())){//2014.8.11改为：如果设置了业绩提成固定值，则优先用固定值作为提成金额
+						tempdouble = Integer.valueOf(sameMonthRentout.getPerson_fixedcut());
 					}else{
-						tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_businesssales);
-					}
-					/*此处比较的起始时间于2014.7.11改为用lastpaysdate与rentout_sdate_begin进行比较，
-					如果lastpaysdate大于rentout_sdate_begin，则用lastpaysdate，否则用rentout_sdate_begin
-					*/
-					Date agencyfeeBeginDate = rentout_sdate_begin;
-					if(DateUtils.compareDates(rentinmonth.getLastpaysdate(), rentout_sdate_begin, Calendar.DATE) > 0){
-						agencyfeeBeginDate = rentinmonth.getLastpaysdate();
-					}
-					if((int)DateUtils.compareDates(agencyfeeBeginDate, sameMonthRentout.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
-						tempdouble = (tempcut*outmonthnumper-MathUtils.deNull(sameMonthRentout.getAgencyfee()))/outmonthnumper;
-					}else{
-						tempdouble = tempcut;
-					}
+						tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler_old, CutConfigTypeConstant.cut_businesssales);
+						if(User.Busi_type.oldbusier.toString().equals(sameMonthRentout.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
 
+						}else{
+							tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_businesssales);
+						}
+						/*此处比较的起始时间于2014.7.11改为用lastpaysdate与rentout_sdate_begin进行比较，
+						如果lastpaysdate大于rentout_sdate_begin，则用lastpaysdate，否则用rentout_sdate_begin
+						*/
+						Date agencyfeeBeginDate = rentout_sdate_begin;
+						if(DateUtils.compareDates(rentinmonth.getLastpaysdate(), rentout_sdate_begin, Calendar.DATE) > 0){
+							agencyfeeBeginDate = rentinmonth.getLastpaysdate();
+						}
+						if((int)DateUtils.compareDates(agencyfeeBeginDate, sameMonthRentout.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
+							tempdouble = (tempcut*outmonthnumper-MathUtils.deNull(sameMonthRentout.getAgencyfee()))/outmonthnumper;
+						}else{
+							tempdouble = tempcut;
+						}
+					}
 					rentoutCutMap.put(username_temp, MathUtils.deNull(rentoutCutMap.get(username_temp))+tempdouble);
 				}
 
@@ -1147,17 +1189,30 @@ public class StatsRentService extends BaseService {
 
 			cut_businesssaletypeconfigs = cutconfigService.findCutconfiglistByCutcode(sameMonthRentout.getCut_businesssaletype());
 			if(person.equals(rentinmonth.getBusi_manager())){
-				tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_businesssales);
+				if(StringUtils.isNotBlank(rentinmonth.getManager_fixedcut())){//2014.8.11改为：如果设置了业绩提成固定值，则优先用固定值作为提成金额
+					tempdouble = Integer.valueOf(rentinmonth.getManager_fixedcut());
+				}else{
+					tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_businesssales);
+				}
 				resultMap.put("manager_cut",tempdouble);
 				manager_total += tempdouble;
 			}
 			if(person.equals(rentinmonth.getBusi_departleader())){
-				tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.departleader, CutConfigTypeConstant.cut_businesssales);
+				if(StringUtils.isNotBlank(rentinmonth.getDeparter_fixedcut())){//2014.8.11改为：如果设置了业绩提成固定值，则优先用固定值作为提成金额
+					tempdouble = Integer.valueOf(rentinmonth.getDeparter_fixedcut());
+				}else{
+					tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.departleader, CutConfigTypeConstant.cut_businesssales);
+				}
 				resultMap.put("departleader_cut",tempdouble);
 				departleader_total += tempdouble;
 			}
 			if(person.equals(rentinmonth.getBusi_teamleader())){
-				tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_businesssales);
+				if(StringUtils.isNotBlank(rentinmonth.getTeamleader_fixedcut())){//2014.8.11改为：如果设置了业绩提成固定值，则优先用固定值作为提成金额
+					tempdouble = Integer.valueOf(rentinmonth.getTeamleader_fixedcut());
+				}else{
+					tempdouble = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_businesssales);
+				}
+				
 				resultMap.put("teamleader_cut",tempdouble);
 				teamleader_total += tempdouble;
 			}
@@ -1170,29 +1225,31 @@ public class StatsRentService extends BaseService {
 			}
 
 			if(person.equals(rentinmonth.getPerson())){
-				tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler_old, CutConfigTypeConstant.cut_businesssales);
-				if(User.Busi_type.oldbusier.toString().equals(rentinmonth.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
+				if(StringUtils.isNotBlank(rentinmonth.getPerson_fixedcut())){//2014.8.11改为：如果设置了业绩提成固定值，则优先用固定值作为提成金额
+					tempdouble = Integer.valueOf(rentinmonth.getPerson_fixedcut());
+				}else{
+					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler_old, CutConfigTypeConstant.cut_businesssales);
+					if(User.Busi_type.oldbusier.toString().equals(rentinmonth.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
 
-				}else{
-					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_businesssales);
-				}
-				/*此处比较的起始时间于2014.7.11改为用lastpaysdate与rentout_sdate_begin进行比较，
-				如果lastpaysdate大于rentout_sdate_begin，则用lastpaysdate，否则用rentout_sdate_begin
-				*/
-				Date agencyfeeBeginDate = rentout_sdate_begin;
-				if(DateUtils.compareDates(rentinmonth.getLastpaysdate(), rentout_sdate_begin, Calendar.DATE) > 0){
-					agencyfeeBeginDate = rentinmonth.getLastpaysdate();
-				}
-				if(null != sameMonthRentout && (int)DateUtils.compareDates(agencyfeeBeginDate, rentinmonth.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
-					tempdouble = (tempcut*inmonthnumper-MathUtils.deNull(rentinmonth.getAgencyfee()))/inmonthnumper;
-				}else{
-					tempdouble = tempcut;
+					}else{
+						tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_businesssales);
+					}
+					/*此处比较的起始时间于2014.7.11改为用lastpaysdate与rentout_sdate_begin进行比较，
+					如果lastpaysdate大于rentout_sdate_begin，则用lastpaysdate，否则用rentout_sdate_begin
+					*/
+					Date agencyfeeBeginDate = rentout_sdate_begin;
+					if(DateUtils.compareDates(rentinmonth.getLastpaysdate(), rentout_sdate_begin, Calendar.DATE) > 0){
+						agencyfeeBeginDate = rentinmonth.getLastpaysdate();
+					}
+					if(null != sameMonthRentout && (int)DateUtils.compareDates(agencyfeeBeginDate, rentinmonth.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
+						tempdouble = (tempcut*inmonthnumper-MathUtils.deNull(rentinmonth.getAgencyfee()))/inmonthnumper;
+					}else{
+						tempdouble = tempcut;
+					}
+
 				}
 				resultMap.put("rentin_cut",tempdouble);
 				rentin_total += tempdouble;
-				if("谢朝阳".equals(rentinmonth.getPerson().getName())){
-					System.out.println(rentinmonth.getRent().getName()+"::"+tempdouble+"::"+rentin_total);
-				}
 			}
 			rentinRentMonths.add(resultMap);
 			if(null != sameMonthRentout){
@@ -1204,25 +1261,28 @@ public class StatsRentService extends BaseService {
 					outmonthnumper = AgencyfeeMonthMax;
 				}
 				if(person.equals(sameMonthRentout.getPerson())){
-					tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler_old, CutConfigTypeConstant.cut_businesssales);
-					if(User.Busi_type.oldbusier.toString().equals(sameMonthRentout.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
-						
+					if(StringUtils.isNotBlank(sameMonthRentout.getPerson_fixedcut())){//2014.8.11改为：如果设置了业绩提成固定值，则优先用固定值作为提成金额
+						tempdouble = Integer.valueOf(sameMonthRentout.getPerson_fixedcut());
 					}else{
-						tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_businesssales);
+						tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler_old, CutConfigTypeConstant.cut_businesssales);
+						if(User.Busi_type.oldbusier.toString().equals(sameMonthRentout.getPerson().getUserBusitype()) && tempcut != 0){//如果是老业务员并且有相应的老业务员提成设置
+							
+						}else{
+							tempcut = (int)cutconfigService.getCutpercentByPersonAndType(cut_businesssaletypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_businesssales);
+						}
+						/*此处比较的起始时间于2014.7.11改为用lastpaysdate与rentout_sdate_begin进行比较，
+						如果lastpaysdate大于rentout_sdate_begin，则用lastpaysdate，否则用rentout_sdate_begin
+						*/
+						Date agencyfeeBeginDate = rentout_sdate_begin;
+						if(DateUtils.compareDates(rentinmonth.getLastpaysdate(), rentout_sdate_begin, Calendar.DATE) > 0){
+							agencyfeeBeginDate = rentinmonth.getLastpaysdate();
+						}
+						if((int)DateUtils.compareDates(agencyfeeBeginDate, sameMonthRentout.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
+							tempdouble = (tempcut*outmonthnumper-MathUtils.deNull(sameMonthRentout.getAgencyfee()))/outmonthnumper;
+						}else{
+							tempdouble = tempcut;
+						}
 					}
-					/*此处比较的起始时间于2014.7.11改为用lastpaysdate与rentout_sdate_begin进行比较，
-					如果lastpaysdate大于rentout_sdate_begin，则用lastpaysdate，否则用rentout_sdate_begin
-					*/
-					Date agencyfeeBeginDate = rentout_sdate_begin;
-					if(DateUtils.compareDates(rentinmonth.getLastpaysdate(), rentout_sdate_begin, Calendar.DATE) > 0){
-						agencyfeeBeginDate = rentinmonth.getLastpaysdate();
-					}
-					if((int)DateUtils.compareDates(agencyfeeBeginDate, sameMonthRentout.getSdate(), Calendar.DATE)/DaysPerMonth < AgencyfeeMonthMax){//只有前12个月才算中介费
-						tempdouble = (tempcut*outmonthnumper-MathUtils.deNull(sameMonthRentout.getAgencyfee()))/outmonthnumper;
-					}else{
-						tempdouble = tempcut;
-					}
-					
 					resultMap.put("rentout_cut",tempdouble);
 					rentout_total += tempdouble;
 					rentoutRentMonths.add(resultMap);
@@ -1275,6 +1335,7 @@ public class StatsRentService extends BaseService {
 		showUserList.addAll(salers);
 		
 		List<Map<String,Object>> resultlist = new ArrayList<Map<String,Object>>();
+		
 		
 		Map<String,Integer> rentinCutMap = new HashMap<String,Integer>();
 		Map<String,Integer> rentoutCutMap = new HashMap<String,Integer>();

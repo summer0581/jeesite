@@ -44,6 +44,7 @@
 				<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
 			</div>
 		</div>
+
 		<div class="control-group">
 			<label class="control-label">付款方式:</label>
 			<div class="controls">
@@ -122,24 +123,36 @@
 			</div>
 		</div>	
 		<div class="control-group">
+			<label class="control-label">承租业务员业绩提成固定值:</label>
+			<div class="controls">
+				<form:input path="person_fixedcut" htmlEscape="false" maxlength="64" class="input-small digits"/>
+			</div>
+		</div>
+		<div class="control-group">
 			<label class="control-label">业务经理:</label>
 			<div class="controls">
 			<tags:treeselect id="busi_manager" name="busi_manager.id" notAllowSelectParent="true" value="${rentMonth.busi_manager.id}" labelName="busi_manager.name" labelValue="${rentMonth.busi_manager.name}"
 					title="人员" url="/sys/user/treeData" />		
+			业务提成固定值:
+				<form:input path="manager_fixedcut" htmlEscape="false" maxlength="64" class="input-small digits"/>	
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">业务部长:</label>
 			<div class="controls">
 			<tags:treeselect id="busi_departleader" name="busi_departleader.id" notAllowSelectParent="true" value="${rentMonth.busi_departleader.id}" labelName="busi_departleader.name" labelValue="${rentMonth.busi_departleader.name}"
-					title="人员" url="/sys/user/treeData" />		
+					title="人员" url="/sys/user/treeData" />	
+			业务提成固定值:
+				<form:input path="departer_fixedcut" htmlEscape="false" maxlength="64" class="input-small digits"/>		
 			</div>
 		</div>
 		<div class="control-group">
 			<label class="control-label">业务组长:</label>
 			<div class="controls">
 			<tags:treeselect id="busi_teamleader" name="busi_teamleader.id" notAllowSelectParent="true" value="${rentMonth.busi_teamleader.id}" labelName="busi_teamleader.name" labelValue="${rentMonth.busi_teamleader.name}"
-					title="人员" url="/sys/user/treeData" />			
+					title="人员" url="/sys/user/treeData" />		
+			业务提成固定值:
+				<form:input path="teamleader_fixedcut" htmlEscape="false" maxlength="64" class="input-small digits"/>		
 			</div>
 		</div>
 

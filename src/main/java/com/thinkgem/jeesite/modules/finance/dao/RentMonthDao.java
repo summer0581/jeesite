@@ -95,7 +95,7 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 		sql.append(" t.busi_manager,c_m.name busi_manager_name,c_m.login_name busi_manager_loginname,");
 		sql.append(" t.busi_departleader,c_d.name busi_departleader_name,c_d.login_name busi_departleader_loginname, ");
 		sql.append(" t.busi_teamleader,c_t.name busi_teamleader_name,c_t.login_name busi_teamleader_loginname, ");
-		sql.append(" r.business_num,t.agencyfee ");
+		sql.append(" r.business_num,t.agencyfee,t.person_fixedcut,t.manager_fixedcut,t.departer_fixedcut,t.teamleader_fixedcut ");
 		sql.append(" from ( ");
 		sql.append("		SELECT * FROM ( ");
 		sql.append("				SELECT * FROM finance_rentmonth rm1 ");
@@ -131,6 +131,7 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 			paramMap.put("rentout_sdate_end", DateUtils.formatDate(rentout_sdate_end, "yyyy-MM-dd"));
 		}
 		pm.put("lastpayedate", rentout_sdate_end);
+		
 		List<Map<String,Object>> result = findBySql(sql.toString(), pm, Map.class);
 		/****************************封装数据到最后list************************************/
 		List<RentMonth> rentMonthList = new ArrayList<RentMonth>();
@@ -148,6 +149,10 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 			rentMonth.setLastpayedate((Date)rMap.get("lastpayedate"));
 			rentMonth.setCut_businesssaletype((String)rMap.get("cut_businesssaletype"));
 			rentMonth.setAgencyfee((String)rMap.get("agencyfee"));
+			rentMonth.setPerson_fixedcut((String)rMap.get("person_fixedcut"));
+			rentMonth.setTeamleader_fixedcut((String)rMap.get("teamleader_fixedcut"));
+			rentMonth.setDeparter_fixedcut((String)rMap.get("departer_fixedcut"));
+			rentMonth.setManager_fixedcut((String)rMap.get("manager_fixedcut"));
 			
 			
 			house.setId((String)rMap.get("house_id"));
@@ -324,7 +329,7 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 		Parameter pm = new Parameter();
 		sql.append("select t.id,t.rent_id,t.sdate,t.edate,t.lastpaysdate,t.lastpayedate,t.cut_businesssaletype,");
 		sql.append(" t.person,c_p.name person_name,c_p.user_busitype person_busitype,c_p.login_name person_loginname, ");
-		sql.append(" t.agencyfee ");
+		sql.append(" t.agencyfee,t.person_fixedcut,t.manager_fixedcut,t.departer_fixedcut,t.teamleader_fixedcut ");
 		sql.append(" from  finance_rentmonth t  ");
 		sql.append(" left join sys_user c_p on c_p.id = t.person ");
 		sql.append(" where t.del_flag = :del_flag and t.infotype = 'rentout' ");
@@ -371,6 +376,10 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 			rentMonth.setLastpayedate((Date)rMap.get("lastpayedate"));
 			rentMonth.setCut_businesssaletype((String)rMap.get("cut_businesssaletype"));
 			rentMonth.setAgencyfee((String)rMap.get("agencyfee"));
+			rentMonth.setPerson_fixedcut((String)rMap.get("person_fixedcut"));
+			rentMonth.setTeamleader_fixedcut((String)rMap.get("teamleader_fixedcut"));
+			rentMonth.setDeparter_fixedcut((String)rMap.get("departer_fixedcut"));
+			rentMonth.setManager_fixedcut((String)rMap.get("manager_fixedcut"));
 			
 			User person = null;
 			if(StringUtils.isNotBlank((String)rMap.get("person_name"))){

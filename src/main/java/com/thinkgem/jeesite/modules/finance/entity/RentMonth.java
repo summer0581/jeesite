@@ -67,7 +67,10 @@ public class RentMonth extends IdEntity<RentMonth> {
 	private String cancelrentremark;//提前退租备注
 	private String nextshouldamount;//下次应收应付金额
 	private String nextshouldremark;//应收应付备注
-	
+	private String person_fixedcut;//业务员业绩提成固定值
+	private String manager_fixedcut;//经理业绩提成固定值
+	private String departer_fixedcut;//部长业绩提成固定值
+	private String teamleader_fixedcut;//组长业绩提成固定值
 
 	
 
@@ -295,11 +298,37 @@ public class RentMonth extends IdEntity<RentMonth> {
 		this.nextshouldremark = nextshouldremark;
 	}
 
-	
+	public String getPerson_fixedcut() {
+		return person_fixedcut;
+	}
 
+	public void setPerson_fixedcut(String person_fixedcut) {
+		this.person_fixedcut = person_fixedcut;
+	}
 
-	
+	public String getManager_fixedcut() {
+		return manager_fixedcut;
+	}
 
+	public void setManager_fixedcut(String manager_fixedcut) {
+		this.manager_fixedcut = manager_fixedcut;
+	}
+
+	public String getDeparter_fixedcut() {
+		return departer_fixedcut;
+	}
+
+	public void setDeparter_fixedcut(String departer_fixedcut) {
+		this.departer_fixedcut = departer_fixedcut;
+	}
+
+	public String getTeamleader_fixedcut() {
+		return teamleader_fixedcut;
+	}
+
+	public void setTeamleader_fixedcut(String teamleader_fixedcut) {
+		this.teamleader_fixedcut = teamleader_fixedcut;
+	}
 	
 }
 

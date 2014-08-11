@@ -122,6 +122,12 @@
 			</div>
 		</div>	
 		<div class="control-group">
+			<label class="control-label">出租业务员业绩提成固定值:</label>
+			<div class="controls">
+				<form:input path="person_fixedcut" htmlEscape="false" maxlength="64" class="input-small digits"/>
+			</div>
+		</div>
+		<div class="control-group">
 			<label class="control-label">提前退租日期:</label>
 			<div class="controls">
 				<input id="cancelrentdate" name="cancelrentdate" type="text"  maxlength="20" class="input-medium Wdate"

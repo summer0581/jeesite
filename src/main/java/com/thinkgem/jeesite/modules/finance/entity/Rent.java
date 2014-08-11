@@ -742,6 +742,57 @@ public class Rent extends IdEntity<Rent> {
 	}
 	
 	@Transient
+	@ExcelField(title="租进业务员业绩提成固定值", type=0, align=1, sort=430 )
+	public String getRentin_personfixedcut() throws Exception {
+		return getRentin().getPerson_fixedcut();
+	}
+
+	public void setRentin_personfixedcut(String rentin_personfixedcut) throws Exception {
+		getRentin().setPerson_fixedcut(rentin_personfixedcut);
+	}
+	
+	@Transient
+	@ExcelField(title="租出业务员业绩提成固定值", type=0, align=1, sort=440 )
+	public String getRentout_personfixedcut() throws Exception {
+		return getRentout().getPerson_fixedcut();
+	}
+
+	public void setRentout_personfixedcut(String rentout_personfixedcut) throws Exception {
+		getRentout().setPerson_fixedcut(rentout_personfixedcut);
+	}
+	
+	@Transient
+	@ExcelField(title="经理业绩提成固定值", type=0, align=1, sort=450 )
+	public String getRentin_managerfixedcut() throws Exception {
+		return getRentin().getManager_fixedcut();
+	}
+
+	public void setRentin_managerfixedcut(String rentin_managerfixedcut) throws Exception {
+		getRentin().setManager_fixedcut(rentin_managerfixedcut);
+	}
+	
+	@Transient
+	@ExcelField(title="部长业绩提成固定值", type=0, align=1, sort=460 )
+	public String getRentin_departerfixedcut() throws Exception {
+		return getRentin().getDeparter_fixedcut();
+	}
+
+	public void setRentin_departerfixedcut(String rentin_departerfixedcut) throws Exception {
+		getRentin().setDeparter_fixedcut(rentin_departerfixedcut);
+	}
+	
+	@Transient
+	@ExcelField(title="组长业绩提成固定值", type=0, align=1, sort=470 )
+	public String getRentin_teamleaderfixedcut() throws Exception {
+		return getRentin().getTeamleader_fixedcut();
+	}
+
+	public void setRentin_teamleaderfixedcut(String rentin_teamleaderfixedcut) throws Exception {
+		getRentin().setTeamleader_fixedcut(rentin_teamleaderfixedcut);
+	}
+
+	
+	@Transient
 	public Date getLandlord_vacantPeriodsdate() {
 		return landlord_vacantPeriodsdate;
 	}

@@ -132,20 +132,8 @@
 			<input id="rentout_rentmonthmin" name="rentout_rentmonthmin" type="text" maxlength="10" class="input-small digits" value="${paramMap.rentout_rentmonthmin}"/>
 			至
 			<input id="rentout_rentmonthmax" name="rentout_rentmonthmax" type="text" maxlength="10" class="input-small digits" value="${paramMap.rentout_rentmonthmax}"/>
-			<label>出租付款方式：</label>
-				<select id="rentout_paytype" name="rentout_paytype" class="input-small" >
-					<option value="" label="请选择"/>
-					<c:forEach items="${fns:getDictList('finance_rent_paytype')}" var="dict">
-						<c:choose >
-							<c:when test="${dict.value == paramMap.rentout_paytype }">
-								<option value="${dict.value}" selected="selected" label="">${dict.label}</option>
-							</c:when>
-							<c:otherwise>
-								<option value="${dict.value}" label="">${dict.label}</option>
-							</c:otherwise>
-						</c:choose>
-					</c:forEach>
-				</select>
+			
+				
 		</div>
 		<div style="margin-bottom:5px;">
 			<label>承租开始时间：</label>
@@ -198,6 +186,36 @@
 					title="人员" url="/sys/user/treeData" />
 		</div>
 		<div>
+			<label>承租付款方式：</label> 
+				<select id="rentin_paytype" name="rentin_paytype" class="input-small" >
+					<option value="" label="请选择"/>
+					<c:forEach items="${fns:getDictList('finance_rent_paytype')}" var="dict">
+						<c:choose >
+							<c:when test="${dict.value == paramMap.rentin_paytype }">
+								<option value="${dict.value}" selected="selected" label="">${dict.label}</option>
+							</c:when>
+							<c:otherwise>
+								<option value="${dict.value}" label="">${dict.label}</option>
+							</c:otherwise>
+						</c:choose>
+					</c:forEach>
+				</select>
+			<label>出租付款方式：</label>
+				<select id="rentout_paytype" name="rentout_paytype" class="input-small" >
+					<option value="" label="请选择"/>
+					<c:forEach items="${fns:getDictList('finance_rent_paytype')}" var="dict">
+						<c:choose >
+							<c:when test="${dict.value == paramMap.rentout_paytype }">
+								<option value="${dict.value}" selected="selected" label="">${dict.label}</option>
+							</c:when>
+							<c:otherwise>
+								<option value="${dict.value}" label="">${dict.label}</option>
+							</c:otherwise>
+						</c:choose>
+					</c:forEach>
+				</select>
+		</div>
+		<div>
 			<label>出租提前退租时间：</label>
 			<input id="rentout_cancelrentsdate" name="rentout_cancelrentsdate" type="text"  maxlength="20" class="input-small Wdate"
 					value="${paramMap.rentout_cancelrentsdate}" onclick="WdatePicker({maxDate:'#F{$dp.$D(\'rentout_cancelrentedate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
@@ -212,13 +230,12 @@
 		<thead><tr>
 			<th rowspan="2" class="th_center">编号</th>
 			<th rowspan="2" class="th_center">房屋地址</th>
-			<th colspan="6" class="th_center">承租情况</th>
-			<th colspan="9" class="th_center">出租情况</th>
+			<th colspan="5" class="th_center">承租情况</th>
+			<th colspan="8" class="th_center">出租情况</th>
 			<shiro:hasPermission name="finance:rent:edit"><th rowspan="2" class="th_center">操作</th></shiro:hasPermission>
 		</tr>
 		<tr>
 			<th>业务员</th>
-			<th>付款方式</th>
 			<th>承租时间</th>
 			<th>月租金</th>
 			<th>已付月份</th>
@@ -230,7 +247,6 @@
 			<th>押金</th>
 			<th>月租金</th>
 			<th>已付月份</th>
-			<th>已收金额</th>
 			<th >下次收租时间</th>
 			<th >提前退租时间</th>
 		</tr>
@@ -242,7 +258,6 @@
 				<td>${rent.business_num}</td>
 				<td><a href="#" onclick="openWindow('${ctx}/finance/house/form?id=${rent.house.id}','${rent.house.name}')" title="${rent.house.name}">${fns:abbr(fns:replaceHtml(rent.house.name),25)}</a></td>
 				<td>${rent.rentinMonths[0].person.name}</td>
-				<td>${fns:getDictLabel(rent.rentinMonths[0].paytype, 'finance_rent_paytype', '')}</td>
 				<td><fmt:formatDate value="${rent.rentinMonths[0].sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentinMonths[0].edate}" pattern="yyyy-MM-dd"/></td>
 				<td>${rent.rentinMonths[0].rentmonth}</td>
 				<td><fmt:formatDate value="${rent.rentinMonths[0].lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentinMonths[0].lastpayedate}" pattern="yyyy-MM-dd"/></td>
@@ -253,7 +268,6 @@
 				<td>${rent.rentoutMonths[0].deposit}</td>
 				<td>${rent.rentoutMonths[0].rentmonth}</td>
 				<td><fmt:formatDate value="${rent.rentoutMonths[0].lastpaysdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentoutMonths[0].lastpayedate}" pattern="yyyy-MM-dd"/></td>
-				<td>${rent.rentoutMonths[0].amountreceived}</td>
 				<td><fmt:formatDate value="${rent.rentoutMonths[0].nextpaydate}"  pattern="yyyy-MM-dd" /></td>
 				<td><fmt:formatDate value="${rent.rentoutMonths[0].cancelrentdate}"  pattern="yyyy-MM-dd" /></td>
 				<shiro:hasPermission name="finance:rent:edit"><td>

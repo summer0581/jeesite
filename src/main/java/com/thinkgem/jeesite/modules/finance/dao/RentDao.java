@@ -116,7 +116,7 @@ public class RentDao extends BaseDao<Rent> {
 			paramMap.put("rentoutperson", UserUtils.getUserById(rentoutperson_id));
 		}
 		
-
+		String rentin_paytype = (String)paramMap.get("rentin_paytype");
 		String rentout_paytype = (String)paramMap.get("rentout_paytype");
 		
 		StringBuffer sql = new StringBuffer();
@@ -128,7 +128,7 @@ public class RentDao extends BaseDao<Rent> {
 		
 		if(!StringUtils.checkParameterIsAllBlank(paramMap, "rentin_sdatesdate","rentin_sdateedate",
 				"rentin_nextpaysdate","rentin_nextpayedate","rentin_rentmonthmin","rentin_rentmonthmax",
-				"rentin_edatesdate","rentin_edateedate","rentinperson_id")){
+				"rentin_edatesdate","rentin_edateedate","rentinperson_id","rentin_paytype")){
 			sql.append("INNER JOIN ( ");
 			//2014.7.12 sql 进行优化，从以前的查询要40多秒，优化到只要1秒不到，主要原因是，以前用的方式是每行去一一比对，现在是全部排序进行比对
 			sql.append("SELECT rm.* FROM  ( ");
@@ -174,6 +174,10 @@ public class RentDao extends BaseDao<Rent> {
 			if(StringUtils.isNotBlank(rentinperson_id)){
 				sql.append("and rm.person = :rentinperson_id   ");
 				sqlparam.put("rentinperson_id", rentinperson_id);
+			}
+			if(StringUtils.isNotBlank(rentin_paytype)){
+				sql.append("and rm.paytype = :rentin_paytype   ");
+				sqlparam.put("rentin_paytype", rentin_paytype);
 			}
 			
 			sql.append(") rms on r.id = rms.rent_id ");
