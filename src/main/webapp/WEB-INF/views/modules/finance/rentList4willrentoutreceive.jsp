@@ -59,6 +59,14 @@
 			$("#rentids").val(rentids);
 			$("#searchForm").submit();
 		}
+		function processRentMonth4one(rentid){
+			top.$.jBox.confirm("确认要一键收租吗？","系统提示",function(v,h,f){
+				if(v=="ok"){
+					submitBatchProcessRentMonth(rentid);
+				}
+			},{buttonsFocus:1});
+			top.$('.jbox-body .jbox-icon').css('top','55px');
+		}
 		function page(n,s){
 			$("#pageNo").val(n);
 			$("#pageSize").val(s);
@@ -183,7 +191,7 @@
 			至
 			<input id="rentin_nextpayedate" name="rentin_nextpayedate" type="text"  maxlength="20" class="input-small Wdate"
 					value="${paramMap.rentin_nextpayedate}" onclick="WdatePicker({minDate:'#F{$dp.$D(\'rentin_nextpaysdate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
-			<label>出租下次付租时间：</label>
+			<label>出租下次收租时间：</label>
 					<input id="rentout_nextpaysdate" name="rentout_nextpaysdate" type="text"  maxlength="20" class="input-small Wdate"
 					value="${paramMap.rentout_nextpaysdate}" onclick="WdatePicker({maxDate:'#F{$dp.$D(\'rentout_nextpayedate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
 			至
@@ -235,7 +243,7 @@
 				<td>${rent.house.tenant.name}(${rent.house.tenant.telephone})</td>
 				<td>${rent.rentoutMonths[0].nextshouldamount}</td>
 				<shiro:hasPermission name="finance:rent:edit"><td>
-					<a href="#" onclick="submitBatchProcessRentMonth('${rent.id}')">一键收租</a>
+					<a href="#" onclick="processRentMonth4one('${rent.id}')">一键收租</a>
     				<a href="${ctx}/finance/rent/form?id=${rent.id}">修改</a>
     				<br/>
 					<a href="${ctx}/finance/rent/delete?id=${rent.id}" onclick="return confirmx('确认要删除该包租明细吗？', this.href)">删除</a>

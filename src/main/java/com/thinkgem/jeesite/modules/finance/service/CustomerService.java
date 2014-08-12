@@ -64,7 +64,7 @@ public class CustomerService extends BaseService {
 		StringBuffer sql = new StringBuffer();
 
 		if(isSuperEditRole()){//如果是有超级编辑权限的角色，即可看到所有客户信息
-			sql.append("select * from finance_customer");
+			sql.append("select * from finance_customer t");
 		}else{
 			sql.append("select DISTINCT t.* from ( ");
 			sql.append("		select c.*,h.name house_name from finance_customer c  ");
@@ -93,7 +93,10 @@ public class CustomerService extends BaseService {
 			}
 			sql.append("		) t ");
 		}
-
+		sql.append(" where 1=1 ");
+		if (StringUtils.isNotEmpty(customer.getName())){
+			sql.append(" and t.name like '%"+customer.getName()+"%'");
+		}
 		return customerDao.findBySql(page, sql.toString(),null,Customer.class);
 	}
 	

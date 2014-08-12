@@ -21,7 +21,7 @@
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
 		<div>
-			<label>用户ID：</label><input id="createById" name="createById" type="text" maxlength="50" class="input-small" value="${createById}"/>
+			<label>用户：</label><input id="createByName" name="createByName" type="text" maxlength="50" class="input-small" value="${createByName}"/>
 			<label>URI：</label><input id="requestUri" name="requestUri" type="text" maxlength="50" class="input-small" value="${requestUri}"/>
 			&nbsp;
 			<label>开始日期：</label><input id="beginDate" name="beginDate" type="text" readonly="readonly" maxlength="20" class="input-small Wdate"

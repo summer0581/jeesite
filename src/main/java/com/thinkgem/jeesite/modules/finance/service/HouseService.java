@@ -25,6 +25,7 @@ import com.thinkgem.jeesite.modules.finance.dao.RentMonthDao;
 import com.thinkgem.jeesite.modules.finance.entity.Customer;
 import com.thinkgem.jeesite.modules.finance.entity.House;
 import com.thinkgem.jeesite.modules.finance.entity.HouseAreaRole;
+import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
 /**
@@ -271,7 +272,16 @@ public class HouseService extends BaseService {
 					house.setLandlord(customerlist.get(0));
 				}else{
 					house.getLandlord().prePersist();
-					house.getLandlord().setOffice(UserUtils.getUserById(house.getRentin_user().getId()).getOffice());
+					if(null != house.getRentin_user() && StringUtils.isNotBlank(house.getRentin_user().getId())){//验证是否有租进业务员
+						User rentinuser = UserUtils.getUserById(house.getRentin_user().getId());
+						if(null != rentinuser && null != rentinuser.getOffice()){
+							house.getLandlord().setOffice(rentinuser.getOffice());
+						}
+					}
+					if(null == house.getLandlord().getOffice()){//没有则填入当前用户的机构
+						house.getLandlord().setOffice(UserUtils.getUser().getOffice());
+					}
+					
 				}
 				
 			}
@@ -291,9 +301,16 @@ public class HouseService extends BaseService {
 					house.setTenant(customerlist.get(0));
 				}else{
 					house.getTenant().prePersist();
-					house.getTenant().setOffice(UserUtils.getUserById(house.getRentout_user().getId()).getOffice());
+					if(null != house.getRentout_user() && StringUtils.isNotBlank(house.getRentout_user().getId())){//验证是否有租出业务员
+						User rentoutuser = UserUtils.getUserById(house.getRentout_user().getId());
+						if(null != rentoutuser && null != rentoutuser.getOffice()){
+							house.getTenant().setOffice(rentoutuser.getOffice());
+						}
+					}
+					if(null == house.getTenant().getOffice()){//没有则填入当前用户的机构
+						house.getTenant().setOffice(UserUtils.getUser().getOffice());
+					}
 				}
-				
 			}
 		}
 		houseDao.save(house);

@@ -21,7 +21,7 @@
 				$(this).click(function(){
 					var id = $(this).val(), title = $(this).attr("title"), telephone = $(this).attr("telephone");
 					if (top.mainFrame.financeMainFrame){
-						top.mainFrame.financeMainFrame.landlordSelectAddOrDel(id, title);
+						top.mainFrame.financeMainFrame.landlordSelectAddOrDel(id, title, telephone);
 					}else{
 						top.mainFrame.landlordSelectAddOrDel(id, title, telephone);
 					}

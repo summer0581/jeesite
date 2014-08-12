@@ -526,7 +526,7 @@ public class StatsRentService extends BaseService {
 						long hasEntriedMonth = -1;
 						//判断租出业务员的入职时间是否大于等于2014年8月1日
 						if(null!= rentmonth.getPerson() && null != rentmonth.getPerson().getEntryDate() && DateUtils.compareDates(DateUtils.parseDate("2014-08-01"),rentmonth.getPerson().getEntryDate(), Calendar.MONTH) >= 0){
-							hasEntriedMonth = DateUtils.compareDates(rentmonth.getPerson().getEntryDate(),rentmonth.getLastpaysdate(), Calendar.MONTH)+1;
+							hasEntriedMonth = DateUtils.compareDates(rentmonth.getLastpaysdate(),rentmonth.getPerson().getEntryDate(),Calendar.MONTH)+1;
 							//判断房子租进时间，是否在新员工入职后的六个月内，如果是六个月内，则1月租出的只能在距离租出一个月内查到，2月租出的只能在距离租出二个月内查到，以此类推
 							if(-1 != hasEntriedMonth && hasEntriedMonth < 6 && xmonth <= hasEntriedMonth){
 								rentinSalePerlevel = 1.0/hasEntriedMonth;
@@ -556,7 +556,7 @@ public class StatsRentService extends BaseService {
 					long hasEntriedMonth = -1;
 					//判断租出业务员的入职时间是否大于等于2014年8月1日
 					if(null!= rentmonth.getPerson() && null != rentmonth.getPerson().getEntryDate() && DateUtils.compareDates(DateUtils.parseDate("2014-08-01"),rentmonth.getPerson().getEntryDate(), Calendar.MONTH) >= 0){
-						hasEntriedMonth = DateUtils.compareDates(rentmonth.getPerson().getEntryDate(),rentmonth.getLastpaysdate(), Calendar.MONTH)+1;
+						hasEntriedMonth = DateUtils.compareDates(rentmonth.getLastpaysdate(),rentmonth.getPerson().getEntryDate(), Calendar.MONTH)+1;
 						//判断房子租进时间，是否在新员工入职后的六个月内，如果是六个月内，则1月租出的只能在距离租出一个月内查到，2月租出的只能在距离租出二个月内查到，以此类推
 						if(-1 != hasEntriedMonth && hasEntriedMonth < 6 && xmonth <= hasEntriedMonth){
 							rentoutSalePerlevel = 1.0/hasEntriedMonth;
@@ -666,7 +666,7 @@ public class StatsRentService extends BaseService {
 				long hasEntriedMonth = -1;
 				//判断租出业务员的入职时间是否大于等于2014年8月1日
 				if(null!= rentmonth.getPerson() && null != person.getEntryDate() && DateUtils.compareDates(DateUtils.parseDate("2014-08-01"),person.getEntryDate(), Calendar.MONTH) >= 0){
-					hasEntriedMonth = DateUtils.compareDates(person.getEntryDate(),rentmonth.getLastpaysdate(), Calendar.MONTH)+1;
+					hasEntriedMonth = DateUtils.compareDates(rentmonth.getLastpaysdate(),person.getEntryDate(), Calendar.MONTH)+1;
 					//判断房子租进时间，是否在新员工入职后的六个月内，如果是六个月内，则1月租出的只能在距离租出一个月内查到，2月租出的只能在距离租出二个月内查到，以此类推
 					if(hasEntriedMonth < 6 && xmonth > hasEntriedMonth){
 						continue;

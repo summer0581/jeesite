@@ -38,7 +38,7 @@
 
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="${ctx}/finance/houseIdea/">房屋跟进意见列表</a></li>
-		<shiro:hasPermission name="finance:houseIdea:edit"><li><a href="${ctx}/finance/houseIdea/form">房屋跟进意见添加</a></li></shiro:hasPermission>
+		<!--<shiro:hasPermission name="finance:houseIdea:edit"><li><a href="${ctx}/finance/houseIdea/form">房屋跟进意见添加</a></li></shiro:hasPermission>-->
 	</ul>
 	<form:form id="searchForm" modelAttribute="houseIdea" action="${ctx}/finance/houseIdea/" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>

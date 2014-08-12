@@ -23,7 +23,7 @@
 					if (top.mainFrame.financeMainFrame){
 						top.mainFrame.financeMainFrame.tenantSelectAddOrDel(id, title, telephone);
 					}else{
-						top.mainFrame.tenantSelectAddOrDel(id, title);
+						top.mainFrame.tenantSelectAddOrDel(id, title ,telephone);
 					}
 				});
 			});

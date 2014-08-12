@@ -170,13 +170,13 @@
 			至
 			<input id="rentin_nextpayedate" name="rentin_nextpayedate" type="text"  maxlength="20" class="input-small Wdate"
 					value="${paramMap.rentin_nextpayedate}" onclick="WdatePicker({minDate:'#F{$dp.$D(\'rentin_nextpaysdate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
-			<label>出租下次付租时间：</label>
+			<label>出租下次收租时间：</label>
 					<input id="rentout_nextpaysdate" name="rentout_nextpaysdate" type="text"  maxlength="20" class="input-small Wdate"
 					value="${paramMap.rentout_nextpaysdate}" onclick="WdatePicker({maxDate:'#F{$dp.$D(\'rentout_nextpayedate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
 			至
 			<input id="rentout_nextpayedate" name="rentout_nextpayedate" type="text"  maxlength="20" class="input-small Wdate"
 					value="${paramMap.rentout_nextpayedate}" onclick="WdatePicker({minDate:'#F{$dp.$D(\'rentout_nextpaysdate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
-		</div>
+		</div> 
 		<div>
 			<label>承租业务员：</label>
 				<tags:treeselect id="rentinperson_id" name="rentinperson_id" notAllowSelectParent="true" cssClass="input-small" value="${paramMap.rentinperson.id}" labelName="rentinperson.name" labelValue="${paramMap.rentinperson.name}"

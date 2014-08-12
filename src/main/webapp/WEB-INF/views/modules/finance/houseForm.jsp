@@ -99,6 +99,7 @@
 					function landlordSelectRefresh(){
 						$("#landlord_id").val("");
 						$("#landlord_name").val("");
+						$("#landlord_telephone").val("");
 						if(landlordSelect.length > 0){
 							$("#landlord_name").val(landlordSelect[landlordSelect.length-1][1]);
 							$("#landlord_id").val(landlordSelect[landlordSelect.length-1][0]);
@@ -140,17 +141,19 @@
 				<a id="relationButton_tenantadd" href="javascript:" class="btn">添加租户</a>
 				<script type="text/javascript">
 					var tenantSelect = [];
-					function tenantSelectAddOrDel(id,title){
+					function tenantSelectAddOrDel(id,title,telephone){
 						tenantSelect = []
-						tenantSelect.push([id,title]);
+						tenantSelect.push([id,title,telephone]);
 						tenantSelectRefresh();
 					}
 					function tenantSelectRefresh(){
 						$("#tenant_id").val("");
 						$("#tenant_name").val("");
+						$("#tenant_telephone").val("");
 						if(tenantSelect.length > 0){
 							$("#tenant_name").val(tenantSelect[tenantSelect.length-1][1]);
 							$("#tenant_id").val(tenantSelect[tenantSelect.length-1][0]);
+							$("#tenant_telephone").val(tenantSelect[tenantSelect.length-1][2]);
 						}
 					}
 					$("#relationButton_tenant").click(function(){
@@ -166,7 +169,7 @@
 		<div class="control-group">
 			<label class="control-label">租户联系电话:</label>
 			<div class="controls">
-				<form:input path="tenant.telephone" htmlEscape="false" maxlength="64" class=""/>
+				<form:input id="tenant_telephone" path="tenant.telephone" htmlEscape="false" maxlength="64" class=""/>
 			</div>
 		</div>
 		</c:if>
