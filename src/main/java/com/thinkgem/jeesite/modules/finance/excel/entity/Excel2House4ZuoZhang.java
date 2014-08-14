@@ -45,7 +45,7 @@ public class Excel2House4ZuoZhang extends IdEntity<House> {
 		return "";
 	}
 	@ExcelField(title="付款日期", type=0, align=1, sort=40)
-	public Date getRentin_lastpaysdate() throws Exception {
+	public Date getRentin_nextpaydate() throws Exception {
 		return null;
 	}
 

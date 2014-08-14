@@ -206,6 +206,12 @@
 				<tags:treeselect id="rentoutperson_id" name="rentoutperson_id" notAllowSelectParent="true" cssClass="input-small" value="${paramMap.rentoutperson.id}" labelName="rentoutperson.name" labelValue="${paramMap.rentoutperson.name}"
 					title="人员" url="/sys/user/treeData" />
 		</div>
+		<div style="margin-bottom:5px;">
+			<label>承租备注：</label>
+			<input id="rentin_remark" name="rentin_remark" type="text" maxlength="10" class="input-medium" value="${paramMap.rentin_remark}"/>
+			<label>出租备注：</label>
+			<input id="rentout_remark" name="rentout_remark" type="text" maxlength="10" class="input-medium" value="${paramMap.rentout_remark}"/>
+		</div>
 		</div>
 
 	</form:form>

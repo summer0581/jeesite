@@ -109,6 +109,8 @@ public class RentDao extends BaseDao<Rent> {
 		
 		String rentinperson_id = (String)paramMap.get("rentinperson_id");
 		String rentoutperson_id = (String)paramMap.get("rentoutperson_id");
+		String rentin_remark = (String)paramMap.get("rentin_remark");
+		String rentout_remark = (String)paramMap.get("rentout_remark");
 		if(StringUtils.isNotBlank(rentinperson_id)){
 			paramMap.put("rentinperson", UserUtils.getUserById(rentinperson_id));
 		}
@@ -128,7 +130,7 @@ public class RentDao extends BaseDao<Rent> {
 		
 		if(!StringUtils.checkParameterIsAllBlank(paramMap, "rentin_sdatesdate","rentin_sdateedate",
 				"rentin_nextpaysdate","rentin_nextpayedate","rentin_rentmonthmin","rentin_rentmonthmax",
-				"rentin_edatesdate","rentin_edateedate","rentinperson_id","rentin_paytype")){
+				"rentin_edatesdate","rentin_edateedate","rentinperson_id","rentin_paytype","rentin_remark")){
 			sql.append("INNER JOIN ( ");
 			//2014.7.12 sql 进行优化，从以前的查询要40多秒，优化到只要1秒不到，主要原因是，以前用的方式是每行去一一比对，现在是全部排序进行比对
 			sql.append("SELECT rm.* FROM  ( ");
@@ -179,6 +181,10 @@ public class RentDao extends BaseDao<Rent> {
 				sql.append("and rm.paytype = :rentin_paytype   ");
 				sqlparam.put("rentin_paytype", rentin_paytype);
 			}
+			if (StringUtils.isNotBlank(rentin_remark)){
+				sql.append(" and rm.remarks like :rentin_remark ");
+				sqlparam.put("rentin_remark", "%"+rentin_remark+"%");
+			}
 			
 			sql.append(") rms on r.id = rms.rent_id ");
 		}
@@ -186,7 +192,7 @@ public class RentDao extends BaseDao<Rent> {
 		if(!StringUtils.checkParameterIsAllBlank(paramMap, "rentout_sdatesdate","rentout_sdateedate",
 				"rentout_nextpaysdate","rentout_nextpayedate","rentout_rentmonthmin","rentout_rentmonthmax","rentout_paytype",
 				"rentout_edatesdate","rentout_edateedate","rentout_cancelrentsdate","rentout_cancelrentedate","rentoutperson_id",
-				"notcancelrent")){
+				"notcancelrent","rentout_remark")){
 			sql.append("INNER JOIN ( ");
 			//2014.7.12 sql 进行优化，从以前的查询要40多秒，优化到只要1秒不到，主要原因是，以前用的方式是每行去一一比对，现在是全部排序进行比对
 			sql.append("SELECT rm.* FROM  ( ");
@@ -244,6 +250,10 @@ public class RentDao extends BaseDao<Rent> {
 			if(StringUtils.isNotBlank(rentoutperson_id)){
 				sql.append("and rm.person = :rentoutperson_id   ");
 				sqlparam.put("rentoutperson_id", rentoutperson_id);
+			}
+			if (StringUtils.isNotBlank(rentout_remark)){
+				sql.append(" and rm.remarks like :rentout_remark ");
+				sqlparam.put("rentout_remark", "%"+rentout_remark+"%");
 			}
 			String notcancelrent = (String)paramMap.get("notcancelrent");
 			if (StringUtils.isNotEmpty(notcancelrent) && "true".equals(notcancelrent)){

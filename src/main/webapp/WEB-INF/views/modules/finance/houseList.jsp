@@ -61,7 +61,7 @@
 	
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="${ctx}/finance/house/">房屋明细列表</a></li>
-		<shiro:hasPermission name="finance:house:edit"><li><a href="${ctx}/finance/house/form">房屋明细添加</a></li></shiro:hasPermission>
+		<shiro:hasPermission name="finance:house:add"><li><a href="${ctx}/finance/house/form">房屋明细添加</a></li></shiro:hasPermission>
 	</ul>
 	<form:form id="searchForm" modelAttribute="house" action="${ctx}/finance/house/" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
@@ -171,6 +171,8 @@
 			<th>租户联系方式</th>
 			<th>租进业务员</th>
 			<th>租出业务员</th>
+			<th>租进时间</th>
+			<th>租出时间</th>
 			<th>创建者</th>
 			<th>备注</th>
 			<shiro:hasPermission name="finance:house:edit"><th>操作</th></shiro:hasPermission></tr></thead>
@@ -186,12 +188,18 @@
 				<td>${allColumnShow or empty house.rentout_user or house.rentout_user eq fns:getUser()?house.tenant.telephone:''}</td>
 				<td>${house.rentin_user.name}</td>
 				<td>${house.rentout_user.name}</td>
+				<td><fmt:formatDate value="${house.rent.rentinMonths[0].sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${house.rent.rentinMonths[0].edate}" pattern="yyyy-MM-dd"/></td>
+				<td><fmt:formatDate value="${house.rent.rentoutMonths[0].sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${house.rent.rentoutMonths[0].edate}" pattern="yyyy-MM-dd"/></td>
 				<td>${house.createBy.name}</td>
 				<td>${house.remarks}</td>
-				<shiro:hasPermission name="finance:house:edit"><td>
+				<td>
+					<shiro:hasPermission name="finance:house:edit">
     				<a href="${ctx}/finance/house/form?id=${house.id}">修改</a>
+    				</shiro:hasPermission>
+    				<shiro:hasPermission name="finance:house:delete">
 					<a href="${ctx}/finance/house/delete?id=${house.id}" onclick="return confirmx('确认要删除该房屋明细吗？', this.href)">删除</a>
-				</td></shiro:hasPermission>
+					</shiro:hasPermission>
+				</td>
 			</tr>
 		</c:forEach>
 		</tbody>

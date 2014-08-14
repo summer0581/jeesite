@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.ConstraintViolationException;
 
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -106,7 +107,7 @@ public class RentController extends BaseController {
 		if(null == paramMap.get("rentin_nextpayedate")){
 			paramMap.put("rentin_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 7), "yyyy-MM-dd"));
 		}
-		paramMap.put("order", "rms.nextpaydate");
+		paramMap.put("order", "rms.nextpaydate,r.business_num");
 		Page<Rent> pages = new Page<Rent>(request, response);
 		pages.setPageSize(50);
 		Page<Rent> page = rentService.rentInListWillNeedPayNextMonth(pages,paramMap);
@@ -130,7 +131,7 @@ public class RentController extends BaseController {
 		if(null == paramMap.get("rentout_nextpayedate")){
 			paramMap.put("rentout_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 7), "yyyy-MM-dd"));
 		}
-		paramMap.put("order", "rms2.nextpaydate");
+		paramMap.put("order", "rms2.nextpaydate,r.business_num");
 		paramMap.put("notcancelrent", "true");
 		
 		Page<Rent> pages = new Page<Rent>(request, response);
@@ -280,10 +281,21 @@ public class RentController extends BaseController {
             String fileName = "房屋数据(做账依据)"+DateUtils.getDate("yyyyMMddHHmmss")+".xlsx"; 
             Page<Rent> pages = new Page<Rent>(request, response, -1);
             pages.setPageSize(2500);
+            if(null == paramMap.get("rentin_nextpayedate")){
+    			paramMap.put("rentin_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 7), "yyyy-MM-dd"));
+    		}
+    		paramMap.put("order", "rms.nextpaydate,r.business_num");
             Page<Rent> page = rentService.rentInListWillNeedPayNextMonth(pages, paramMap); 
+            Map<String,String> rentsum = rentService.rentListSumColumn(paramMap,RentMonth.INFOTYPE.rentin);
             List<Rent> rentList = page.getList();
 
-    		new ExportExcel("房屋数据(做账依据)", Excel2House4ZuoZhang.class).setDataList(rentList).write(response, fileName).dispose();
+            ExportExcel excel = new ExportExcel("房屋数据(做账依据)", Excel2House4ZuoZhang.class).setDataList(rentList);
+            Row row1 = excel.addRow();
+            excel.mergeCell(row1.getRowNum(), row1.getRowNum(), 0, 1);
+    		excel.addCell(row1, 0, "合计");
+    		excel.addCell(row1, 2, rentsum.get("rentrentmonthsum"));
+    		excel.addCell(row1, 5, rentsum.get("rentnextshouldpaysum"));
+    		excel.write(response, fileName).dispose();
     		return null;
 		} catch (Exception e) {
 			addMessage(redirectAttributes, "导出房屋失败！失败信息："+e.getMessage());

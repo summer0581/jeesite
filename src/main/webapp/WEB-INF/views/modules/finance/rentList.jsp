@@ -215,6 +215,12 @@
 					</c:forEach>
 				</select>
 		</div>
+		<div style="margin-bottom:5px;">
+			<label>承租备注：</label>
+			<input id="rentin_remark" name="rentin_remark" type="text" maxlength="10" class="input-medium" value="${paramMap.rentin_remark}"/>
+			<label>出租备注：</label>
+			<input id="rentout_remark" name="rentout_remark" type="text" maxlength="10" class="input-medium" value="${paramMap.rentout_remark}"/>
+		</div>
 		<div>
 			<label>出租提前退租时间：</label>
 			<input id="rentout_cancelrentsdate" name="rentout_cancelrentsdate" type="text"  maxlength="20" class="input-small Wdate"

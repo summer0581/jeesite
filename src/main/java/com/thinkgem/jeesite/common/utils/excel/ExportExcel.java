@@ -298,6 +298,29 @@ public class ExportExcel {
 		
 		return styles;
 	}
+	
+	/**
+	 * 合并单元格
+	 * @param firstRow
+	 * @param lastRow
+	 * @param firstCol
+	 * @param lastCol
+	 */
+	public void mergeCell(int firstRow,int lastRow,int firstCol,int lastCol){
+		sheet.addMergedRegion(new CellRangeAddress(firstRow, lastRow, firstCol, lastCol));
+	}
+	
+	public int getCurRownum(){
+		return rownum-1;
+	}
+	
+	/**
+	 * 获取一行
+	 * @return 行对象
+	 */
+	public Row getRow(int rownum){
+		return sheet.getRow(rownum);
+	}
 
 	/**
 	 * 添加一行

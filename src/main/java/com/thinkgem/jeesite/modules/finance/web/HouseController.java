@@ -121,7 +121,7 @@ public class HouseController extends BaseController {
 		return "modules/finance/houseForm";
 	}
 
-	@RequiresPermissions("finance:house:edit")
+	@RequiresPermissions("finance:house:add")
 	@RequestMapping(value = "save")
 	public String save(House house, Model model, RedirectAttributes redirectAttributes) {
 		if (!beanValidator(model, house)){
@@ -132,7 +132,7 @@ public class HouseController extends BaseController {
 		return "redirect:"+Global.getAdminPath()+"/finance/house/?repage";
 	}
 	
-	@RequiresPermissions("finance:house:edit")
+	@RequiresPermissions("finance:house:delete")
 	@RequestMapping(value = "delete")
 	public String delete(String id, RedirectAttributes redirectAttributes) {
 		houseService.delete(id);
