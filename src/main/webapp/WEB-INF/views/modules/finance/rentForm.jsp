@@ -63,7 +63,7 @@
 			}
 			$("#"+typename+"_vacantperiods_sdate"+index).val(resultdate.formate("yyyy-MM-dd"));//加年得到空置期的起始时间
 			if("" != days){
-				resultdate = resultdate.dateAddDays(days);
+				resultdate = resultdate.dateAddDays(days-1);
 			}
 			$("#"+typename+"_vacantperiods_edate"+index).val(resultdate.formate("yyyy-MM-dd"));//加日得到空置期的结束时间
 

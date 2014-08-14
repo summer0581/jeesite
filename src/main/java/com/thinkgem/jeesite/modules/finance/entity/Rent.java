@@ -829,7 +829,7 @@ public class Rent extends IdEntity<Rent> {
 			VacantPeriod vp = new VacantPeriod();
 			if(StringUtils.isNumeric(vacantPeriodArry[i])){//如果是数字
 				vp.setSdate(DateUtils.addYears(getRentin_sdate(), i));
-				vp.setEdate(DateUtils.addDays(DateUtils.addYears(getRentin_sdate(), i), Integer.valueOf(vacantPeriodArry[i])));
+				vp.setEdate(DateUtils.addDays(DateUtils.addYears(getRentin_sdate(), i), Integer.valueOf(vacantPeriodArry[i])-1));
 			}
 			if(vacantPeriodArry[i].indexOf(DATEHODlER) != -1 ){//如果是日期格式
 				String[] dates = StringUtils.splitWithTokenIndex(vacantPeriodArry[i], Rent.DATEHODlER, 3);

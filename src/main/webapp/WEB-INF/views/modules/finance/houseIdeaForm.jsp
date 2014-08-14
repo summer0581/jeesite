@@ -42,7 +42,7 @@
 		<div class="control-group">
 			<label class="control-label">跟进人:</label>
 			<div class="controls">
-				<form:input path="createBy" htmlEscape="false"  maxlength="200" class="input-small"/>
+				<form:input path="createBy.name" htmlEscape="false"  maxlength="200" class="input-small"/>
 			</div>
 		</div>
 		<div class="control-group">

@@ -71,7 +71,7 @@ public class HouseIdeaController extends BaseController {
 		return "modules/finance/houseIdeaList";
 	}
 	
-	@RequiresPermissions("finance:houseIdea:view")
+	@RequiresPermissions("finance:houseIdeaInner:view")
 	@RequestMapping(value = {"innerList"})
 	public String innerList(@RequestParam Map<String, Object> paramMap,HouseIdea houseIdea, HttpServletRequest request, HttpServletResponse response, Model model) {
 		User user = UserUtils.getUser();
@@ -92,7 +92,7 @@ public class HouseIdeaController extends BaseController {
 		return "modules/finance/houseIdeaForm";
 	}
 	
-	@RequiresPermissions("finance:houseIdea:view")
+	@RequiresPermissions("finance:houseIdeaInner:view")
 	@RequestMapping(value = "innerForm")
 	public String innerForm(HouseIdea houseIdea, Model model) {
 		if(null == houseIdea.getCreateBy() || StringUtils.isBlank(houseIdea.getCreateBy().getName())){
@@ -116,7 +116,7 @@ public class HouseIdeaController extends BaseController {
 		return "redirect:"+Global.getAdminPath()+"/finance/houseIdea/?repage";
 	}
 	
-	@RequiresPermissions("finance:houseIdea:edit")
+	@RequiresPermissions("finance:houseIdeaInner:edit")
 	@RequestMapping(value = "innerSave")
 	public String innerSave(HouseIdea houseIdea, Model model, RedirectAttributes redirectAttributes) {
 		if (!beanValidator(model, houseIdea)){

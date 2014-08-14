@@ -71,7 +71,7 @@
 		<c:forEach items="${page.list}" var="houseIdea">
 			<tr>
 				<td >${houseIdea.content}</td>
-				<td >${houseIdea.house.name}</td>
+				<td ><a href="${ctx}/finance/house/form?id=${houseIdea.house.id}">${houseIdea.house.name}</a></td>
 				<td >${houseIdea.createBy.name}</td>
 				<td ><fmt:formatDate value="${houseIdea.createDate}"  pattern="yyyy-MM-dd HH:mm:ss" /></td>
 				<shiro:hasPermission name="finance:houseIdea:edit"><td>

@@ -10,6 +10,7 @@
 			$("#inputForm").validate({
 				submitHandler: function(form){
 					loading('正在提交，请稍等...');
+					$("#rentin_sdate",parent.document).val($("#sdate").val());//每次保存租进月记录后都要更新父页面的rentin_sdate字段，让空置期设置能正常
 					form.submit();
 				},
 				errorContainer: "#messageBox",
@@ -22,6 +23,7 @@
 					}
 				}
 			});
+			
 		});
 	</script>
 </head>

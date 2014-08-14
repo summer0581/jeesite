@@ -53,7 +53,7 @@
 			</div>
 		</div>
 		<div class="form-actions">
-			<shiro:hasPermission name="finance:houseIdea:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasPermission>
+			<shiro:hasPermission name="finance:houseIdeaInner:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasPermission>
 		</div>
 	</form:form>
 </body>
