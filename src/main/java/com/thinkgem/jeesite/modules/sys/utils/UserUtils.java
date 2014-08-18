@@ -6,6 +6,7 @@
 package com.thinkgem.jeesite.modules.sys.utils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -221,6 +222,38 @@ public class UserUtils extends BaseService {
 			}
 		}
 		return userlist;
+	}
+	/**
+	 * 获取当前用户的所有领导：manager,departleader,teamleader
+	 * @return
+	 */
+	public static Map<String,User> getUserLeaders(User curUser){
+		Map<String,User> leaders = new HashMap<String,User>();
+		 Office office = curUser.getOffice();
+		 setLeader(office,curUser,leaders);
+		 return leaders;
+	}
+	
+	private static void setLeader(Office office,User curUser,Map<String,User> resultMap){
+		if("1".equals(office.getType())){
+			if(null != office.getMaster() && !curUser.equals(office.getMaster())){
+				resultMap.put("manager", office.getMaster());
+			}
+		}else{
+				if("2".equals(office.getType())){
+					if(null != office.getMaster() && !curUser.equals(office.getMaster())){
+						resultMap.put("departleader", office.getMaster());
+					}
+					setLeader(office.getParent(),curUser,resultMap);
+				}else if("3".equals(office.getType()) && !curUser.equals(office.getMaster())){
+					if(null != office.getMaster()){
+						resultMap.put("teamleader", office.getMaster());
+					}
+					setLeader(office.getParent(),curUser,resultMap);
+				}				
+		}
+		
+
 	}
 	
 	/**

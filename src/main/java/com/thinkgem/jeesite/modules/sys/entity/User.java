@@ -5,6 +5,7 @@
  */
 package com.thinkgem.jeesite.modules.sys.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -72,6 +73,7 @@ public class User extends IdEntity<User> {
 	private Date loginDate;	// 最后登陆日期
 	
 	private List<Role> roleList = Lists.newArrayList(); // 拥有角色列表
+	private List<User> subUserList = new ArrayList<User>();//当前用户 的直接下属集合
 
 	public User() {
 		super();
@@ -348,6 +350,14 @@ public class User extends IdEntity<User> {
 			return loginName.hashCode();
 		}
 		return 0;
+	}
+	@Transient
+	public List<User> getSubUserList() {
+		return subUserList;
+	}
+
+	public void setSubUserList(List<User> subUserList) {
+		this.subUserList = subUserList;
 	}
 	
 	

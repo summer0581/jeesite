@@ -82,6 +82,7 @@ public class House extends IdEntity<House> {
 	private String traffic_condition;//交通情况',
 	private String entrust_store;//委托门店',
 	private String regist_store;//登记门店',
+	private String is_norentin;//是否未拿进房源',
 	
 	private String key_saveplace;//钥匙存放地址
 	private String doc_place;//档案位置
@@ -534,7 +535,15 @@ public class House extends IdEntity<House> {
 	}
 	
 	
+	@ExcelField(title="是否未拿进房源", type=0, align=1, sort=410, dictType="yes_no")
+	public String getIs_norentin() {
+		return is_norentin;
+	}
 
+	public void setIs_norentin(String is_norentin) {
+		this.is_norentin = is_norentin;
+	}
+	@ExcelField(title="钥匙存放地址", type=0, align=1, sort=420)
 	public String getKey_saveplace() {
 		return key_saveplace;
 	}
@@ -542,7 +551,7 @@ public class House extends IdEntity<House> {
 	public void setKey_saveplace(String key_saveplace) {
 		this.key_saveplace = key_saveplace;
 	}
-
+	@ExcelField(title="档案存放地址", type=0, align=1, sort=430)
 	public String getDoc_place() {
 		return doc_place;
 	}

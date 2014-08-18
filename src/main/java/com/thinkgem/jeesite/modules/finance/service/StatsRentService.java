@@ -32,6 +32,7 @@ import com.thinkgem.jeesite.modules.finance.entity.Cutconfig;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.finance.entity.VacantPeriod;
+import com.thinkgem.jeesite.modules.sys.entity.Dict;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
 
@@ -1322,19 +1323,15 @@ public class StatsRentService extends BaseService {
 		List<RentMonth> list = getBusinessCountBaseSqlList(paramMap); 
 		
 		/*******************以下开始生成提成列表数据***********************/
+		List<User> departleaderss = getLevelUsersAndLeaderListWithRentinMonths(paramMap);
 		Map<String,LinkedHashSet<User>> map = getLevelUsersWithRentinMonths(list,paramMap);
-		LinkedHashSet<User> managers = map.get("managers");
-		LinkedHashSet<User> departleaders = map.get("departleaders");
-		LinkedHashSet<User> teamleaders = map.get("teamleaders");
 		LinkedHashSet<User> salers = map.get("salers");//普通业务员
 
 		Set<User> showUserList = new LinkedHashSet<User>();
-		/*showUserList.addAll(managers);
-		showUserList.addAll(departleaders);
-		showUserList.addAll(teamleaders);*/
 		showUserList.addAll(salers);
 		
 		List<Map<String,Object>> resultlist = new ArrayList<Map<String,Object>>();
+		
 		
 		
 		Map<String,Integer> rentinCutMap = new HashMap<String,Integer>();
@@ -1342,6 +1339,7 @@ public class StatsRentService extends BaseService {
 		Map<String,Integer> totalMap = new HashMap<String,Integer>();
 
 		String username_temp = "";
+		int rentincount = 0;
 
 		for(RentMonth rentmonth : list){
 
@@ -1349,25 +1347,25 @@ public class StatsRentService extends BaseService {
 				/*if(null != rentmonth.getBusi_manager()){
 					username_temp = rentmonth.getBusi_manager().getLoginName();
 					rentinCutMap.put(username_temp, MathUtils.deNull(rentinCutMap.get(username_temp))+1);
-				}
+				}*/
 				if(null != rentmonth.getBusi_departleader()){
 					username_temp = rentmonth.getBusi_departleader().getLoginName();
-					rentinCutMap.put(username_temp, MathUtils.deNull(rentoutCutMap.get(username_temp))+1);
+					rentinCutMap.put(username_temp, MathUtils.deNull(rentinCutMap.get(username_temp))+1);
 				}
 				if(null != rentmonth.getBusi_teamleader()){
 					username_temp = rentmonth.getBusi_teamleader().getLoginName();
 					rentinCutMap.put(username_temp, MathUtils.deNull(rentinCutMap.get(username_temp))+1);
-				}*/
+				}
 				if(null != rentmonth.getPerson()){
 					username_temp = rentmonth.getPerson().getLoginName();
 					rentinCutMap.put(username_temp, MathUtils.deNull(rentinCutMap.get(username_temp))+1);
 				}
 
-			}else if("rentout".equals(rentmonth.getInfotype())){
+			}else if("rentout".equals(rentmonth.getInfotype()) && !Dict.YES.equals(rentmonth.getIs_terentrentout())){
 				/*if(null != rentmonth.getBusi_manager()){
 					username_temp = rentmonth.getBusi_manager().getLoginName();
 					rentoutCutMap.put(username_temp, MathUtils.deNull(rentoutCutMap.get(username_temp))+1);
-				}
+				}*/
 				if(null != rentmonth.getBusi_departleader()){
 					username_temp = rentmonth.getBusi_departleader().getLoginName();
 					rentoutCutMap.put(username_temp, MathUtils.deNull(rentoutCutMap.get(username_temp))+1);
@@ -1375,7 +1373,7 @@ public class StatsRentService extends BaseService {
 				if(null != rentmonth.getBusi_teamleader()){
 					username_temp = rentmonth.getBusi_teamleader().getLoginName();
 					rentoutCutMap.put(username_temp, MathUtils.deNull(rentoutCutMap.get(username_temp))+1);
-				}*/
+				}
 				if(null != rentmonth.getPerson()){
 					username_temp = rentmonth.getPerson().getLoginName();
 					rentoutCutMap.put(username_temp, MathUtils.deNull(rentoutCutMap.get(username_temp))+1);
@@ -1395,7 +1393,7 @@ public class StatsRentService extends BaseService {
 		int person_rentout_total = 0;
 		int person_cut_total = 0;
 		Map<String,Object> resultMap = new HashMap<String,Object>();
-		for(User user : showUserList){
+		for(User user : departleaderss){
 			resultMap = new HashMap<String,Object>();
 			username_temp = user.getLoginName();
 			person_rentin_total = MathUtils.deNull(rentinCutMap.get(username_temp));
@@ -1405,10 +1403,46 @@ public class StatsRentService extends BaseService {
 			resultMap.put("rentinCutTotal", person_rentin_total);
 			resultMap.put("rentoutCutTotal", person_rentout_total);
 			resultMap.put("cutTotal", person_cut_total);
+			resultMap.put("departer", true);
 			resultlist.add(resultMap);
-			rentin_total += person_rentin_total;
-			rentout_total += person_rentout_total;
-			cut_total += person_cut_total;
+			
+			for(User user1 : user.getSubUserList()){//循环部长下面的人员
+				resultMap = new HashMap<String,Object>();
+				username_temp = user1.getLoginName();
+				person_rentin_total = MathUtils.deNull(rentinCutMap.get(username_temp));
+				person_rentout_total = MathUtils.deNull(rentoutCutMap.get(username_temp));
+				person_cut_total = person_rentin_total+person_rentout_total;
+				resultMap.put("person", user1);
+				resultMap.put("rentinCutTotal", person_rentin_total);
+				resultMap.put("rentoutCutTotal", person_rentout_total);
+				resultMap.put("cutTotal", person_cut_total);
+				if("贺磊".equals(user.getName())){//这里做了个性化，贺磊下面没组长，
+					rentin_total += person_rentin_total;
+					rentout_total += person_rentout_total;
+					cut_total += person_cut_total;
+					resultlist.add(resultMap);
+				}else{//其他组长继续往下循环
+					resultMap.put("teamleader", true);
+					resultlist.add(resultMap);
+					for(User user2 : user1.getSubUserList()){//循环组长下面的人
+						resultMap = new HashMap<String,Object>();
+						username_temp = user2.getLoginName();
+						person_rentin_total = MathUtils.deNull(rentinCutMap.get(username_temp));
+						person_rentout_total = MathUtils.deNull(rentoutCutMap.get(username_temp));
+						person_cut_total = person_rentin_total+person_rentout_total;
+						resultMap.put("person", user2);
+						resultMap.put("rentinCutTotal", person_rentin_total);
+						resultMap.put("rentoutCutTotal", person_rentout_total);
+						resultMap.put("cutTotal", person_cut_total);
+						resultlist.add(resultMap);
+						rentin_total += person_rentin_total;
+						rentout_total += person_rentout_total;
+						cut_total += person_cut_total;
+					}
+				}
+				
+			}
+
 		}
 		
 		totalMap.put("rentin_cut_total", rentin_total);
@@ -1457,7 +1491,7 @@ public class StatsRentService extends BaseService {
 					rentin_total += 1;
 					rentinRentMonths.add(resultMap);
 				}
-			}else if("rentout".equals(rentmonth.getInfotype())){
+			}else if("rentout".equals(rentmonth.getInfotype()) && !Dict.YES.equals(rentmonth.getIs_terentrentout())){
 				if(person.equals(rentmonth.getPerson())){
 					rentout_total += 1;
 					rentoutRentMonths.add(resultMap);
@@ -1703,6 +1737,44 @@ public class StatsRentService extends BaseService {
 		resultMap.put("teamleaders", teamleaders);
 		resultMap.put("salers", salers);
 		return resultMap;
+	}
+	
+	/**
+	 * 获取各级别的人员list,并且按层级进行封装
+	 * @param list
+	 * @return
+	 * @throws Exception
+	 */
+	public List<User> getLevelUsersAndLeaderListWithRentinMonths(Map<String,Object> paramMap) throws Exception{
+		List<User> managerList = rentMonthDao.findUserSortUsetTypeLevel(paramMap, "", "busi_manager", "");
+		User manager = managerList.get(0);
+		List<User> departleaders = rentMonthDao.findUserSortUsetTypeLevel(paramMap, "busi_manager", "busi_departleader", manager.getId());
+		for(int i = 0 ; i < departleaders.size() ; i++){
+			List<User> teamleaders = rentMonthDao.findUserSortUsetTypeLevel(paramMap, "busi_departleader", "busi_teamleader", departleaders.get(i).getId());
+			if(null != teamleaders && teamleaders.size() > 0){//部长下面有组长
+				departleaders.get(i).setSubUserList(teamleaders);
+				for(int j = 0 ; j < teamleaders.size(); j++){
+					List<User> members = rentMonthDao.findUserSortUsetTypeLevel(paramMap, "busi_teamleader", "person", teamleaders.get(j).getId());
+					List<User> templist = new ArrayList<User>();
+					for(User user_temp : members){
+						if(!departleaders.contains(user_temp) && !teamleaders.contains(user_temp)){
+							templist.add(user_temp);
+						}
+					}
+					teamleaders.get(j).setSubUserList(templist);
+				}
+			}else{//可能部长下面没组长，例如贺磊，就进行如下查询
+				List<User> members = rentMonthDao.findUserSortUsetTypeLevel(paramMap, "busi_departleader", "person", departleaders.get(i).getId());
+				List<User> templist = new ArrayList<User>();
+				for(User user_temp : members){
+					if(!departleaders.contains(user_temp) ){
+						templist.add(user_temp);
+					}
+				}
+				departleaders.get(i).setSubUserList(templist);
+			}
+		}
+		return departleaders;//返回部长集合
 	}
 	
 	/**

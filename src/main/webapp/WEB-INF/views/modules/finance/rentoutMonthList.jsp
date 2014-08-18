@@ -66,7 +66,9 @@
 		<th>已收月份</th>
 		<th class="sort nextpaydate">下次收租时间</th>
 		<th>下次应收金额</th>
+		<th>下次应收备注</th>
 		<th>已收金额</th>
+		<th>备注</th>
 		<shiro:hasPermission name="finance:rentMonth:edit"><th>操作</th></shiro:hasPermission></tr></thead>
 		<tbody>
 		<c:forEach items="${page.list}" var="rentMonth">
@@ -79,7 +81,9 @@
 				<td>
 				<fmt:formatDate value="${rentMonth.nextpaydate}"  pattern="yyyy-MM-dd" /></td>
 				<td>${rentMonth.nextshouldamount}</td>
+				<td>${rentMonth.nextshouldremark}</td>
 				<td>${rentMonth.amountreceived}</td>
+				<td>${rentMonth.remarks}</td>
 				<shiro:hasPermission name="finance:rentMonth:edit"><td>
     				<a href="${ctx}/finance/rentMonth/rentoutform?id=${rentMonth.id}">修改</a>
 					<a href="${ctx}/finance/rentMonth/delete?id=${rentMonth.id}" onclick="return confirmx('确认要删除该承租月记录吗？', this.href)">删除</a>

@@ -82,27 +82,32 @@
 			<div style="margin-bottom:5px;">
 				<label>楼盘：</label><form:input path="houses" htmlEscape="false" maxlength="50" class="input-small"/>
 				<label>区域：</label>				
-				<form:select path="area">
+				<form:select path="area" cssClass="input-small">
 					<form:option value="" label="请选择"/>
 					<form:options items="${fns:getDictList('house_area')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 				</form:select>
 				<label>房东姓名 ：</label><form:input path="landlord.name" htmlEscape="false" maxlength="50" class="input-small"/>
 				<label>租户姓名：</label><form:input path="tenant.name" htmlEscape="false" maxlength="50" class="input-small"/>
+				<label>收款户名：</label><form:input path="receive_username" htmlEscape="false" maxlength="50" class="input-small"/>
 				<label>是否可租：</label>
-					<form:select path="is_canrent">
+					<form:select path="is_canrent" cssClass="input-small">
 						<form:option value="" label="请选择"/>
 						<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 					</form:select>
-
 			</div>
 			<div style="margin-bottom:5px;">
 					<label>房屋来源：</label>
-					<form:select path="house_source">
+					<form:select path="house_source" cssClass="input-small">
 						<form:option value="" label="请选择"/>
 						<form:options items="${fns:getDictList('finance_house_source')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 					</form:select>
 					<label>是否可卖：</label>
-					<form:select path="is_cansale">
+					<form:select path="is_cansale" cssClass="input-small">
+						<form:option value="" label="请选择"/>
+						<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+					</form:select>
+					<label>是否未拿进房源：</label>
+					<form:select path="is_norentin" cssClass="input-small">
 						<form:option value="" label="请选择"/>
 						<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 					</form:select>
@@ -142,7 +147,7 @@
 				<label>户型：</label><form:input path="house_layout" htmlEscape="false" maxlength="50" class="input-small"/>
 				<label>物业用途：</label><form:input path="wy_useful" htmlEscape="false" maxlength="50" class="input-small"/>
 				<label>付款方式：</label>
-					<form:select path="paytype">
+					<form:select path="paytype" cssClass="input-small">
 						<form:option value="" label="请选择"/>
 						<form:options items="${fns:getDictList('finance_rent_paytype')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 					</form:select>

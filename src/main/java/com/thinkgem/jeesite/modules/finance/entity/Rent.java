@@ -545,6 +545,35 @@ public class Rent extends IdEntity<Rent> {
 	public void setRentout_agancyfee(String agencyfee) throws Exception {
 		getRentout().setAgencyfee(agencyfee);
 	}
+	@Transient
+	@ExcelField(title="出租业务经理", type=0, align=1, sort=275, fieldType=UserEntity.class)
+	public User getRentout_busi_manager() throws Exception {
+		return getRentout().getBusi_manager();
+	}
+
+	public void setRentout_busi_manager(User busi_manager) throws Exception {
+		getRentout().setBusi_manager(busi_manager);
+	}
+	
+	@Transient
+	@ExcelField(title="出租业务部长", type=0, align=1, sort=280, fieldType=UserEntity.class)
+	public User getRentout_busi_departleader() throws Exception {
+		return getRentout().getBusi_departleader();
+	}
+
+	public void setRentout_busi_departleader(User busi_departleader) throws Exception {
+		getRentout().setBusi_departleader(busi_departleader);
+	}
+	
+	@Transient
+	@ExcelField(title="出租业务组长", type=0, align=1, sort=285, fieldType=UserEntity.class)
+	public User getRentout_busi_teamleader() throws Exception {
+		return getRentout().getBusi_teamleader();
+	}
+
+	public void setRentout_busi_teamleader(User busi_teamleader) throws Exception {
+		getRentout().setBusi_teamleader(busi_teamleader);
+	}
 		
 	@Transient
 	@ExcelField(title="出租第几个头期", type=0, align=1, sort=290)

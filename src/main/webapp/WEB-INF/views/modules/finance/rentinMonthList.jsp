@@ -67,6 +67,7 @@
 		<th>已付月份</th>
 		<th class="sort nextpaydate">下次付租时间</th>
 		<th>下次应付金额</th>
+		<th>下次应付备注</th>
 		<th>备注</th>
 		<shiro:hasPermission name="finance:rentMonth:edit"><th>操作</th></shiro:hasPermission></tr></thead>
 		<tbody>
@@ -80,6 +81,7 @@
 				<td>
 				<fmt:formatDate value="${rentMonth.nextpaydate}"  pattern="yyyy-MM-dd" /></td>
 				<td>${rentMonth.nextshouldamount}</td>
+				<td>${rentMonth.nextshouldremark}</td>
 				<td>${rentMonth.remarks}</td>
 				<shiro:hasPermission name="finance:rentMonth:edit"><td>
     				<a href="${ctx}/finance/rentMonth/rentinform?id=${rentMonth.id}">修改</a>

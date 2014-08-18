@@ -65,6 +65,7 @@ public class RentMonth extends IdEntity<RentMonth> {
 	private String cut_businesssaletype;//业绩提成方案
 	private Date cancelrentdate;//提前退租时间
 	private String cancelrentremark;//提前退租备注
+	private String is_terentrentout;//是否租客转租
 	private String nextshouldamount;//下次应收应付金额
 	private String nextshouldremark;//应收应付备注
 	private String person_fixedcut;//业务员业绩提成固定值
@@ -105,7 +106,7 @@ public class RentMonth extends IdEntity<RentMonth> {
 		this.rent = rent;
 	}
 
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name="person")
 	@NotFound(action = NotFoundAction.IGNORE)
 	@IndexedEmbedded
@@ -213,7 +214,7 @@ public class RentMonth extends IdEntity<RentMonth> {
 		this.agencyfee = agencyfee;
 	}
 
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name="busi_manager")
 	@NotFound(action = NotFoundAction.IGNORE)
 	@IndexedEmbedded
@@ -225,7 +226,7 @@ public class RentMonth extends IdEntity<RentMonth> {
 		this.busi_manager = busi_manager;
 	}
 
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name="busi_departleader")
 	@NotFound(action = NotFoundAction.IGNORE)
 	@IndexedEmbedded
@@ -237,7 +238,7 @@ public class RentMonth extends IdEntity<RentMonth> {
 		this.busi_departleader = busi_departleader;
 	}
 
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name="busi_teamleader")
 	@NotFound(action = NotFoundAction.IGNORE)
 	@IndexedEmbedded
@@ -280,6 +281,14 @@ public class RentMonth extends IdEntity<RentMonth> {
 
 	public void setCancelrentremark(String cancelrentremark) {
 		this.cancelrentremark = cancelrentremark;
+	}
+
+	public String getIs_terentrentout() {
+		return is_terentrentout;
+	}
+
+	public void setIs_terentrentout(String is_terentrentout) {
+		this.is_terentrentout = is_terentrentout;
 	}
 
 	public String getNextshouldamount() {

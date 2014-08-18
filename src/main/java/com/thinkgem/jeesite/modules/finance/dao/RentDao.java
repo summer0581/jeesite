@@ -111,6 +111,7 @@ public class RentDao extends BaseDao<Rent> {
 		String rentoutperson_id = (String)paramMap.get("rentoutperson_id");
 		String rentin_remark = (String)paramMap.get("rentin_remark");
 		String rentout_remark = (String)paramMap.get("rentout_remark");
+		String is_terentrentout = (String)paramMap.get("is_terentrentout");
 		if(StringUtils.isNotBlank(rentinperson_id)){
 			paramMap.put("rentinperson", UserUtils.getUserById(rentinperson_id));
 		}
@@ -192,7 +193,7 @@ public class RentDao extends BaseDao<Rent> {
 		if(!StringUtils.checkParameterIsAllBlank(paramMap, "rentout_sdatesdate","rentout_sdateedate",
 				"rentout_nextpaysdate","rentout_nextpayedate","rentout_rentmonthmin","rentout_rentmonthmax","rentout_paytype",
 				"rentout_edatesdate","rentout_edateedate","rentout_cancelrentsdate","rentout_cancelrentedate","rentoutperson_id",
-				"notcancelrent","rentout_remark")){
+				"notcancelrent","rentout_remark","is_terentrentout")){
 			sql.append("INNER JOIN ( ");
 			//2014.7.12 sql 进行优化，从以前的查询要40多秒，优化到只要1秒不到，主要原因是，以前用的方式是每行去一一比对，现在是全部排序进行比对
 			sql.append("SELECT rm.* FROM  ( ");
@@ -254,6 +255,10 @@ public class RentDao extends BaseDao<Rent> {
 			if (StringUtils.isNotBlank(rentout_remark)){
 				sql.append(" and rm.remarks like :rentout_remark ");
 				sqlparam.put("rentout_remark", "%"+rentout_remark+"%");
+			}
+			if(StringUtils.isNotBlank(is_terentrentout)){
+				sql.append(" and rm.is_terentrentout = :is_terentrentout ");
+				sqlparam.put("is_terentrentout", is_terentrentout);
 			}
 			String notcancelrent = (String)paramMap.get("notcancelrent");
 			if (StringUtils.isNotEmpty(notcancelrent) && "true".equals(notcancelrent)){

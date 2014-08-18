@@ -78,14 +78,19 @@
 		</thead>
 		<tbody>
 		<c:forEach items="${list}" var="var"> 
-			<tr>
-				<td><a href="#" onclick="openWindow('${ctx}/finance/stats/businessCountDetail4Person?personid=${var.person.id}&rentout_sdate_begin=${paramMap.rentout_sdate_begin}&rentout_sdate_end=${paramMap.rentout_sdate_end}','${var.person.name}')">${var.person.name}</a></td>
+			<tr >
+				<td style="${'true' eq var.departer?'background-color: #00F;':''}${'true' eq var.teamleader?'background-color: #FF0;':''}"><a href="#" style="${'true' eq var.departer?'color: #FFF;':''}" onclick="openWindow('${ctx}/finance/stats/businessCountDetail4Person?personid=${var.person.id}&rentout_sdate_begin=${paramMap.rentout_sdate_begin}&rentout_sdate_end=${paramMap.rentout_sdate_end}','${var.person.name}')">${var.person.name}</a></td>
 				<td>${var.rentinCutTotal }</td>
 				<td>${var.rentoutCutTotal }</td>
 				<td>${var.cutTotal }</td>
 			</tr>
 		</c:forEach>
-
+		<tr>
+			<td >合计</td>
+			<td>${total.rentin_cut_total }</td>
+			<td>${total.rentout_cut_total }</td>
+			<td>${total.cut_total }</td>
+		</tr>
 		</tbody>
 	</table>
 	

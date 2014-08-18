@@ -370,6 +370,15 @@
 			</div>
 		</div>
 		<div class="control-group">
+			<label class="control-label">是否未拿进房源:</label>
+			<div class="controls">
+				<form:select path="is_norentin">
+					<form:option value="" label="请选择"/>
+					<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+				</form:select>
+			</div>
+		</div>
+		<div class="control-group">
 			<label class="control-label">钥匙存放地址:</label>
 			<div class="controls">
 				<form:input path="key_saveplace" htmlEscape="false" maxlength="200" class="input-xxlarge"/>
@@ -381,6 +390,7 @@
 				<form:input path="doc_place" htmlEscape="false" maxlength="200" class="input-xxlarge"/>
 			</div>
 		</div>
+
 		<!-- 当租进业务员为空，或者租进业务员等于当前业务员时，才能查看 -->
 		
 		<div class="control-group">
@@ -441,7 +451,7 @@
 			</div>
 		</div>
 		<div class="form-actions">
-			<shiro:hasPermission name="finance:house:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasPermission>
+			<shiro:hasAnyPermissions name="finance:house:add,finance:house:edit" ><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasAnyPermissions>
 			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
 		</div>
 	</form:form>

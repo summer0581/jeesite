@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.CharUtils;
 import org.springframework.stereotype.Repository;
 
 import com.thinkgem.jeesite.common.persistence.BaseDao;
@@ -218,7 +219,7 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 		sql.append(" t.busi_manager,c_m.name busi_manager_name,c_m.login_name busi_manager_loginname,");
 		sql.append(" t.busi_departleader,c_d.name busi_departleader_name,c_d.login_name busi_departleader_loginname, ");
 		sql.append(" t.busi_teamleader,c_t.name busi_teamleader_name,c_t.login_name busi_teamleader_loginname, ");
-		sql.append(" r.business_num,t.agencyfee ");
+		sql.append(" r.business_num,t.agencyfee,t.is_terentrentout ");
 		sql.append(" from ( ");
 		sql.append("		SELECT * FROM ( ");
 		sql.append("				SELECT * FROM finance_rentmonth rm1 ");
@@ -271,7 +272,7 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 			rentMonth.setLastpayedate((Date)rMap.get("lastpayedate"));
 			rentMonth.setCut_businesssaletype((String)rMap.get("cut_businesssaletype"));
 			rentMonth.setAgencyfee((String)rMap.get("agencyfee"));
-			
+			rentMonth.setIs_terentrentout(CharUtils.toString((Character)rMap.get("is_terentrentout")));
 			
 			house.setId((String)rMap.get("house_id"));
 			house.setName((String)rMap.get("name"));
@@ -409,5 +410,57 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 	public RentMonth findByNameLastpaySdateAndEdate(Rent rent, Date lastpaysdate,Date lastpayedate,RentMonth.INFOTYPE infotype){
 		List<RentMonth> list = findBySql("select * from finance_rentmonth rm where rm.rent_id = :p1 and rm.lastpaysdate = :p2 and rm.lastpayedate = :p3 and rm.infotype = :p4", new Parameter(rent.getId(),lastpaysdate,lastpayedate,infotype.toString()),RentMonth.class);
 		return list.size()>0?list.get(0):null;
+	}
+	/**
+	 * 根据上级字符串，本级字符串，上级id获取相应的本级用户集合
+	 * @param paramMap
+	 * @param leaderstr
+	 * @param memberstr
+	 * @return
+	 */
+	public List<User> findUserSortUsetTypeLevel(Map<String, Object> paramMap,String leaderstr,String memberstr,String leaderid){
+		Parameter pm = new Parameter();
+		
+		StringBuffer sql = new StringBuffer();
+		sql.append(" ");
+		sql.append("select u.* ");
+		sql.append(" from (  ");
+		sql.append("		SELECT * FROM (  ");
+		sql.append("				SELECT * FROM finance_rentmonth rm1  ");
+		sql.append("				WHERE rm1.sdate >= :lastpaysdate and rm1.sdate <= :lastpayedate and rm1.del_flag = :del_flag  ");
+		sql.append("				ORDER BY rm1.create_date DESC  ");
+		sql.append("			) rm2 GROUP BY rm2.sdate,rm2.rent_id  ");
+		sql.append("	) t ");
+		sql.append(" inner join sys_user u on u.id = t.xx ");
+		sql.append("where  t.xx <> '' and t.xx is not null ");
+		if(!"busi_manager".equals(memberstr)){//如果查询的本级为经理级，则没有上级
+			sql.append("  and t.yy = :leaderid");
+			pm.put("leaderid", leaderid);
+		}
+		sql.append(" group by t.xx ");
+		
+		String sqlStr = sql.toString();
+		if(!"busi_manager".equals(memberstr)){//如果查询的本级为经理级，则没有上级
+			sqlStr = sqlStr.replaceAll("yy", leaderstr);
+		}
+		sqlStr = sqlStr.replaceAll("xx", memberstr);
+		
+		Date rentout_sdate_begin = DateUtils.parseDate(paramMap.get("rentout_sdate_begin"));
+		if (rentout_sdate_begin == null){
+			rentout_sdate_begin = DateUtils.getFirstDayOfMonth(new Date());
+			paramMap.put("rentout_sdate_begin", DateUtils.formatDate(rentout_sdate_begin, "yyyy-MM-dd"));
+		}
+		pm.put("lastpaysdate", rentout_sdate_begin);
+		Date rentout_sdate_end = DateUtils.parseDate(paramMap.get("rentout_sdate_end"));
+		if (rentout_sdate_end == null){
+			rentout_sdate_end = DateUtils.getLastDayOfMonth(new Date());
+			paramMap.put("rentout_sdate_end", DateUtils.formatDate(rentout_sdate_end, "yyyy-MM-dd"));
+		}
+		pm.put("lastpayedate", rentout_sdate_end);
+		pm.put("del_flag", RentMonth.DEL_FLAG_NORMAL);
+		
+		List<User> userlist = findBySql(sqlStr, pm, User.class);
+		
+		return userlist;
 	}
 }

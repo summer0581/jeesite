@@ -136,9 +136,9 @@ public class Excel2House4BatchBank extends IdEntity<House> {
 	}
 	
 	@Transient
-	@ExcelField(title="转账金额", type=1, align=1, sort=70)
+	@ExcelField(title="转账金额", type=1, align=1, sort=70,stringtoType=Integer.class)
 	public String getRent_nextshouldpay() throws Exception {
-			return rent.getRentin().getRentmonth();
+			return "";
 		
 	}
 	

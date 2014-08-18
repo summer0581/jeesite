@@ -5,6 +5,7 @@
  */
 package com.thinkgem.jeesite.modules.sys.web;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +30,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.thinkgem.jeesite.common.beanvalidator.BeanValidators;
 import com.thinkgem.jeesite.common.config.Global;
+import com.thinkgem.jeesite.common.mapper.JsonMapper;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
@@ -249,6 +251,16 @@ public class UserController extends BaseController {
 			return "true";
 		}
 		return "false";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "getUserLeaders")
+	public String getUserLeaders(String userid) {
+		Map<String,User> leaders = new HashMap<String,User>();
+		if(StringUtils.isNotBlank(userid)){
+			leaders = UserUtils.getUserLeaders(UserUtils.getUserById(userid));
+		}
+		return JsonMapper.nonDefaultMapper().toJson(leaders);
 	}
 
 	@RequiresUser

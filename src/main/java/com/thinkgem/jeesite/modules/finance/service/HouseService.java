@@ -130,6 +130,12 @@ public class HouseService extends BaseService {
 		if (StringUtils.isNotBlank(house.getIs_needdeposit())){
 			dc.add(Restrictions.eq("is_needdeposit", house.getIs_needdeposit()));
 		}
+		if (StringUtils.isNotBlank(house.getIs_norentin())){
+			dc.add(Restrictions.eq("is_norentin", house.getIs_norentin()));
+		}
+		if(StringUtils.isNotBlank(house.getReceive_username())){
+			dc.add(Restrictions.eq("receive_username", house.getReceive_username()));
+		}
 		
 		if(null != paramMap){
 			String sale_price_min = (String)paramMap.get("sale_price_min");

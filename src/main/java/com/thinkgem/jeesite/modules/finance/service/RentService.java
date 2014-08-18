@@ -60,7 +60,7 @@ public class RentService extends BaseService {
 	public Page<Rent> find(Page<Rent> page, Rent rent) {
 		DetachedCriteria dc = rentDao.createDetachedCriteria();
 		if (StringUtils.isNotEmpty(rent.getName())){
-			dc.add(Restrictions.like("name", "%"+rent.getName()+"%"));
+			dc.add(Restrictions.like("house.name", "%"+rent.getName()+"%"));
 		}
 		dc.createAlias("rentin_person", "rentin");
 		dc.createAlias("rentin.office", "rentin_office");

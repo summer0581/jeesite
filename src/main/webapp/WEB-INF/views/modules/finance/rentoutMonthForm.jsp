@@ -23,6 +23,33 @@
 				}
 			});
 		});
+		function autoSetUserLeaders(){
+			if("" == $("#personId").val()){
+				alert("请先选择业务员！");
+				return;
+			}
+			$.getJSON("${ctx}/sys/user/getUserLeaders",{userid:$("#personId").val()},function(data){
+				var msg = new Array();
+				msg.push("成功获取当前业务员的 经理："+data.manager.name);
+				if(undefined != data.departleader){
+					msg.push(",部长："+data.departleader.name);
+				}
+				if(undefined != data.teamleader){
+					msg.push(",组长："+data.teamleader.name);
+				}
+				alert(msg.join(""));
+				$("#busi_managerId").val(data.manager.id);
+				$("#busi_managerName").val(data.manager.name);
+				if(undefined != data.departleader){
+					$("#busi_departleaderId").val(data.departleader.id);
+					$("#busi_departleaderName").val(data.departleader.name);
+				}
+				if(undefined != data.teamleader){
+					$("#busi_teamleaderId").val(data.teamleader.id);
+					$("#busi_teamleaderName").val(data.teamleader.name);
+				}
+			});
+		}
 	</script>
 </head>
 <body>
@@ -41,6 +68,7 @@
 				<tags:treeselect id="person" name="person.id" notAllowSelectParent="true" value="${rentMonth.person.id}" labelName="person.name" labelValue="${rentMonth.person.name}"
 					title="人员" url="/sys/user/treeData" />
 			<shiro:hasPermission name="finance:rentMonth:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="出租月记录保存"/>&nbsp;</shiro:hasPermission>
+			<input id="btnAutoSetLeaders" class="btn btn-primary" type="button" onclick="autoSetUserLeaders()" value="自动设置业务员领导"/>
 			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
 			</div>
 		</div>
@@ -136,6 +164,15 @@
 			</div>
 		</div>	
 		<div class="control-group">
+			<label class="control-label">是否租客转租:</label>
+			<div class="controls">
+				<form:select path="is_terentrentout" cssClass="input-small">
+					<form:option value="w" label="请选择"/>
+					<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+				</form:select>
+			</div>
+		</div>		
+		<div class="control-group">
 			<label class="control-label">提前退租备注:</label>
 			<div class="controls">
 				<form:textarea path="cancelrentremark" htmlEscape="false" rows="4" maxlength="1000" class="input-xxlarge"/>
@@ -162,6 +199,27 @@
 			<div class="controls">
 			<form:select id="cut_businesssaletype" path="cut_businesssaletype" class="">
 			<form:options items="${businessSaleCutconfigs}" itemLabel="name" itemValue="cut_code" htmlEscape="false"/></form:select>	
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">业务经理:</label>
+			<div class="controls">
+			<tags:treeselect id="busi_manager" name="busi_manager.id" notAllowSelectParent="true" value="${rentMonth.busi_manager.id}" labelName="busi_manager.name" labelValue="${rentMonth.busi_manager.name}"
+					title="人员" url="/sys/user/treeData" />		
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">业务部长:</label>
+			<div class="controls">
+			<tags:treeselect id="busi_departleader" name="busi_departleader.id" notAllowSelectParent="true" value="${rentMonth.busi_departleader.id}" labelName="busi_departleader.name" labelValue="${rentMonth.busi_departleader.name}"
+					title="人员" url="/sys/user/treeData" />		
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">业务组长:</label>
+			<div class="controls">
+			<tags:treeselect id="busi_teamleader" name="busi_teamleader.id" notAllowSelectParent="true" value="${rentMonth.busi_teamleader.id}" labelName="busi_teamleader.name" labelValue="${rentMonth.busi_teamleader.name}"
+					title="人员" url="/sys/user/treeData" />			
 			</div>
 		</div>
 

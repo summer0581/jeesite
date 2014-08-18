@@ -228,6 +228,20 @@
 			至
 			<input id="rentout_cancelrentedate" name="rentout_cancelrentedate" type="text"  maxlength="20" class="input-small Wdate"
 					value="${paramMap.rentout_cancelrentedate}" onclick="WdatePicker({minDate:'#F{$dp.$D(\'rentout_cancelrentsdate\')}',dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+			<label>是否租客转租</label>
+			<select id="is_terentrentout" name="is_terentrentout" class="input-small" >
+					<option value="" label="请选择"/>
+					<c:forEach items="${fns:getDictList('yes_no')}" var="dict">
+						<c:choose >
+							<c:when test="${dict.value == paramMap.is_terentrentout }">
+								<option value="${dict.value}" selected="selected" label="">${dict.label}</option>
+							</c:when>
+							<c:otherwise>
+								<option value="${dict.value}" label="">${dict.label}</option>
+							</c:otherwise>
+						</c:choose>
+					</c:forEach>
+				</select>
 		</div>
 		</div>
 	</form:form>

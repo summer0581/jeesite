@@ -57,6 +57,11 @@ public @interface ExcelField {
 	Class<?> fieldType() default Class.class;
 	
 	/**
+	 * 字符串转换类型
+	 */
+	Class<?> stringtoType() default String.class;
+	
+	/**
 	 * 字段归属组（根据分组导出导入）
 	 */
 	int[] groups() default {};

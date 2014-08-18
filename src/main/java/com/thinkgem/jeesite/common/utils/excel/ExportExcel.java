@@ -339,7 +339,7 @@ public class ExportExcel {
 	 * @return 单元格对象
 	 */
 	public Cell addCell(Row row, int column, Object val){
-		return this.addCell(row, column, val, 0, Class.class);
+		return this.addCell(row, column, val, 0, Class.class,String.class);
 	}
 	
 	/**
@@ -350,14 +350,22 @@ public class ExportExcel {
 	 * @param align 对齐方式（1：靠左；2：居中；3：靠右）
 	 * @return 单元格对象
 	 */
-	public Cell addCell(Row row, int column, Object val, int align, Class<?> fieldType){
+	public Cell addCell(Row row, int column, Object val, int align, Class<?> fieldType,Class<?> stringTotype){
 		Cell cell = row.createCell(column);
 		CellStyle style = styles.get("data"+(align>=1&&align<=3?align:""));
 		try {
 			if (val == null){
 				cell.setCellValue("");
 			} else if (val instanceof String  && fieldType == Class.class) {
-				cell.setCellValue((String) val);
+				if(String.class != stringTotype){
+					if(stringTotype == Integer.class){//如果字符串转换类型不为空，且为整形，则
+						cell.setCellValue(Integer.valueOf((String)val));
+					}else{
+						cell.setCellValue((String) val);
+					}
+				}else{
+					cell.setCellValue((String) val);
+				}
 			} else if (val instanceof Integer) {
 				cell.setCellValue((Integer) val);
 			} else if (val instanceof Long) {
@@ -418,7 +426,7 @@ public class ExportExcel {
 					log.info(ex.toString());
 					val = "";
 				}
-				this.addCell(row, colunm++, val, ef.align(), ef.fieldType());
+				this.addCell(row, colunm++, val, ef.align(), ef.fieldType(),ef.stringtoType());
 				sb.append(val + ", ");
 			}
 			log.debug("Write success: ["+row.getRowNum()+"] "+sb.toString());

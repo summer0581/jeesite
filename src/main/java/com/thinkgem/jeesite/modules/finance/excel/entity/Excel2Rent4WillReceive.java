@@ -103,7 +103,7 @@ public class Excel2Rent4WillReceive extends IdEntity<Rent> {
 		return house.getTenant_telephone();
 	}
 
-	@ExcelField(title="应收金额", type=0, align=1, sort=110)
+	@ExcelField(title="应收金额", type=0, align=1, sort=110,stringtoType=Integer.class)
 	public String getRentout_nextshouldamount() throws Exception {
 		return "";
 	}
