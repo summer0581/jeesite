@@ -115,9 +115,19 @@ public class RentMonthController extends BaseController {
 		}
 		//rentMonth.setBusi_departleader(null); 2014.8.16 万科金色家园2区612 这个房子的部长的第一条租进月记录的部长死活保存不成功，只能通过代码强行清除它原来的部长，再修改，就没问题了
 		//2014.8.17 仍然未找到解决办法，只能通过Request直接获取值来解决此问题，后续还有待观察
-		rentMonth.getBusi_manager().setId((String)paramMap.get("busi_manager.id"));
-		rentMonth.getBusi_departleader().setId((String)paramMap.get("busi_departleader.id"));
-		rentMonth.getBusi_teamleader().setId((String)paramMap.get("busi_teamleader.id"));
+		//2014.8.18终于找到问题所在，是因为hibernate的session共享bean导致，如果组长，部长，经理，业务员，有一样的人，就会导致两项被绑定，指向同一个持久bean，所以。。
+		User person = new User();
+		User manager = new User();
+		User departleader = new User();
+		User teamleader = new User();
+		person.setId((String)paramMap.get("person.id"));
+		manager.setId((String)paramMap.get("busi_manager.id"));
+		departleader.setId((String)paramMap.get("busi_departleader.id"));
+		teamleader.setId((String)paramMap.get("busi_teamleader.id"));
+		rentMonth.setPerson(person);
+		rentMonth.setBusi_manager(manager);
+		rentMonth.setBusi_departleader(departleader);
+		rentMonth.setBusi_teamleader(teamleader);
 		rentMonthService.save(rentMonth);
 		addMessage(redirectAttributes, "保存包租月记录成功");
 		return "redirect:"+Global.getAdminPath()+"/finance/rentMonth/?infotype="+rentMonth.getInfotype()+"&rent.id="+rentMonth.getRent().getId();
