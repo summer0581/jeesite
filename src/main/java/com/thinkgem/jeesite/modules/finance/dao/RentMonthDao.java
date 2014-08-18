@@ -225,7 +225,7 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 		sql.append("				SELECT * FROM finance_rentmonth rm1 ");
 		sql.append("				WHERE rm1.sdate >= :lastpaysdate and rm1.sdate <= :lastpayedate and rm1.del_flag = "+Rent.DEL_FLAG_NORMAL+" ");
 		sql.append("				ORDER BY rm1.create_date DESC ");
-		sql.append("			) rm2 GROUP BY rm2.sdate,rm2.rent_id ");
+		sql.append("			) rm2 GROUP BY rm2.sdate,rm2.rent_id,rm2.infotype ");
 		sql.append("	) t inner join finance_rent r on r.id = t.rent_id ");
 		sql.append(" inner join finance_house h on h.id = r.house_id ");
 		sql.append(" left join sys_user c_p on c_p.id = t.person ");

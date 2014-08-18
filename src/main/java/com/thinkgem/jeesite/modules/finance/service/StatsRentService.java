@@ -1340,7 +1340,6 @@ public class StatsRentService extends BaseService {
 
 		String username_temp = "";
 		int rentincount = 0;
-
 		for(RentMonth rentmonth : list){
 
 			if("rentin".equals(rentmonth.getInfotype())){
@@ -1351,15 +1350,21 @@ public class StatsRentService extends BaseService {
 				if(null != rentmonth.getBusi_departleader()){
 					username_temp = rentmonth.getBusi_departleader().getLoginName();
 					rentinCutMap.put(username_temp, MathUtils.deNull(rentinCutMap.get(username_temp))+1);
+					
 				}
 				if(null != rentmonth.getBusi_teamleader()){
 					username_temp = rentmonth.getBusi_teamleader().getLoginName();
 					rentinCutMap.put(username_temp, MathUtils.deNull(rentinCutMap.get(username_temp))+1);
 				}
 				if(null != rentmonth.getPerson()){
-					username_temp = rentmonth.getPerson().getLoginName();
+					username_temp = "";
+					if(null != rentmonth.getBusi_teamleader()){
+						username_temp = rentmonth.getBusi_teamleader().getLoginName();
+					}
+					username_temp = username_temp+rentmonth.getPerson().getLoginName();//业务员这里要特别处理一下，因为业务员有可能换组，所以要带上组长一起设置
 					rentinCutMap.put(username_temp, MathUtils.deNull(rentinCutMap.get(username_temp))+1);
 				}
+				System.out.println(rentmonth.getRent().getBusiness_num());
 
 			}else if("rentout".equals(rentmonth.getInfotype()) && !Dict.YES.equals(rentmonth.getIs_terentrentout())){
 				/*if(null != rentmonth.getBusi_manager()){
@@ -1375,7 +1380,11 @@ public class StatsRentService extends BaseService {
 					rentoutCutMap.put(username_temp, MathUtils.deNull(rentoutCutMap.get(username_temp))+1);
 				}
 				if(null != rentmonth.getPerson()){
-					username_temp = rentmonth.getPerson().getLoginName();
+					username_temp = "";
+					if(null != rentmonth.getBusi_teamleader()){
+						username_temp = rentmonth.getBusi_teamleader().getLoginName();
+					}
+					username_temp = username_temp+rentmonth.getPerson().getLoginName();//业务员这里要特别处理一下，因为业务员有可能换组，所以要带上组长一起设置
 					rentoutCutMap.put(username_temp, MathUtils.deNull(rentoutCutMap.get(username_temp))+1);
 				}
 
@@ -1383,7 +1392,6 @@ public class StatsRentService extends BaseService {
 				continue;
 			}
 		}
-		
 		/***********************以下是封装最后合计列表数据************************/
 		int rentin_total = 0;
 		int rentout_total = 0;
@@ -1426,7 +1434,7 @@ public class StatsRentService extends BaseService {
 					resultlist.add(resultMap);
 					for(User user2 : user1.getSubUserList()){//循环组长下面的人
 						resultMap = new HashMap<String,Object>();
-						username_temp = user2.getLoginName();
+						username_temp = user1.getLoginName()+user2.getLoginName();
 						person_rentin_total = MathUtils.deNull(rentinCutMap.get(username_temp));
 						person_rentout_total = MathUtils.deNull(rentoutCutMap.get(username_temp));
 						person_cut_total = person_rentin_total+person_rentout_total;
