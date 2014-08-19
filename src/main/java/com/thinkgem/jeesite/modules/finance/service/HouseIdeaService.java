@@ -73,7 +73,7 @@ public class HouseIdeaService extends BaseService {
 		}
 		
 		dc.add(Restrictions.eq(HouseIdea.FIELD_DEL_FLAG, HouseIdea.DEL_FLAG_NORMAL));
-		dc.addOrder(Order.desc("createDate_sdate"));
+		dc.addOrder(Order.desc("createDate")); 
 		return houseIdeaDao.find(page, dc);
 	}
 	

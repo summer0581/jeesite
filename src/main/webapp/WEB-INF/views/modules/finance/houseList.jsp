@@ -176,8 +176,8 @@
 			<th>租户联系方式</th>
 			<th>租进业务员</th>
 			<th>租出业务员</th>
-			<th>租进时间&nbsp;&nbsp;</th>
-			<th>租出时间&nbsp;&nbsp;</th>
+			<th>租进时间&nbsp;&nbsp;&nbsp;</th>
+			<th>租出时间&nbsp;&nbsp;&nbsp;</th>
 			<th>创建者</th>
 			<th>备注</th>
 			<shiro:hasPermission name="finance:house:edit"><th>操作</th></shiro:hasPermission></tr></thead>
