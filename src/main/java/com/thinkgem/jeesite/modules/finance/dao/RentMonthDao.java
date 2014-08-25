@@ -64,7 +64,7 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 		sql.append("from (select * from finance_rentmonth r order by r.edate DESC) rr INNER JOIN finance_rent fr ON fr.id = rr.rent_id ");
 		sql.append("where rr.del_flag=:del_flag and fr.del_flag=:del_flag ");
 		sql.append("and rr.infotype=:infotype  ");
-		sql.append("group by rr.rent_id having  datediff(max(rr.edate),current_timestamp)<=30  ) rrr order by rrr.nextpaydate");
+		sql.append("group by rr.rent_id having  datediff(max(rr.edate),current_timestamp)<=180  ) rrr order by rrr.nextpaydate");
 		Parameter pm = new Parameter();
 		pm.put("del_flag", Rent.DEL_FLAG_NORMAL);
 		pm.put("infotype", "rentin");
@@ -77,7 +77,7 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 		sql.append("from (select * from finance_rentmonth r order by r.edate DESC) rr INNER JOIN finance_rent fr ON fr.id = rr.rent_id ");
 		sql.append("where rr.del_flag=:del_flag and fr.del_flag=:del_flag  ");
 		sql.append("and rr.infotype=:infotype  ");
-		sql.append("group by rr.rent_id having  datediff(max(rr.edate),current_timestamp)<=30  ) rrr order by rrr.nextpaydate");
+		sql.append("group by rr.rent_id having  datediff(max(rr.edate),current_timestamp)<=180  ) rrr order by rrr.nextpaydate");
 		Parameter pm = new Parameter();
 		pm.put("del_flag", Rent.DEL_FLAG_NORMAL);
 		pm.put("infotype", "rentout");

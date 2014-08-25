@@ -202,8 +202,9 @@ public class RentMonthService extends BaseService {
 					rentMonth = find(rentMonth).get(0);
 				}
 			}
-
+			
 			if(null != rentMonth){
+				int monthunit = getPayMonthUnit(DictUtils.getDictLabel(rentMonth.getPaytype(), "finance_rent_paytype", "月付"));
 				List<VacantPeriod> vacantPeriods = rentMonth.getRent().getLandlord_vacantperiods();
 				Map<String,Object> resultMap = getLandlordVacantPeriodByRentMonth(rentMonth,vacantPeriods);
 				int vacantPeriodDays = 0;
@@ -226,7 +227,8 @@ public class RentMonthService extends BaseService {
 				rentMonth.setLastpaysdate(willlastpaysdate);
 				rentMonth.setLastpayedate(willlastpayedate);
 				if(null != rentMonth.getNextpaydate() && null != rentMonth.getLastpayedate())
-					rentMonth.setNextpaydate(DateUtils.addDays(rentMonth.getLastpayedate(), vacantPeriodDays-RentMonthConstant.PAYFOR_REMIND_DAYS-1));
+					//rentMonth.setNextpaydate(DateUtils.addDays(rentMonth.getLastpayedate(), vacantPeriodDays-RentMonthConstant.PAYFOR_REMIND_DAYS-1));
+					rentMonth.setNextpaydate(DateUtils.addMonths(rentMonth.getNextpaydate(), monthunit));
 				addMonth = (int)DateUtils.compareDates(nextwilllastpayedate, nextwilllastpaysdate, Calendar.MONTH);
 				rentMonth.setNextshouldamount(String.valueOf(Integer.valueOf(StringUtils.defaultIfBlank(rentMonth.getRentmonth(), "0"))*addMonth));
 				

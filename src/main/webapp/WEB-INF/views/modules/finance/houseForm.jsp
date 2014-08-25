@@ -451,7 +451,16 @@
 			</div>
 		</div>
 		<div class="form-actions">
-			<shiro:hasAnyPermissions name="finance:house:add,finance:house:edit" ><input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;</shiro:hasAnyPermissions>
+		<shiro:hasAnyPermissions name="finance:house:add" >
+		<c:if test="${empty house.id }">
+			<input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;
+		</c:if>
+		</shiro:hasAnyPermissions>
+		<shiro:hasAnyPermissions name="finance:house:edit" >
+		<c:if test="${not empty house.id }">
+			<input id="btnSubmit" class="btn btn-primary" type="submit" value="保 存"/>&nbsp;
+		</c:if>
+		</shiro:hasAnyPermissions>
 			<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
 		</div>
 	</form:form>

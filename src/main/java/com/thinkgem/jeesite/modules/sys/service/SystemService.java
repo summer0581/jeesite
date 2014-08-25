@@ -435,5 +435,8 @@ public class SystemService extends BaseService  {
 	
 	///////////////// Synchronized to the Activiti end //////////////////
 	
+	public static void main(String[] args){
+		System.out.println(SystemService.entryptPassword("123456"));
+	}
 	
 }

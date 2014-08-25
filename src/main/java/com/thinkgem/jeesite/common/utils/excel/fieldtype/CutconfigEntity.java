@@ -30,9 +30,9 @@ public class CutconfigEntity {
 	/**
 	 * 设置对象值（导出）
 	 */
-	public static String setValue(String val) {
+	public static String setValue(Object val) {
 		if (val != null ){
-			List<Cutconfig> list = cutconfigService.findCutconfiglistByCutcode(val);
+			List<Cutconfig> list = cutconfigService.findCutconfiglistByCutcode((String)val);
 			if(null != list && list.size() > 0){
 				return list.get(0).getName();
 			}

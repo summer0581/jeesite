@@ -68,9 +68,9 @@
 			<th>楼盘</th>
 			<th>房东姓名</th>
 			<th>房东联系方式</th>
-			<th>转账卡号</th>
 			<th>租户姓名</th>
 			<th>租户联系方式</th>
+			<th>创建人</th>
 			<th>房屋备注</th>
 			<shiro:hasPermission name="finance:house:edit"><th>操作</th></shiro:hasPermission></tr></thead>
 		<tbody>
@@ -80,9 +80,9 @@
 				<td>${house.houses}</td>
 				<td>${house.landlord.name}</td>
 				<td>${house.landlord.telephone}</td>
-				<td>${house.debit_card}</td>
 				<td>${house.tenant.name}</td>
 				<td>${house.tenant.telephone}</td>
+				<td>${house.createBy.name}</td>
 				<td>${house.remarks}</td>
 				<shiro:hasPermission name="finance:house:edit"><td>
     				<a href="${ctx}/finance/house/form?id=${house.id}">修改</a>

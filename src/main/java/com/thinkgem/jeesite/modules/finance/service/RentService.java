@@ -20,10 +20,12 @@ import com.thinkgem.jeesite.common.service.BaseService;
 import com.thinkgem.jeesite.common.utils.EntityUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.finance.dao.CustomerDao;
+import com.thinkgem.jeesite.modules.finance.dao.HouseAreaRoleDao;
 import com.thinkgem.jeesite.modules.finance.dao.HouseDao;
 import com.thinkgem.jeesite.modules.finance.dao.RentDao;
 import com.thinkgem.jeesite.modules.finance.dao.RentMonthDao;
 import com.thinkgem.jeesite.modules.finance.dao.VacantPeriodDao;
+import com.thinkgem.jeesite.modules.finance.entity.HouseAreaRole;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.finance.entity.VacantPeriod;
@@ -52,6 +54,9 @@ public class RentService extends BaseService {
 	private VacantPeriodDao vacantPeriodDao;
 	@Autowired
 	private RentMonthService rentMonthService;
+	
+	@Autowired
+	private HouseAreaRoleDao houseAreaRoleDao;
 	
 	public Rent get(String id) {
 		return rentDao.get(id);
@@ -363,7 +368,22 @@ public class RentService extends BaseService {
 
 	
 	public Page<Rent> rentList(Page<Rent> page,Map<String, Object> paramMap) {
-
+		String housefilter = (String)paramMap.get("housefilter");
+		if(StringUtils.isNotEmpty(housefilter) && "true".equals(housefilter)){//房屋过滤，用于业务部进行包租信息查看
+			HouseAreaRole houseAreaRole = houseAreaRoleDao.findByPerson(UserUtils.getUser().getId());
+			if(null != houseAreaRole && StringUtils.isNotBlank(houseAreaRole.getAreas())){
+				String[] houseAreaRoles = houseAreaRole.getAreas().split(",");
+				StringBuffer houseAreaRoleStr = new StringBuffer();
+				for(int i = 0 ; i < houseAreaRoles.length ; i ++){
+					houseAreaRoleStr.append("'").append(houseAreaRoles[i]).append("',");
+				}
+				if(houseAreaRoleStr.length() > 0){
+					paramMap.put("houseAreaRole",houseAreaRoleStr.substring(0, houseAreaRoleStr.length()-1));
+				}else{
+					paramMap.put("houseAreaRole","");
+				}
+			}
+		}
 		return rentDao.rentList(page,paramMap);
 	}
 	

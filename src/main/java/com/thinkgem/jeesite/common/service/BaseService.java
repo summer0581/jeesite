@@ -69,7 +69,9 @@ public abstract class BaseService {
 						junction.add(Restrictions.eq(officeAlias+".id", user.getOffice().getId()));
 					}
 					else if (Role.DATA_SCOPE_CUSTOM.equals(r.getDataScope())){
-						junction.add(Restrictions.in(officeAlias+".id", r.getOfficeIdList()));
+						if(r.getOfficeIdList().size() > 0){
+							junction.add(Restrictions.in(officeAlias+".id", r.getOfficeIdList()));
+						}
 					}
 					//else if (Role.DATA_SCOPE_SELF.equals(r.getDataScope())){
 					if (!isDataScopeAll){
@@ -161,7 +163,7 @@ public abstract class BaseService {
 	 * @param userAlias 用户表别名，传递空，忽略此参数
 	 * @return ql查询字符串
 	 */
-	protected static String dataScopeFilterString(User user, String officeAlias, String userAlias) {
+	public static String dataScopeFilterString(User user, String officeAlias, String userAlias) {
 		Junction junction = dataScopeFilterAddSyn(user, officeAlias, userAlias);
 		Iterator<Criterion> it = junction.conditions().iterator();
 		StringBuilder ql = new StringBuilder();

@@ -642,7 +642,17 @@ public class Rent extends IdEntity<Rent> {
 
 	public void setRentout_cancelrentremark(String cancelrentremark) throws Exception {
 		getRentout().setCancelrentremark(cancelrentremark);
-	}	
+	}
+	
+	@Transient
+	@ExcelField(title="出租是否租客转租", type=0, align=1, sort=304, dictType="yes_no")
+	public String getIs_terentrentout() throws Exception {
+		return getRentout().getIs_terentrentout();
+	}
+
+	public void setIs_terentrentout(String is_terentrentout) throws Exception  {
+		getRentout().setIs_terentrentout(is_terentrentout);
+	}
 
 	
 	@Transient

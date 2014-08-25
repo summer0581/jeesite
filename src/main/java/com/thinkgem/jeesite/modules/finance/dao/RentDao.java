@@ -14,6 +14,7 @@ import com.thinkgem.jeesite.common.persistence.BaseDao;
 import com.thinkgem.jeesite.common.persistence.BaseEntity;
 import com.thinkgem.jeesite.common.persistence.Page;
 import com.thinkgem.jeesite.common.persistence.Parameter;
+import com.thinkgem.jeesite.common.service.BaseService;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
@@ -112,6 +113,7 @@ public class RentDao extends BaseDao<Rent> {
 		String rentin_remark = (String)paramMap.get("rentin_remark");
 		String rentout_remark = (String)paramMap.get("rentout_remark");
 		String is_terentrentout = (String)paramMap.get("is_terentrentout");
+		String housefilter = (String)paramMap.get("housefilter");
 		if(StringUtils.isNotBlank(rentinperson_id)){
 			paramMap.put("rentinperson", UserUtils.getUserById(rentinperson_id));
 		}
@@ -128,6 +130,13 @@ public class RentDao extends BaseDao<Rent> {
 		sql.append(" ");
 		sql.append("select "+selectcolumn+" ");
 		sql.append("from finance_rent r ");
+		sql.append("inner join finance_house h on h.id = r.house_id ");
+		if(StringUtils.isNotEmpty(housefilter) && "true".equals(housefilter)){//房屋过滤，用于业务部进行包租信息查看
+			sql.append("		inner join sys_user u1 on u1.id = h.rentin_user ");
+			sql.append("		inner join sys_office o1 on u1.office_id = o1.id ");
+			sql.append("		inner join sys_user u2 on u2.id = h.rentout_user ");
+			sql.append("		inner join sys_office o2 on u2.office_id = o2.id ");
+		}
 		
 		if(!StringUtils.checkParameterIsAllBlank(paramMap, "rentin_sdatesdate","rentin_sdateedate",
 				"rentin_nextpaysdate","rentin_nextpayedate","rentin_rentmonthmin","rentin_rentmonthmax",
@@ -192,7 +201,7 @@ public class RentDao extends BaseDao<Rent> {
 
 		if(!StringUtils.checkParameterIsAllBlank(paramMap, "rentout_sdatesdate","rentout_sdateedate",
 				"rentout_nextpaysdate","rentout_nextpayedate","rentout_rentmonthmin","rentout_rentmonthmax","rentout_paytype",
-				"rentout_edatesdate","rentout_edateedate","rentout_cancelrentsdate","rentout_cancelrentedate","rentoutperson_id",
+				"rentout_edatesdate","rentout_edateedate","rentoutperson_id",
 				"notcancelrent","rentout_remark","is_terentrentout")){
 			sql.append("INNER JOIN ( ");
 			//2014.7.12 sql 进行优化，从以前的查询要40多秒，优化到只要1秒不到，主要原因是，以前用的方式是每行去一一比对，现在是全部排序进行比对
@@ -228,14 +237,7 @@ public class RentDao extends BaseDao<Rent> {
 				sql.append("and rm.nextpaydate <= :rentout_nextpayedate   ");
 				sqlparam.put("rentout_nextpayedate", rentout_nextpayedate);
 			}
-			if(null != rentout_cancelrentsdate){
-				sql.append("and rm.cancelrentdate >= :rentout_cancelrentsdate   ");
-				sqlparam.put("rentout_cancelrentsdate", rentout_cancelrentsdate);
-			}
-			if(null != rentout_cancelrentedate){
-				sql.append("and rm.cancelrentdate <= :rentout_cancelrentedate   ");
-				sqlparam.put("rentout_cancelrentedate", rentout_cancelrentedate);
-			}
+
 			if(StringUtils.isNotBlank(rentout_rentmonthmin)){
 				sql.append("and rm.rentmonth >= :rentout_rentmonthmin   ");
 				sqlparam.put("rentout_rentmonthmin", StringUtils.toInteger(rentout_rentmonthmin));
@@ -271,7 +273,7 @@ public class RentDao extends BaseDao<Rent> {
 		sql.append("and r.del_flag = "+Rent.DEL_FLAG_NORMAL+" ");
 		String name = (String)paramMap.get("name");
 		if (StringUtils.isNotEmpty(name)){
-			sql.append(" and r.name like :rentname ");
+			sql.append(" and h.name like :rentname ");
 			sqlparam.put("rentname", "%"+name+"%");
 		}
 		String business_num = (String)paramMap.get("business_num");
@@ -279,6 +281,41 @@ public class RentDao extends BaseDao<Rent> {
 			sql.append(" and r.business_num = :business_num ");
 			sqlparam.put("business_num", business_num);
 		}
+		
+		if(null != rentout_cancelrentsdate || null != rentout_cancelrentedate){//2014.08.25 刘睿提出，退租日期查询的，历史记录也要查出来
+			StringBuffer cancelrentSql = new StringBuffer();
+			Parameter cancelSqlParam = new Parameter();
+			cancelrentSql.append(" SELECT group_concat(concat('''',rm.rent_id,'''')) rent_ids FROM finance_rentmonth rm WHERE 1 = 1 ");
+			if(null != rentout_cancelrentsdate){
+				cancelrentSql.append(" and rm.cancelrentdate >= :rentout_cancelrentsdate ");
+				cancelSqlParam.put("rentout_cancelrentsdate", rentout_cancelrentsdate);
+			}
+			if(null != rentout_cancelrentedate){
+				cancelrentSql.append("  and  rm.cancelrentdate <= :rentout_cancelrentedate ");
+				cancelSqlParam.put("rentout_cancelrentedate", rentout_cancelrentedate);
+			}
+			List<String> cancelrentresult = findBySql(cancelrentSql.toString(),cancelSqlParam);
+			if(cancelrentresult.size()>0){//此处，需要先将in的内容查出来，否则直接用子查询查会慢很多倍
+				sql.append(" and r.id in (");
+				sql.append(cancelrentresult.get(0));
+				sql.append(" ) ");
+			}
+
+			
+		}
+		
+		
+		if(StringUtils.isNotEmpty(housefilter) && "true".equals(housefilter)){//房屋过滤，用于业务部进行包租信息查看
+			String houseAreaRole = (String)paramMap.get("houseAreaRole");
+			sql.append("and ( ");
+			sql.append(BaseService.dataScopeFilterString(UserUtils.getUser(), "o1", "u1").replace("and", "")+" or ");
+			sql.append(BaseService.dataScopeFilterString(UserUtils.getUser(), "o2", "u2").replace("and", "")+" or ");
+			sql.append(" h.houses in ( ");
+			sql.append(houseAreaRole);
+			sql.append(" ) ");
+			sql.append(" ) ");
+		}
+		
 
 		String order = (String)paramMap.get("order");
 		String desc = (String)paramMap.get("desc");

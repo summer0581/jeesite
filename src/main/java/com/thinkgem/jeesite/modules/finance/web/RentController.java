@@ -95,6 +95,25 @@ public class RentController extends BaseController {
 	}
 	
 	/**
+	 * 包租信息(给业务员浏览）
+	 * @param paramMap
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions("finance:rent:businerview")
+	@RequestMapping(value = "rentList4Businer")
+	public String rentList4Businer(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, Model model) {
+		if(!UserUtils.getUser().isAdmin()){
+			paramMap.put("housefilter", "true");
+		}
+		Page<Rent> page = rentService.rentList(new Page<Rent>(request, response),paramMap);
+		model.addAttribute("page", page);
+		model.addAttribute("sysdate", new Date());
+		model.addAttribute("paramMap", paramMap);
+		return "modules/finance/rentList4Businer";
+	}
+	
+	/**
 	 * 即将要付租的房子列表
 	 * @param paramMap
 	 * @param model
@@ -241,8 +260,13 @@ public class RentController extends BaseController {
 		try {
             String fileName = "包租数据"+DateUtils.getDate("yyyyMMddHHmmss")+".xlsx"; 
             Page<Rent> pages = new Page<Rent>(request, response, -1);
-            pages.setPageSize(500);
-    		Page<Rent> page = rentService.rentList(pages, paramMap); 
+            pages.setPageSize(2500);
+    		if(null == paramMap.get("rentout_nextpayedate")){
+    			paramMap.put("rentout_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 7), "yyyy-MM-dd"));
+    		}
+    		paramMap.put("order", "rms2.nextpaydate,r.business_num");
+    		paramMap.put("notcancelrent", "true");
+    		Page<Rent> page = rentService.rentOutListWillNeedPayNextMonth(pages,paramMap);
     		new ExportExcel("包租数据", Excel2Rent4WillReceive.class).setDataList(page.getList()).write(response, fileName).dispose();
     		return null;
 		} catch (Exception e) {
