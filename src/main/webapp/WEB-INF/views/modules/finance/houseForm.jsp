@@ -12,6 +12,12 @@
 					loading('正在提交，请稍等...');
 					form.submit();
 				},
+				rules: {
+					name: {remote: "${ctx}/finance/house/checkHouseExsits?oldHouseName=" + encodeURIComponent('${house.name}')}
+				},
+				messages: {
+					name: {remote: "房屋名已存在"}
+				},
 				errorContainer: "#messageBox",
 				errorPlacement: function(error, element) {
 					$("#messageBox").text("输入有误，请先更正。");
@@ -62,6 +68,7 @@
 		<div class="control-group">
 			<label class="control-label">地址:</label>
 			<div class="controls">
+				<input id="oldName" name="oldName" type="hidden" value="${house.name}">
 				<form:input path="name" htmlEscape="false" maxlength="200" class="required"/>
 			</div>
 		</div>

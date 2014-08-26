@@ -72,12 +72,20 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 	}
 	public Page<RentMonth> rentOutListWillReachEdate(Page<RentMonth> pages){
 		StringBuffer sql = new StringBuffer();
-
-		sql.append("select * from (select max(rr.edate) SS,rr.* ");
-		sql.append("from (select * from finance_rentmonth r order by r.edate DESC) rr INNER JOIN finance_rent fr ON fr.id = rr.rent_id ");
-		sql.append("where rr.del_flag=:del_flag and fr.del_flag=:del_flag  ");
-		sql.append("and rr.infotype=:infotype  ");
-		sql.append("group by rr.rent_id having  datediff(max(rr.edate),current_timestamp)<=180  ) rrr order by rrr.nextpaydate");
+		
+		sql.append("SELECT rm.* FROM ( ");
+		sql.append("	SELECT * FROM ");
+		sql.append("		(SELECT * FROM finance_rentmonth rm1 ");
+		sql.append("			WHERE rm1.infotype = :infotype AND rm1.del_flag = :del_flag ");
+		sql.append("			ORDER BY rm1.create_date DESC ");
+		sql.append("		) rm2 ");
+		sql.append("	GROUP BY rm2.rent_id ");
+		sql.append(") rm WHERE 1 = 1 ");
+		sql.append("AND datediff(rm.edate,current_timestamp)<=180 ");
+		sql.append("AND ( ");
+		sql.append("	rm.cancelrentdate IS NULL ");
+		sql.append("	OR rm.cancelrentdate = '' ");
+		sql.append(") order by rm.nextpaydate");
 		Parameter pm = new Parameter();
 		pm.put("del_flag", Rent.DEL_FLAG_NORMAL);
 		pm.put("infotype", "rentout");

@@ -94,7 +94,7 @@
             </table>
 	</div>
 	<div class="panel-div">
-	<div class="panel-title"><a href="${ctx}/finance/rent/rentList?rentout_edateedate=${rentwarndate}&order=rms2.edate">您有<span class="badge badge-important">${rentoutWRElistcount}</span>套出租房子将要到期，是否续租</a></div>
+	<div class="panel-title"><a href="${ctx}/finance/rent/rentList?rentout_edateedate=${rentwarndate}&notcancelrentonly=true&order=rms2.edate">您有<span class="badge badge-important">${rentoutWRElistcount}</span>套出租房子将要到期，是否续租</a></div>
 			 <table class="table table-bordered"> 
               <thead>
                 <tr>

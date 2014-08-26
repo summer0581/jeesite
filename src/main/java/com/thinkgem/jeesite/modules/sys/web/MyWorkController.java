@@ -55,7 +55,7 @@ public class MyWorkController extends BaseController {
 		Page<RentMonth> page4 = new Page<RentMonth>(0,5);
 		Page<RentMonth> temprentoutwillreachedatelist = rentMonthService.rentOutListWillReachEdate(page4);
 		model.addAttribute("sysdate", new Date());
-		model.addAttribute("rentwarndate", DateUtils.formatDate(DateUtils.addDays(new Date(), 30), "yyyy-MM-dd"));
+		model.addAttribute("rentwarndate", DateUtils.formatDate(DateUtils.addDays(new Date(), 180), "yyyy-MM-dd"));
         model.addAttribute("rentinlistcount", temprentinlist.getCount());
         model.addAttribute("rentoutlistcount", temprentoutlist.getCount());
         model.addAttribute("rentinWRElistcount", temprentinwillreachedatelist.getCount());

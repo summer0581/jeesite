@@ -165,6 +165,18 @@ public class HouseController extends BaseController {
 		List<Object[]> list = houseService.findByIds(ids);
 		return JsonMapper.nonDefaultMapper().toJson(list);
 	}
+	@RequiresPermissions("finance:house:edit")
+	@ResponseBody
+	@RequestMapping(value = "checkHouseExsits")
+	public String checkHouseExsits(String oldHouseName,String name){
+		if (name !=null && name.equals(oldHouseName)) {
+			return "true";
+		}else if(null != name && null == houseService.findByName(name)){
+			return "true";
+		}else{
+			return "false";
+		}
+	}
 	
 	@RequiresPermissions("finance:house:view")
     @RequestMapping(value = "export", method=RequestMethod.POST)

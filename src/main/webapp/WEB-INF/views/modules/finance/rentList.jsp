@@ -181,8 +181,22 @@
 			<label>承租业务员：</label>
 				<tags:treeselect id="rentinperson_id" name="rentinperson_id" notAllowSelectParent="true" cssClass="input-small" value="${paramMap.rentinperson.id}" labelName="rentinperson.name" labelValue="${paramMap.rentinperson.name}"
 					title="人员" url="/sys/user/treeData" />
+			<label>承租组长：</label>
+				<tags:treeselect id="rentin_teamleader_id" name="rentin_teamleader_id" notAllowSelectParent="true" cssClass="input-small" value="${paramMap.rentin_teamleader.id}" labelName="rentin_teamleader.name" labelValue="${paramMap.rentin_teamleader.name}"
+					title="人员" url="/sys/user/treeData" />
+			<label>出租部长：</label>
+				<tags:treeselect id="rentin_departleader_id" name="rentin_departleader_id" notAllowSelectParent="true" cssClass="input-small" value="${paramMap.rentin_departleader.id}" labelName="rentin_departleader.name" labelValue="${paramMap.rentin_departleader.name}"
+					title="人员" url="/sys/user/treeData" />
+		</div>
+		<div>
 			<label>出租业务员：</label>
 				<tags:treeselect id="rentoutperson_id" name="rentoutperson_id" notAllowSelectParent="true" cssClass="input-small" value="${paramMap.rentoutperson.id}" labelName="rentoutperson.name" labelValue="${paramMap.rentoutperson.name}"
+					title="人员" url="/sys/user/treeData" />
+			<label>出租组长：</label>
+				<tags:treeselect id="rentout_teamleader_id" name="rentout_teamleader_id" notAllowSelectParent="true" cssClass="input-small" value="${paramMap.rentout_teamleader.id}" labelName="rentout_teamleader.name" labelValue="${paramMap.rentout_teamleader.name}"
+					title="人员" url="/sys/user/treeData" />
+			<label>出租部长：</label>
+				<tags:treeselect id="rentout_departleader_id" name="rentout_departleader_id" notAllowSelectParent="true" cssClass="input-small" value="${paramMap.rentout_departleader.id}" labelName="rentout_departleader.name" labelValue="${paramMap.rentout_departleader.name}"
 					title="人员" url="/sys/user/treeData" />
 		</div>
 		<div>

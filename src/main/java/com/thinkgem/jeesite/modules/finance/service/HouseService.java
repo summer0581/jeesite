@@ -186,13 +186,13 @@ public class HouseService extends BaseService {
 			if(isSuperEditRole()){
 				//dc.add(Restrictions.or(Restrictions.isNull("rentin_office.id"),Restrictions.isNull("rentout_office.id"),dataScopeFilter(UserUtils.getUser(), "rentin_office", "rentin_user"),dataScopeFilter(UserUtils.getUser(), "rentout_office", "rentout_user")));
 			}else{
-				dc.add(Restrictions.or(dataScopeFilter(UserUtils.getUser(), "rentin_office", "rentin_user"),dataScopeFilter(UserUtils.getUser(), "rentout_office", "rentout_user")));
+				dc.add(Restrictions.or(Restrictions.eq("createBy", UserUtils.getUser()),dataScopeFilter(UserUtils.getUser(), "rentin_office", "rentin_user"),dataScopeFilter(UserUtils.getUser(), "rentout_office", "rentout_user")));
 			}
 		}else{
 			if(isSuperEditRole()){
 				//dc.add(Restrictions.or(Restrictions.isNull("rentin_office.id"),Restrictions.isNull("rentout_office.id"),dataScopeFilter(UserUtils.getUser(), "rentin_office", "rentin_user"),dataScopeFilter(UserUtils.getUser(), "rentout_office", "rentout_user"),Restrictions.in("houses", houseAreaRole.getAreas().split(","))));
 			}else{
-				dc.add(Restrictions.or(dataScopeFilter(UserUtils.getUser(), "rentin_office", "rentin_user"),dataScopeFilter(UserUtils.getUser(), "rentout_office", "rentout_user"),Restrictions.in("houses", houseAreaRole.getAreas().split(","))));
+				dc.add(Restrictions.or(Restrictions.eq("createBy", UserUtils.getUser()),dataScopeFilter(UserUtils.getUser(), "rentin_office", "rentin_user"),dataScopeFilter(UserUtils.getUser(), "rentout_office", "rentout_user"),Restrictions.in("houses", houseAreaRole.getAreas().split(","))));
 			}
 			
 		}

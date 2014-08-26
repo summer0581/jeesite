@@ -1364,7 +1364,6 @@ public class StatsRentService extends BaseService {
 					username_temp = username_temp+rentmonth.getPerson().getLoginName();//业务员这里要特别处理一下，因为业务员有可能换组，所以要带上组长一起设置
 					rentinCutMap.put(username_temp, MathUtils.deNull(rentinCutMap.get(username_temp))+1);
 				}
-				System.out.println(rentmonth.getRent().getBusiness_num());
 
 			}else if("rentout".equals(rentmonth.getInfotype()) && !Dict.YES.equals(rentmonth.getIs_terentrentout())){
 				/*if(null != rentmonth.getBusi_manager()){

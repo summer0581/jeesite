@@ -108,6 +108,25 @@ public class RentDao extends BaseDao<Rent> {
 		String rentout_rentmonthmin = (String)paramMap.get("rentout_rentmonthmin");
 		String rentout_rentmonthmax = (String)paramMap.get("rentout_rentmonthmax");
 		
+		String rentin_departleader = (String)paramMap.get("rentin_departleader_id");
+		String rentin_teamleader = (String)paramMap.get("rentin_teamleader_id");
+		String rentout_departleader = (String)paramMap.get("rentout_departleader_id");
+		String rentout_teamleader = (String)paramMap.get("rentout_teamleader_id");
+		if(StringUtils.isNotBlank(rentin_departleader)){
+			paramMap.put("rentin_departleader", UserUtils.getUserById(rentin_departleader));
+		}
+		if(StringUtils.isNotBlank(rentin_teamleader)){
+			paramMap.put("rentin_teamleader", UserUtils.getUserById(rentin_teamleader));
+		}
+		if(StringUtils.isNotBlank(rentout_departleader)){
+			paramMap.put("rentout_departleader", UserUtils.getUserById(rentout_departleader));
+		}
+		if(StringUtils.isNotBlank(rentout_teamleader)){
+			paramMap.put("rentout_teamleader", UserUtils.getUserById(rentout_teamleader));
+		}
+		
+		
+		
 		String rentinperson_id = (String)paramMap.get("rentinperson_id");
 		String rentoutperson_id = (String)paramMap.get("rentoutperson_id");
 		String rentin_remark = (String)paramMap.get("rentin_remark");
@@ -140,7 +159,8 @@ public class RentDao extends BaseDao<Rent> {
 		
 		if(!StringUtils.checkParameterIsAllBlank(paramMap, "rentin_sdatesdate","rentin_sdateedate",
 				"rentin_nextpaysdate","rentin_nextpayedate","rentin_rentmonthmin","rentin_rentmonthmax",
-				"rentin_edatesdate","rentin_edateedate","rentinperson_id","rentin_paytype","rentin_remark")){
+				"rentin_edatesdate","rentin_edateedate","rentinperson_id","rentin_paytype","rentin_remark",
+				"rentin_departleader_id","rentin_teamleader_id")){
 			sql.append("INNER JOIN ( ");
 			//2014.7.12 sql 进行优化，从以前的查询要40多秒，优化到只要1秒不到，主要原因是，以前用的方式是每行去一一比对，现在是全部排序进行比对
 			sql.append("SELECT rm.* FROM  ( ");
@@ -195,14 +215,24 @@ public class RentDao extends BaseDao<Rent> {
 				sql.append(" and rm.remarks like :rentin_remark ");
 				sqlparam.put("rentin_remark", "%"+rentin_remark+"%");
 			}
+			if(StringUtils.isNotBlank(rentin_departleader)){
+				sql.append("and rm.busi_departleader = :rentin_departleader   ");
+				sqlparam.put("rentin_departleader", rentin_departleader);
+			}
+			if(StringUtils.isNotBlank(rentin_teamleader)){
+				sql.append("and rm.busi_teamleader = :rentin_teamleader   ");
+				sqlparam.put("rentin_teamleader", rentin_teamleader);
+			}
+			
+			
 			
 			sql.append(") rms on r.id = rms.rent_id ");
 		}
 
 		if(!StringUtils.checkParameterIsAllBlank(paramMap, "rentout_sdatesdate","rentout_sdateedate",
 				"rentout_nextpaysdate","rentout_nextpayedate","rentout_rentmonthmin","rentout_rentmonthmax","rentout_paytype",
-				"rentout_edatesdate","rentout_edateedate","rentoutperson_id",
-				"notcancelrent","rentout_remark","is_terentrentout")){
+				"rentout_edatesdate","rentout_edateedate","rentoutperson_id","rentout_departleader_id","rentout_teamleader_id",
+				"notcancelrent","notcancelrentonly","rentout_remark","is_terentrentout")){
 			sql.append("INNER JOIN ( ");
 			//2014.7.12 sql 进行优化，从以前的查询要40多秒，优化到只要1秒不到，主要原因是，以前用的方式是每行去一一比对，现在是全部排序进行比对
 			sql.append("SELECT rm.* FROM  ( ");
@@ -262,9 +292,21 @@ public class RentDao extends BaseDao<Rent> {
 				sql.append(" and rm.is_terentrentout = :is_terentrentout ");
 				sqlparam.put("is_terentrentout", is_terentrentout);
 			}
+			if(StringUtils.isNotBlank(rentout_departleader)){
+				sql.append("and rm.busi_departleader = :rentout_departleader   ");
+				sqlparam.put("rentout_departleader", rentout_departleader);
+			}
+			if(StringUtils.isNotBlank(rentout_teamleader)){
+				sql.append("and rm.busi_teamleader = :rentout_teamleader   ");
+				sqlparam.put("rentout_teamleader", rentout_teamleader);
+			}
 			String notcancelrent = (String)paramMap.get("notcancelrent");
 			if (StringUtils.isNotEmpty(notcancelrent) && "true".equals(notcancelrent)){
 				sql.append(" and (rm.cancelrentdate is null or rm.cancelrentdate = '') and rm.edate <> rm.lastpayedate ");
+			}
+			String notcancelrentonly = (String)paramMap.get("notcancelrentonly");
+			if (StringUtils.isNotEmpty(notcancelrentonly) && "true".equals(notcancelrentonly)){
+				sql.append(" and (rm.cancelrentdate is null or rm.cancelrentdate = '')  ");
 			}
 			
 			sql.append(") rms2 on r.id = rms2.rent_id ");
