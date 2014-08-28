@@ -165,7 +165,7 @@ public class HouseController extends BaseController {
 		List<Object[]> list = houseService.findByIds(ids);
 		return JsonMapper.nonDefaultMapper().toJson(list);
 	}
-	@RequiresPermissions("finance:house:edit")
+	@RequiresPermissions({"finance:house:add"})
 	@ResponseBody
 	@RequestMapping(value = "checkHouseExsits")
 	public String checkHouseExsits(String oldHouseName,String name){

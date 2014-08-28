@@ -104,6 +104,8 @@
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
 		<input id="orderBy" name="orderBy" type="hidden" value="${page.orderBy}"/>
+		<input id="notcancelrentonly" name="notcancelrentonly" type="hidden" value="${paramMap.notcancelrentonly}"/>
+		<input id="order" name="order" type="hidden" value="${paramMap.order}"/>
 		<input id="showHighSearch" name="showHighSearch" type="hidden" value="${paramMap.showHighSearch}"/>
 		<div><label>房屋地址：</label>
 		<form:input path="name" htmlEscape="false" maxlength="50" class="input-small" value="${paramMap.name}"/>

@@ -6,17 +6,17 @@
 	<meta name="decorator" content="default"/>
 	<script type="text/javascript">
 		$(document).ready(function() {
-			$("#name").focus();
+			//$("#name").focus();
 			$("#inputForm").validate({
-				submitHandler: function(form){
-					loading('正在提交，请稍等...');
-					form.submit();
-				},
 				rules: {
 					name: {remote: "${ctx}/finance/house/checkHouseExsits?oldHouseName=" + encodeURIComponent('${house.name}')}
 				},
 				messages: {
 					name: {remote: "房屋名已存在"}
+				},
+				submitHandler: function(form){
+					loading('正在提交，请稍等...');
+					form.submit();
 				},
 				errorContainer: "#messageBox",
 				errorPlacement: function(error, element) {
