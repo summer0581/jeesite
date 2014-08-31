@@ -2,7 +2,7 @@
 <%@ include file="/WEB-INF/views/include/taglib.jsp"%>
 <html>
 <head>
-	<title>房屋跟进意见管理</title>
+	<title>房屋回访意见管理</title>
 	<meta name="decorator" content="default"/>
 	<%@include file="/WEB-INF/views/include/dialog.jsp" %> 
 	<script type="text/javascript">
@@ -19,7 +19,7 @@
         }
 		
 		function addGenjin(){
-			top.$.jBox("iframe:${ctx}/finance/houseIdea/innerForm?house.id=${houseIdea.house.id}&type=genjin", {title:"跟进新增",top:"25px", width: 800, height: 450,buttons:{"关闭":true},closed: function () { location.href = location.href }});
+			top.$.jBox("iframe:${ctx}/finance/houseIdea/innerForm?house.id=${houseIdea.house.id}&type=huifang", {title:"回访新增",top:"25px", width: 800, height: 450,buttons:{"关闭":true},closed: function () { location.href = location.href }});
 		}
 
 	</script>
@@ -28,14 +28,14 @@
 	<form:form id="searchForm" modelAttribute="houseIdea" action="${ctx}/finance/houseIdea/" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
-		<input id="type" name="type" type="hidden" value="genjin"/>
+		<input id="type" name="type" type="hidden" value="huifang"/>
 		<shiro:hasPermission name="finance:houseIdeaInner:edit">
-			&nbsp;<input id="btnSubmit" class="btn btn-primary" type="button" onclick="addGenjin()" value="跟进新增"/>
+			&nbsp;<input id="btnSubmit" class="btn btn-primary" type="button" onclick="addGenjin()" value="回访新增"/>
 		</shiro:hasPermission>
 	</form:form>
 	<tags:message content="${message}"/>
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">
-		<thead><tr><th style="width:70%;">跟进内容</th><th style="width:15%;">跟进人</th><th style="width:15%;">跟进时间</th></tr></thead>
+		<thead><tr><th style="width:70%;">回访内容</th><th style="width:15%;">回访人</th><th style="width:15%;">回访时间</th></tr></thead>
 		<tbody>
 		<c:forEach items="${page.list}" var="houseIdea">
 			<tr>

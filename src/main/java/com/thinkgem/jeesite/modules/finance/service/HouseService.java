@@ -146,6 +146,8 @@ public class HouseService extends BaseService {
 			String water_num_max = (String)paramMap.get("water_num_max");
 			String elec_num_min = (String)paramMap.get("elec_num_min");
 			String elec_num_max = (String)paramMap.get("elec_num_max");
+			String rentin_userid = (String)paramMap.get("rentin_userid");
+			String rentout_userid = (String)paramMap.get("rentout_userid");
 
 			if (StringUtils.isNotBlank(sale_price_min)){
 				dc.add(Restrictions.ge("sale_price", sale_price_min));
@@ -170,6 +172,15 @@ public class HouseService extends BaseService {
 			}
 			if (StringUtils.isNotBlank(elec_num_max)){
 				dc.add(Restrictions.le("elec_num", elec_num_max));
+			}
+
+			if (StringUtils.isNotBlank(rentin_userid)){
+				dc.add(Restrictions.eq("rentin_user.id", rentin_userid));
+				paramMap.put("rentin_user", UserUtils.getUserById(rentin_userid));
+			}
+			if (StringUtils.isNotBlank(rentout_userid)){
+				dc.add(Restrictions.eq("rentout_user.id", rentout_userid));
+				paramMap.put("rentout_user", UserUtils.getUserById(rentout_userid));
 			}
 		}
 
@@ -384,6 +395,16 @@ public class HouseService extends BaseService {
 	 */
 	public boolean isSuperEditRole(){
 		return UserUtils.getUser().isAdmin() || UserUtils.hasRole("财务管理员");
+	}
+	
+	/**
+	 * 更新房屋相关的业务查询数据
+	 */
+	@Transactional(readOnly = false)
+	public void updateHouseBusiSearchData(){
+		houseDao.updateHouseNorentinData();
+		houseDao.updateHouseNorentoutData();
+		houseDao.updateHouseCancelrentData();
 	}
 	
 }

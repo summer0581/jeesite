@@ -74,15 +74,7 @@ public class HouseDao extends BaseDao<House> {
 		sql.append(" ");
 		sql.append("select h.* from finance_house h ");
 		sql.append("LEFT JOIN finance_customer c on c.id = h.landlord_name ");
-		sql.append("LEFT JOIN finance_rent r on r.house_id = h.id ");
-		sql.append("LEFT JOIN ( ");
-		sql.append("		SELECT * FROM ( ");
-		sql.append("				SELECT * FROM finance_rentmonth rm1 ");
-		sql.append("				WHERE rm1.infotype = 'rentin' AND rm1.del_flag = :del_flag ");
-		sql.append("				ORDER BY rm1.create_date DESC ");
-		sql.append("			) rm2 GROUP BY rm2.rent_id ");
-		sql.append("  ) rms on r.id = rms.rent_id  ");
-		sql.append("where h.del_flag=:del_flag and (r.id is null or rms.id is null or rms.edate < current_timestamp )");
+		sql.append("where h.del_flag=:del_flag and  h.flag_norentin = 'Y' ");
 		
 		param.put("del_flag", House.DEL_FLAG_NORMAL);
 		if (StringUtils.isNotEmpty(house.getName())){
@@ -110,19 +102,12 @@ public class HouseDao extends BaseDao<House> {
 		sql.append(" ");
 		sql.append("select h.* from finance_house h ");
 		sql.append("LEFT JOIN finance_customer c on c.id = h.landlord_name ");
-		sql.append("LEFT JOIN finance_rent r on r.house_id = h.id ");
-		sql.append("LEFT JOIN ( ");
-		sql.append("		SELECT * FROM ( "); 
-		sql.append("				SELECT * FROM finance_rentmonth rm1 ");
-		sql.append("				WHERE rm1.infotype = 'rentout' AND rm1.del_flag = :del_flag ");
-		sql.append("				ORDER BY rm1.create_date DESC ");
-		sql.append("			) rm2 GROUP BY rm2.rent_id ");
-		sql.append("  ) rms on r.id = rms.rent_id  ");
-		String rentstateConditionSql = "r.id is null or rms.id is null or rms.cancelrentdate is not null";
+		
+		String rentstateConditionSql = " h.flag_norentout = 'Y' or h.flag_cancelrent = 'Y' ";
 		if(RentState.hascancelrent.toString().equals(house.getRent_state())){//已退租
-			rentstateConditionSql = " rms.cancelrentdate is not null ";
+			rentstateConditionSql = " h.flag_cancelrent = 'Y' ";
 		}else if(RentState.norentout.toString().equals(house.getRent_state())){//未租出
-			rentstateConditionSql = " r.id is null or rms.id is null ";
+			rentstateConditionSql = " h.flag_norentout = 'Y' ";
 		}
 		sql.append("where h.del_flag=:del_flag and ("+rentstateConditionSql+")");
 		
@@ -138,5 +123,142 @@ public class HouseDao extends BaseDao<House> {
 		sql.append(" order by h.name");
 		return findBySql(page, sql.toString(), param, House.class);
 	}
+	
+	/**
+	 * 更新所有未租进的房屋记录
+	 */
+	public int updateHouseNorentinData(){
+		int result = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" ");
+		sql.append("update finance_house set flag_norentin = 'Y' ");
+		if(getSession().isDefaultReadOnly()){
+			
+		}
+		result = updateBySql(sql.toString(),null);
+		
+		sql = new StringBuffer();
+		
+		sql.append("update finance_house set flag_norentin = 'N' where id in ( ");
+		sql.append("		select r.house_id from finance_rent r ");
+		sql.append("		inner join ( ");
+		sql.append("		SELECT ");
+		sql.append("				* ");
+		sql.append("			FROM ");
+		sql.append("				( ");
+		sql.append("					SELECT ");
+		sql.append("						* ");
+		sql.append("					FROM ");
+		sql.append("						finance_rentmonth rm1 ");
+		sql.append("					WHERE ");
+		sql.append("						rm1.infotype = 'rentin' ");
+		sql.append("					AND rm1.del_flag = '0' ");
+		sql.append("					ORDER BY ");
+		sql.append("						rm1.create_date DESC ");
+		sql.append("				) rm2 ");
+		sql.append("			GROUP BY ");
+		sql.append("				rm2.rent_id ");
+		sql.append("		) rm on rm.rent_id = r.id ");
+		sql.append("	) ");
+		result = updateBySql(sql.toString(),null);
+		return result;
+	}
+	
+	/**
+	 * 更新所有未租出的房屋记录
+	 */
+	public int updateHouseNorentoutData(){
+		int result = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" ");
+		sql.append("update finance_house set flag_norentout = 'N' ");
+		result = updateBySql(sql.toString(),null);
+		
+		sql = new StringBuffer();
+		
+		sql.append("update finance_house set flag_norentout = 'Y' where id in ( ");
+		sql.append("		select r.house_id from finance_rent r ");
+		sql.append("	inner join ( ");
+		sql.append("	SELECT ");
+		sql.append("			* ");
+		sql.append("		FROM ");
+		sql.append("			( ");
+		sql.append("				SELECT ");
+		sql.append("					* ");
+		sql.append("				FROM ");
+		sql.append("					finance_rentmonth rm1 ");
+		sql.append("				WHERE ");
+		sql.append("					rm1.infotype = 'rentin' ");
+		sql.append("				AND rm1.del_flag = '0' ");
+		sql.append("				ORDER BY ");
+		sql.append("					rm1.create_date DESC ");
+		sql.append("			) rm2 ");
+		sql.append("		GROUP BY ");
+		sql.append("			rm2.rent_id ");
+		sql.append("	) rm on rm.rent_id = r.id ");
+		sql.append("	left join ( ");
+		sql.append("		SELECT ");
+		sql.append("			* ");
+		sql.append("		FROM ");
+		sql.append("			( ");
+		sql.append("				SELECT ");
+		sql.append("					* ");
+		sql.append("				FROM ");
+		sql.append("					finance_rentmonth rm1 ");
+		sql.append("				WHERE ");
+		sql.append("					rm1.infotype = 'rentout' ");
+		sql.append("				AND rm1.del_flag = '0' ");
+		sql.append("				ORDER BY ");
+		sql.append("					rm1.create_date DESC ");
+		sql.append("			) rm2 ");
+		sql.append("		GROUP BY ");
+		sql.append("			rm2.rent_id ");
+		sql.append("	) rm2 on rm2.rent_id = r.id ");
+		sql.append("	where rm2.rent_id is null  ");
+		sql.append("	) ");
+		
+		result = updateBySql(sql.toString(),null);
+		return result;
+	}
+	
+	/**
+	 * 更新所有已退租的房屋记录
+	 */
+	public int updateHouseCancelrentData(){
+		int result = 0;
+		StringBuffer sql = new StringBuffer();
+		sql.append(" ");
+		sql.append("update finance_house set flag_cancelrent = 'N' ");
+		result = updateBySql(sql.toString(),null);
+		
+		sql = new StringBuffer();
+		
+		sql.append("update finance_house set flag_cancelrent = 'Y' where id in ( ");
+		sql.append("	select r.house_id from finance_rent r ");
+		sql.append("inner join ( ");
+		sql.append("SELECT ");
+		sql.append("		* ");
+		sql.append("	FROM ");
+		sql.append("		( ");
+		sql.append("			SELECT ");
+		sql.append("				* ");
+		sql.append("			FROM ");
+		sql.append("				finance_rentmonth rm1 ");
+		sql.append("			WHERE ");
+		sql.append("				rm1.infotype = 'rentout' ");
+		sql.append("			AND rm1.del_flag = '0' ");
+		sql.append("			ORDER BY ");
+		sql.append("				rm1.create_date DESC ");
+		sql.append("		) rm2 ");
+		sql.append("	GROUP BY ");
+		sql.append("		rm2.rent_id ");
+		sql.append(") rm on rm.rent_id = r.id ");
+		sql.append("where rm.cancelrentdate is not null ");
+		sql.append(")");
+		sql.append("");
+		result = updateBySql(sql.toString(),null);
+		return result;
+	}
+	
 
 }

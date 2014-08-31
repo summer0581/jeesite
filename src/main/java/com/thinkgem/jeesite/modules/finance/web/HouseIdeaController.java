@@ -68,7 +68,13 @@ public class HouseIdeaController extends BaseController {
         Page<HouseIdea> page = houseIdeaService.find(new Page<HouseIdea>(request, response), houseIdea, paramMap); 
         model.addAttribute("page", page);
         model.addAttribute("paramMap",paramMap);
-		return "modules/finance/houseIdeaList";
+        
+        if(HouseIdea.IDEATYPE_GENJIN.equals(houseIdea.getType())){
+        	return "modules/finance/houseIdeaList";
+        }else{
+        	return "modules/finance/houseIdeaVisitList";
+        }	
+		
 	}
 	
 	@RequiresPermissions("finance:houseIdeaInner:view")
@@ -82,15 +88,25 @@ public class HouseIdeaController extends BaseController {
 		houseideaPage.setPageSize(200);
         Page<HouseIdea> page = houseIdeaService.find(houseideaPage, houseIdea,paramMap); 
         model.addAttribute("page", page);
-		return "modules/finance/houseIdeaInnerList";
+        if(HouseIdea.IDEATYPE_GENJIN.equals(houseIdea.getType())){
+        	return "modules/finance/houseIdeaInnerList";
+        }else{
+        	return "modules/finance/houseIdeaInnerVisitList";
+        }	
 	}
 
 	@RequiresPermissions("finance:houseIdea:view")
 	@RequestMapping(value = "form")
 	public String form(HouseIdea houseIdea, Model model) {
 		model.addAttribute("houseIdea", houseIdea);
-		return "modules/finance/houseIdeaForm";
+        if(HouseIdea.IDEATYPE_GENJIN.equals(houseIdea.getType())){
+        	return "modules/finance/houseIdeaForm";
+        }else{
+        	return "modules/finance/houseIdeaVisitForm";
+        }	
+		
 	}
+
 	
 	@RequiresPermissions("finance:houseIdeaInner:view")
 	@RequestMapping(value = "innerForm")
@@ -102,7 +118,12 @@ public class HouseIdeaController extends BaseController {
 			houseIdea.setCreateDate(new Date());
 		}
 		model.addAttribute("houseIdea", houseIdea);
-		return "modules/finance/houseIdeaInnerForm";
+        if(HouseIdea.IDEATYPE_GENJIN.equals(houseIdea.getType())){
+        	return "modules/finance/houseIdeaInnerForm";
+        }else{
+        	return "modules/finance/houseIdeaInnerVisitForm";
+        }	
+		
 	}
 
 	@RequiresPermissions("finance:houseIdea:edit")
@@ -112,8 +133,8 @@ public class HouseIdeaController extends BaseController {
 			return form(houseIdea, model);
 		}
 		houseIdeaService.save(houseIdea);
-		addMessage(redirectAttributes, "保存房屋跟进意见成功");
-		return "redirect:"+Global.getAdminPath()+"/finance/houseIdea/?repage";
+		model.addAttribute("message", "保存房屋跟进意见成功!");
+		return "modules/finance/opersucess";
 	}
 	
 	@RequiresPermissions("finance:houseIdeaInner:edit")
@@ -130,9 +151,10 @@ public class HouseIdeaController extends BaseController {
 	@RequiresPermissions("finance:houseIdea:edit")
 	@RequestMapping(value = "delete")
 	public String delete(String id, RedirectAttributes redirectAttributes) {
+		HouseIdea houseIdea = get(id);
 		houseIdeaService.delete(id);
 		addMessage(redirectAttributes, "删除房屋跟进意见成功");
-		return "redirect:"+Global.getAdminPath()+"/finance/houseIdea/?repage";
+		return "redirect:"+Global.getAdminPath()+"/finance/houseIdea/?type="+houseIdea.getType()+"&repage";
 	}
 	
 	@RequiresPermissions("finance:houseIdea:view")

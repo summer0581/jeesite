@@ -113,7 +113,7 @@ public class StatsRentService extends BaseService {
 			recentVacantPeriodEdate = (Date)result.get("recent_vacantPeriodEdate");
 			recentVacantType = (String)result.get("recent_vacantType");
 			
-			long vacantperiod = getVacantPeriodCount(rentmonth,sameMonthRentin,lastRentoutMonth,(int)DateUtils.compareDates(recentVacantPeriodEdate, recentVacantPeriodSdate, Calendar.DATE));
+			long vacantperiod = getVacantPeriodCount(rentmonth,sameMonthRentin,lastRentoutMonth,getVacantPeriodConfigNum(recentVacantPeriodEdate,recentVacantPeriodSdate));
 			if(vacantperiod<0){
 				continue;
 			}
@@ -130,7 +130,7 @@ public class StatsRentService extends BaseService {
 			
 			resultMap.put("rentinmonth", sameMonthRentin);
 			resultMap.put("rentmonth", rentmonth);
-			resultMap.put("vacantperiodconfig", DateUtils.compareDates(recentVacantPeriodEdate, recentVacantPeriodSdate, Calendar.DATE));
+			resultMap.put("vacantperiodconfig", getVacantPeriodConfigNum(recentVacantPeriodEdate,recentVacantPeriodSdate));
 			resultMap.put("vacantperiod", vacantperiod);//空置期天数
 			resultMap.put("rentin_cut", rentin_cut);//租进业务员提成
 			resultMap.put("rentout_cut", rentout_cut);//租出业务员提成
@@ -217,7 +217,7 @@ public class StatsRentService extends BaseService {
 				recentVacantPeriodEdate = (Date)result.get("recent_vacantPeriodEdate");
 				recentVacantType = (String)result.get("recent_vacantType");
 				
-				long vacantperiod = getVacantPeriodCount(rentmonth,sameMonthRentin,lastRentoutMonth,(int)DateUtils.compareDates(recentVacantPeriodEdate, recentVacantPeriodSdate, Calendar.DATE));
+				long vacantperiod = getVacantPeriodCount(rentmonth,sameMonthRentin,lastRentoutMonth,getVacantPeriodConfigNum(recentVacantPeriodEdate,recentVacantPeriodSdate));
 				if(vacantperiod<0){
 					continue;
 				}
@@ -365,7 +365,7 @@ public class StatsRentService extends BaseService {
 				recentVacantPeriodEdate = (Date)result.get("recent_vacantPeriodEdate");
 				recentVacantType = (String)result.get("recent_vacantType");
 				
-				long vacantperiod = getVacantPeriodCount(rentmonth,sameMonthRentin,lastRentoutMonth,(int)DateUtils.compareDates(recentVacantPeriodEdate, recentVacantPeriodSdate, Calendar.DATE));
+				long vacantperiod = getVacantPeriodCount(rentmonth,sameMonthRentin,lastRentoutMonth,getVacantPeriodConfigNum(recentVacantPeriodEdate,recentVacantPeriodSdate));
 				if(vacantperiod<0){
 					continue;
 				}
@@ -375,7 +375,7 @@ public class StatsRentService extends BaseService {
 
 				resultMap.put("rentinmonth", sameMonthRentin);
 				resultMap.put("rentmonth", rentmonth);
-				resultMap.put("vacantperiodconfig", DateUtils.compareDates(recentVacantPeriodEdate, recentVacantPeriodSdate, Calendar.DATE));//空置期天数
+				resultMap.put("vacantperiodconfig", getVacantPeriodConfigNum(recentVacantPeriodEdate,recentVacantPeriodSdate));//空置期天数
 				resultMap.put("vacantperiod", vacantperiod);//空置期天数
 				resultMap.put("vacantperiod_type", recentVacantType);//空置期提成类型
 
@@ -503,7 +503,7 @@ public class StatsRentService extends BaseService {
 				recentVacantType = (String)result.get("recent_vacantType");
 				
 
-				long vacantperiod = getVacantPeriodCount(rentmonth,sameMonthRentin,lastRentoutMonth,(int)DateUtils.compareDates(recentVacantPeriodEdate, recentVacantPeriodSdate, Calendar.DATE));
+				long vacantperiod = getVacantPeriodCount(rentmonth,sameMonthRentin,lastRentoutMonth,getVacantPeriodConfigNum(recentVacantPeriodEdate,recentVacantPeriodSdate));
 				if(vacantperiod<0){
 					continue;
 				}
@@ -694,7 +694,7 @@ public class StatsRentService extends BaseService {
 				recentVacantPeriodEdate = (Date)result.get("recent_vacantPeriodEdate");
 				recentVacantType = (String)result.get("recent_vacantType");
 				
-				long vacantperiod = getVacantPeriodCount(rentmonth,sameMonthRentin,lastRentoutMonth,(int)DateUtils.compareDates(recentVacantPeriodEdate, recentVacantPeriodSdate, Calendar.DATE));
+				long vacantperiod = getVacantPeriodCount(rentmonth,sameMonthRentin,lastRentoutMonth,getVacantPeriodConfigNum(recentVacantPeriodEdate,recentVacantPeriodSdate));
 				if(vacantperiod<0){
 					continue;
 				}
@@ -704,7 +704,7 @@ public class StatsRentService extends BaseService {
 
 				resultMap.put("rentinmonth", sameMonthRentin);
 				resultMap.put("rentmonth", rentmonth);
-				resultMap.put("vacantperiodconfig", DateUtils.compareDates(recentVacantPeriodEdate, recentVacantPeriodSdate, Calendar.DATE));//空置期天数
+				resultMap.put("vacantperiodconfig", getVacantPeriodConfigNum(recentVacantPeriodEdate,recentVacantPeriodSdate));//空置期天数
 				resultMap.put("vacantperiod", vacantperiod);//空置期天数
 				resultMap.put("vacantperiod_type", recentVacantType);//空置期提成类型
 
@@ -1871,6 +1871,9 @@ public class StatsRentService extends BaseService {
 		if(null == oldRentoutDate){
 			return -1;
 		}
+		if(0 == vacantPeriodConfig){
+			return -1;
+		}
 		return (int)(vacantPeriodConfig-DateUtils.compareDates(rentoutmonth.getLastpaysdate(), oldRentoutDate, Calendar.DATE));
 
 	}
@@ -1890,6 +1893,20 @@ public class StatsRentService extends BaseService {
 			cutlevel = 0.0;
 		}
 		return cutlevel;
+	}
+	/**
+	 * 获取控制期配置的时间
+	 * @param recentVacantPeriodEdate
+	 * @param recentVacantPeriodSdate
+	 * @return
+	 */
+	public int getVacantPeriodConfigNum(Date recentVacantPeriodEdate,Date recentVacantPeriodSdate){
+		if(null != recentVacantPeriodEdate && null != recentVacantPeriodSdate){
+			return (int)DateUtils.compareDates(recentVacantPeriodEdate, recentVacantPeriodSdate, Calendar.DATE)+1;
+		}else{
+			return 0;
+		}
+		
 	}
 
 	public static void main(String[] args){

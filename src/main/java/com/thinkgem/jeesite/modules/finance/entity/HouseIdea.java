@@ -3,7 +3,6 @@
  */
 package com.thinkgem.jeesite.modules.finance.entity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -32,7 +31,10 @@ public class HouseIdea extends IdEntity<HouseIdea> {
 	private String name; 	// 名称
 	
 	private House house;//房屋
-	private String content;//跟进内容
+	private String content;//意见内容
+	private String type;//意见类别，有跟进，回访
+	public static String IDEATYPE_GENJIN = "genjin";
+	public static String IDEATYPE_HUIFANG = "huifang";
 
 	public HouseIdea() {
 		super();
@@ -72,6 +74,15 @@ public class HouseIdea extends IdEntity<HouseIdea> {
 	public void setContent(String content) {
 		this.content = content;
 	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+	
 	
 	
 }

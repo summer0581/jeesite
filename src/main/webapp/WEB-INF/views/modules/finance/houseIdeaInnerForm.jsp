@@ -31,6 +31,7 @@
 		<form:hidden path="id"/>
 		<form:hidden path="createBy.id" />
 		<form:hidden path="house.id" />
+		<form:hidden path="type" value="genjin" />
 		<tags:message content="${message}"/>
 
 		<div class="control-group" style="margin-top:20px;">

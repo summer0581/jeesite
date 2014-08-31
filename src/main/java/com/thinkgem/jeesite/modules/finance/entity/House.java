@@ -93,6 +93,9 @@ public class House extends IdEntity<House> {
 	
 	private Rent rent;
 	private String rent_state;//出租状态
+	private String  flag_norentin;//'未租进',
+	private String  flag_norentout;//'未租出',
+	private String  flag_cancelrent;//'已退租',
 	
 	public enum RentState{
 		norentout,hascancelrent
@@ -567,6 +570,30 @@ public class House extends IdEntity<House> {
 
 	public void setRent_state(String rent_state) {
 		this.rent_state = rent_state;
+	}
+
+	public String getFlag_norentin() {
+		return flag_norentin;
+	}
+
+	public void setFlag_norentin(String flag_norentin) {
+		this.flag_norentin = flag_norentin;
+	}
+
+	public String getFlag_norentout() {
+		return flag_norentout;
+	}
+
+	public void setFlag_norentout(String flag_norentout) {
+		this.flag_norentout = flag_norentout;
+	}
+
+	public String getFlag_cancelrent() {
+		return flag_cancelrent;
+	}
+
+	public void setFlag_cancelrent(String flag_cancelrent) {
+		this.flag_cancelrent = flag_cancelrent;
 	}
 	
 	

@@ -258,6 +258,20 @@
 						</c:choose>
 					</c:forEach>
 				</select>
+			<label>是否未租出房屋</label>
+			<select id="is_norentout" name="is_norentout" class="input-small" >
+					<option value="" label="请选择"/>
+					<c:forEach items="${fns:getDictList('yes_no')}" var="dict">
+						<c:choose >
+							<c:when test="${dict.value == paramMap.is_norentout }">
+								<option value="${dict.value}" selected="selected" label="">${dict.label}</option>
+							</c:when>
+							<c:otherwise>
+								<option value="${dict.value}" label="">${dict.label}</option>
+							</c:otherwise>
+						</c:choose>
+					</c:forEach>
+				</select>
 		</div>
 		</div>
 	</form:form>

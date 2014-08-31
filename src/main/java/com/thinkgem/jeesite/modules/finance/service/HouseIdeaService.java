@@ -52,6 +52,9 @@ public class HouseIdeaService extends BaseService {
 		if (StringUtils.isNotEmpty(houseIdea.getName())){
 			dc.add(Restrictions.like("name", "%"+houseIdea.getName()+"%"));
 		}
+		if (StringUtils.isNotEmpty(houseIdea.getType())){
+			dc.add(Restrictions.eq("type", houseIdea.getType()));
+		}
 		if (null != houseIdea.getHouse() && StringUtils.isNotEmpty(houseIdea.getHouse().getId())){
 			dc.add(Restrictions.eq("house.id", houseIdea.getHouse().getId()));
 		}

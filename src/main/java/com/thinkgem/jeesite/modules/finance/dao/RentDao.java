@@ -132,6 +132,7 @@ public class RentDao extends BaseDao<Rent> {
 		String rentin_remark = (String)paramMap.get("rentin_remark");
 		String rentout_remark = (String)paramMap.get("rentout_remark");
 		String is_terentrentout = (String)paramMap.get("is_terentrentout");
+		
 		String housefilter = (String)paramMap.get("housefilter");
 		if(StringUtils.isNotBlank(rentinperson_id)){
 			paramMap.put("rentinperson", UserUtils.getUserById(rentinperson_id));
@@ -322,6 +323,13 @@ public class RentDao extends BaseDao<Rent> {
 		if (StringUtils.isNotEmpty(business_num)){
 			sql.append(" and r.business_num = :business_num ");
 			sqlparam.put("business_num", business_num);
+		}
+		
+		String is_norentout = (String)paramMap.get("is_norentout");
+		if (StringUtils.isNotEmpty(is_norentout)){
+			sql.append(" and h.flag_norentout = :is_norentout ");
+			String flag_norentout = "0".equals(is_norentout)?"N":"Y";
+			sqlparam.put("is_norentout",  flag_norentout);
 		}
 		
 		if(null != rentout_cancelrentsdate || null != rentout_cancelrentedate){//2014.08.25 刘睿提出，退租日期查询的，历史记录也要查出来

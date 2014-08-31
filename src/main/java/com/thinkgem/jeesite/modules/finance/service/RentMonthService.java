@@ -209,7 +209,7 @@ public class RentMonthService extends BaseService {
 				Map<String,Object> resultMap = getLandlordVacantPeriodByRentMonth(rentMonth,vacantPeriods);
 				int vacantPeriodDays = 0;
 				if(null != resultMap){//房东空置期计算
-					vacantPeriodDays = (int)DateUtils.compareDates((Date)resultMap.get("landlord_vacantPeriodedate"), (Date)resultMap.get("landlord_vacantPeriodsdate"), Calendar.DATE);
+					vacantPeriodDays = (int)DateUtils.compareDates((Date)resultMap.get("landlord_vacantPeriodedate"), (Date)resultMap.get("landlord_vacantPeriodsdate"), Calendar.DATE)+1;
 				}
 
 				rentMonth.setId("");
@@ -230,7 +230,11 @@ public class RentMonthService extends BaseService {
 					//rentMonth.setNextpaydate(DateUtils.addDays(rentMonth.getLastpayedate(), vacantPeriodDays-RentMonthConstant.PAYFOR_REMIND_DAYS-1));
 					rentMonth.setNextpaydate(DateUtils.addMonths(rentMonth.getNextpaydate(), monthunit));
 				addMonth = (int)DateUtils.compareDates(nextwilllastpayedate, nextwilllastpaysdate, Calendar.MONTH);
-				rentMonth.setNextshouldamount(String.valueOf(Integer.valueOf(StringUtils.defaultIfBlank(rentMonth.getRentmonth(), "0"))*addMonth));
+				double vacantPeriodCut = (double)(addMonth*30-vacantPeriodDays)/(addMonth*30);
+				if(vacantPeriodCut < 0){
+					vacantPeriodCut = 0;
+				}
+				rentMonth.setNextshouldamount(String.valueOf((int)(Integer.valueOf(StringUtils.defaultIfBlank(rentMonth.getRentmonth(), "0"))*addMonth*vacantPeriodCut)));
 				
 			}
 		}
@@ -370,13 +374,15 @@ public class RentMonthService extends BaseService {
 				recentVacantPeriodEdate = vp.getEdate();
 				recentVacantType = vp.getType();
 			}
-			greatThanDateNum = greatThanDateNumTemp;
+			if(greatThanDateNumTemp >= 0){//如果业务员空置期的起始时间去比较下次付租起始时间得到的数量大于0
+				greatThanDateNum = greatThanDateNumTemp;
+			}
 			
 		}
 		if(99999 == greatThanDateNum){//如果greatThanDateNum仍然是99999，则表示没设置空置期，则跳出
 			return null;
 		}
-		if(null != lastRentoutMonth && recentVacantPeriodSdate.compareTo(lastRentoutMonth.getLastpaysdate()) >0){//如果上一次出租月记录的付租起始时间 > 空置期起始日期，则排除，说明已计算过空置期了
+		if(null != lastRentoutMonth && lastRentoutMonth.getLastpaysdate().compareTo(recentVacantPeriodSdate) >=0){//如果上一次出租月记录的付租起始时间 > 空置期起始日期，则排除，说明已计算过空置期了
 			return null;
 		}
 		Map<String,Object> resultMap = new HashMap<String,Object>();
@@ -412,13 +418,16 @@ public class RentMonthService extends BaseService {
 				landlord_vacantPeriodsdate = vp.getSdate();
 				landlord_vacantPeriodedate = vp.getEdate();
 			}
-			greatThanDateNum = greatThanDateNumTemp;
+			if(greatThanDateNumTemp >= 0){//如果房东空置期的起始时间去比较下次付租起始时间得到的数量大于0
+				greatThanDateNum = greatThanDateNumTemp;
+			}
+			
 			
 		}
 		if(99999 == greatThanDateNum){//如果greatThanDateNum仍然是99999，则表示没设置空置期，则跳出
 			return null;
 		}
-		if(null != lastRentoutMonth && null != landlord_vacantPeriodsdate && landlord_vacantPeriodsdate.compareTo(lastRentoutMonth.getLastpaysdate()) >0){//如果上一次出租月记录的付租起始时间 > 空置期起始日期，则排除，说明已计算过空置期了
+		if(null != lastRentoutMonth && null != landlord_vacantPeriodsdate && lastRentoutMonth.getLastpaysdate().compareTo(landlord_vacantPeriodsdate) >=0){//如果上一次出租月记录的付租起始时间 > 空置期起始日期，则排除，说明已计算过空置期了
 			return null;
 		}
 		Map<String,Object> resultMap = new HashMap<String,Object>();

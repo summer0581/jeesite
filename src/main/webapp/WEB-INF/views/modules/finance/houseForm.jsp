@@ -446,7 +446,13 @@
 		<div class="control-group">
 			<label class="control-label">房屋跟进:</label>
 			<div class="controls" style="height:300px;">
-				<iframe src="${ctx}/finance/houseIdea/innerList?house.id=${house.id}"  style="border:0px;width:100%;height:100%;"></iframe>
+				<iframe src="${ctx}/finance/houseIdea/innerList?house.id=${house.id}&type=genjin"  style="border:0px;width:100%;height:100%;"></iframe>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">房屋回访:</label>
+			<div class="controls" style="height:300px;">
+				<iframe src="${ctx}/finance/houseIdea/innerList?house.id=${house.id}&type=huifang"  style="border:0px;width:100%;height:100%;"></iframe>
 			</div>
 		</div>
 		</c:if>
