@@ -3,10 +3,12 @@
  */
 package com.thinkgem.jeesite.modules.finance.web;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -16,15 +18,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.FileUtils;
+import com.thinkgem.jeesite.common.utils.excel.ExportExcel;
 import com.thinkgem.jeesite.common.utils.excel.ExportTemplateExcel;
 import com.thinkgem.jeesite.common.web.BaseController;
+import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
+import com.thinkgem.jeesite.modules.finance.excel.entity.Excel2BusinessCountPerson;
 import com.thinkgem.jeesite.modules.finance.service.StatsRentService;
 import com.thinkgem.jeesite.modules.sys.entity.User;
 import com.thinkgem.jeesite.modules.sys.utils.UserUtils;
@@ -170,7 +176,7 @@ public class StatsRentController extends BaseController {
    			for(Map<String,Object> map : list){
          	   RentMonth rentinmonth = (RentMonth)map.get("rentinmonth");
          	   RentMonth rentoutmonth = (RentMonth)map.get("rentmonth");
-         	   long vacantperiodconfig = (Long)map.get("vacantperiodconfig");
+         	   int vacantperiodconfig = (Integer)map.get("vacantperiodconfig");
 	         	long vacantperiod = (Long)map.get("vacantperiod");
 	         	long rentin_cut = (Long)map.get("rentin_cut");
 	         	long rentout_cut = (Long)map.get("rentout_cut");
@@ -293,7 +299,7 @@ public class StatsRentController extends BaseController {
    			for(Map<String,Object> map : rentinRentMonths){
          	   RentMonth rentinmonth = (RentMonth)map.get("rentinmonth");
          	   RentMonth rentoutmonth = (RentMonth)map.get("rentmonth");
-         	   long vacantperiodconfig = (Long)map.get("vacantperiodconfig");
+         	   int vacantperiodconfig = (Integer)map.get("vacantperiodconfig");
 	         	long vacantperiod = (Long)map.get("vacantperiod");
 	         	long rentin_cut = null != map.get("rentin_cut")? (Long)map.get("rentin_cut"):0;
 	         	long teamleader_cut = null != map.get("teamleader_cut")? (Long)map.get("teamleader_cut"):0;
@@ -348,7 +354,7 @@ public class StatsRentController extends BaseController {
    			for(Map<String,Object> map : rentoutRentMonths){
          	   RentMonth rentinmonth = (RentMonth)map.get("rentinmonth");
          	   RentMonth rentoutmonth = (RentMonth)map.get("rentmonth");
-         	   long vacantperiodconfig = (Long)map.get("vacantperiodconfig");
+         	   int vacantperiodconfig = (Integer)map.get("vacantperiodconfig");
 	         	long vacantperiod = (Long)map.get("vacantperiod");
 	         	long rentout_cut = (Long)map.get("rentout_cut");
 
@@ -613,6 +619,42 @@ public class StatsRentController extends BaseController {
 			addMessage(redirectAttributes, "导入模板下载失败！失败信息："+e.getMessage());
 		}
 		return "redirect:"+Global.getAdminPath()+"/modules/finance/businessCut?repage";
+    }
+	
+	@RequiresPermissions("finance:rent:view")
+    @RequestMapping(value = "export/businessPersonCount", method=RequestMethod.POST)
+    public String exportBusinessPersonCount(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
+		try {
+            String fileName = "完成量统计数据"+DateUtils.getDate("yyyyMMddHHmmss")+".xlsx"; 
+            List<Excel2BusinessCountPerson> list = new ArrayList<Excel2BusinessCountPerson>();
+    		Map<String,Object> result = statsRentService.businessSaleCount4PersonList(paramMap);
+    		List<Map<String,Object>> resultList = (List<Map<String,Object>>)result.get("list");
+    		if(null != resultList && resultList.size() > 0){
+    			for(int i = 0 ; i < resultList.size() ; i++){
+        			Excel2BusinessCountPerson tmpBean = new Excel2BusinessCountPerson();
+        			Map<String,Object> tmpMap = resultList.get(i);
+        			tmpBean.setPerson(((User)tmpMap.get("person")).getName());
+        			tmpBean.setRentin_count(String.valueOf((Integer)tmpMap.get("rentinCutTotal")));
+        			tmpBean.setRentout_count(String.valueOf((Integer)tmpMap.get("rentoutCutTotal")));
+        			tmpBean.setTotal_count(String.valueOf((Integer)tmpMap.get("cutTotal")));
+        			list.add(tmpBean);
+        		}
+        		Excel2BusinessCountPerson tmpBean = new Excel2BusinessCountPerson();
+    			Map<String,Object> tmpMap = (Map<String,Object>)result.get("total");
+    			tmpBean.setPerson("合计");
+    			tmpBean.setRentin_count(String.valueOf((Integer)tmpMap.get("rentin_cut_total")));
+    			tmpBean.setRentout_count(String.valueOf((Integer)tmpMap.get("rentout_cut_total")));
+    			tmpBean.setTotal_count(String.valueOf((Integer)tmpMap.get("cut_total")));
+    			list.add(tmpBean);
+    		}
+    		
+    		
+    		new ExportExcel("完成量统计数据", Excel2BusinessCountPerson.class).setDataList(list).write(response, fileName).dispose();
+    		return null;
+		} catch (Exception e) {
+			addMessage(redirectAttributes, "导出完成量统计数据失败！失败信息："+e.getMessage());
+		}
+		return "redirect:"+Global.getAdminPath()+"/finance/stats/businessCount4PersonList?repage";
     }
 
 	/**

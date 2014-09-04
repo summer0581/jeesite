@@ -64,6 +64,12 @@ public class HouseService extends BaseService {
 		if (null != house.getTenant() && StringUtils.isNotEmpty(house.getTenant().getName())){
 			dc.add(Restrictions.like("tenant.name", "%"+house.getTenant().getName()+"%"));
 		}
+		if (null != house.getLandlord() && StringUtils.isNotEmpty(house.getLandlord().getTelephone())){
+			dc.add(Restrictions.like("landlord.telephone", "%"+house.getLandlord().getTelephone()+"%"));
+		}
+		if (null != house.getTenant() && StringUtils.isNotEmpty(house.getTenant().getTelephone())){
+			dc.add(Restrictions.like("tenant.telephone", "%"+house.getTenant().getTelephone()+"%"));
+		}
 		if (StringUtils.isNotBlank(house.getHouses())){
 			dc.add(Restrictions.like("houses", "%"+house.getHouses()+"%"));
 		}

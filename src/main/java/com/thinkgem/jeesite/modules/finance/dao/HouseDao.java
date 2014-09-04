@@ -139,7 +139,6 @@ public class HouseDao extends BaseDao<House> {
 		
 		sql = new StringBuffer();
 		
-		sql.append("update finance_house set flag_norentin = 'N' where id in ( ");
 		sql.append("		select r.house_id from finance_rent r ");
 		sql.append("		inner join ( ");
 		sql.append("		SELECT ");
@@ -159,9 +158,44 @@ public class HouseDao extends BaseDao<House> {
 		sql.append("			GROUP BY ");
 		sql.append("				rm2.rent_id ");
 		sql.append("		) rm on rm.rent_id = r.id ");
-		sql.append("	) ");
+
+		List<String> houseresult = findBySql(sql.toString());
+		
+		sql = new StringBuffer();
+		
+		sql.append("update finance_house set flag_norentin = 'N' where 1=1 ");
+		sql.append(createInSql("id",houseresult));
+		sql.append(" ");
 		result = updateBySql(sql.toString(),null);
 		return result;
+	}
+	
+	private String createInSql(String incolumn,List<String> values){
+		StringBuffer result = new StringBuffer();
+		StringBuffer tmpStr = new StringBuffer();
+		int tmpLong = 50;
+		int loopsize = values.size()/tmpLong;
+		int looplastsize = values.size()%tmpLong;
+		int subloopsize = 0;
+		for(int j = 1 ; j <= loopsize ; j++){
+			tmpStr = new StringBuffer();
+			result.append(" and ").append(incolumn).append(" in ( ");
+			subloopsize = j*tmpLong;
+			
+			for(int i = (j-1)*tmpLong ; i < subloopsize ; i ++){
+				tmpStr.append("'").append(values.get(i)).append("',");
+			}
+			result.append(tmpStr.substring(0, tmpStr.length()-1));
+			result.append(" ) ");
+		}
+		tmpStr = new StringBuffer();
+		result.append(" and ").append(incolumn).append(" in ( ");
+		for(int i = 0 ; i < looplastsize; i ++){
+			tmpStr.append("'").append(values.get(i)).append("',");
+		}
+		result.append(tmpStr.substring(0, tmpStr.length()-1));
+		result.append(" ) ");
+		return result.toString();
 	}
 	
 	/**
@@ -175,8 +209,6 @@ public class HouseDao extends BaseDao<House> {
 		result = updateBySql(sql.toString(),null);
 		
 		sql = new StringBuffer();
-		
-		sql.append("update finance_house set flag_norentout = 'Y' where id in ( ");
 		sql.append("		select r.house_id from finance_rent r ");
 		sql.append("	inner join ( ");
 		sql.append("	SELECT ");
@@ -215,7 +247,13 @@ public class HouseDao extends BaseDao<House> {
 		sql.append("			rm2.rent_id ");
 		sql.append("	) rm2 on rm2.rent_id = r.id ");
 		sql.append("	where rm2.rent_id is null  ");
-		sql.append("	) ");
+		List<String> houseresult = findBySql(sql.toString());
+		
+		sql = new StringBuffer();
+		
+		sql.append("update finance_house set flag_norentout = 'Y' where 1=1 ");
+		sql.append(createInSql("id",houseresult));
+		sql.append(" ");
 		
 		result = updateBySql(sql.toString(),null);
 		return result;
@@ -232,8 +270,6 @@ public class HouseDao extends BaseDao<House> {
 		result = updateBySql(sql.toString(),null);
 		
 		sql = new StringBuffer();
-		
-		sql.append("update finance_house set flag_cancelrent = 'Y' where id in ( ");
 		sql.append("	select r.house_id from finance_rent r ");
 		sql.append("inner join ( ");
 		sql.append("SELECT ");
@@ -254,8 +290,16 @@ public class HouseDao extends BaseDao<House> {
 		sql.append("		rm2.rent_id ");
 		sql.append(") rm on rm.rent_id = r.id ");
 		sql.append("where rm.cancelrentdate is not null ");
-		sql.append(")");
-		sql.append("");
+		
+		
+		
+		List<String> houseresult = findBySql(sql.toString());
+		
+		sql = new StringBuffer();
+		
+		sql.append("update finance_house set flag_cancelrent = 'Y' where 1=1 ");
+		sql.append(createInSql("id",houseresult));
+		sql.append(" ");
 		result = updateBySql(sql.toString(),null);
 		return result;
 	}

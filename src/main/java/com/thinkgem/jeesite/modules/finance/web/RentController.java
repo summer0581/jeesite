@@ -244,7 +244,7 @@ public class RentController extends BaseController {
 		try {
             String fileName = "包租数据"+DateUtils.getDate("yyyyMMddHHmmss")+".xlsx"; 
             Page<Rent> pages = new Page<Rent>(request, response, -1);
-            pages.setPageSize(500);
+            pages.setPageSize(100000);
     		Page<Rent> page = rentService.rentList(pages, paramMap); 
     		new ExportExcel("包租数据", Rent.class).setDataList(page.getList()).write(response, fileName).dispose();
     		return null;

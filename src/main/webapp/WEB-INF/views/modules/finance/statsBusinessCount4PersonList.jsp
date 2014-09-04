@@ -10,7 +10,7 @@
 			$("#btnExport").click(function(){
 				top.$.jBox.confirm("确认要导出房屋包租完成量个人统计数据吗？","系统提示",function(v,h,f){
 					if(v=="ok"){
-						$("#searchForm").attr("action","${ctx}/finance/stats/export/businessCut4Person");
+						$("#searchForm").attr("action","${ctx}/finance/stats/export/businessPersonCount");
 						$("#searchForm").submit();
 					}
 				},{buttonsFocus:1});

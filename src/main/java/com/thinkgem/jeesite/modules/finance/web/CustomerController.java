@@ -119,7 +119,9 @@ public class CustomerController extends BaseController {
     public String exportFile(Customer customer, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
 		try {
             String fileName = "客户信息数据"+DateUtils.getDate("yyyyMMddHHmmss")+".xlsx"; 
-    		Page<Customer> page = customerService.find(new Page<Customer>(request, response, -1), customer); 
+            Page<Customer> pages = new Page<Customer>(request, response, -1);
+            pages.setPageSize(50000);
+    		Page<Customer> page = customerService.find(pages, customer); 
     		new ExportExcel("客户信息数据", Customer.class).setDataList(page.getList()).write(response, fileName).dispose();
     		return null;
 		} catch (Exception e) {

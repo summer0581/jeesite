@@ -1320,6 +1320,7 @@ public class StatsRentService extends BaseService {
 	public Map<String,Object> businessSaleCount4PersonList(Map<String, Object> paramMap) throws Exception{
 
 		paramMap.put("infotype", "businessCount");
+		
 		List<RentMonth> list = getBusinessCountBaseSqlList(paramMap); 
 		
 		/*******************以下开始生成提成列表数据***********************/
@@ -1383,7 +1384,9 @@ public class StatsRentService extends BaseService {
 					if(null != rentmonth.getBusi_teamleader()){
 						username_temp = rentmonth.getBusi_teamleader().getLoginName();
 					}
+
 					username_temp = username_temp+rentmonth.getPerson().getLoginName();//业务员这里要特别处理一下，因为业务员有可能换组，所以要带上组长一起设置
+
 					rentoutCutMap.put(username_temp, MathUtils.deNull(rentoutCutMap.get(username_temp))+1);
 				}
 
@@ -1754,6 +1757,9 @@ public class StatsRentService extends BaseService {
 	 */
 	public List<User> getLevelUsersAndLeaderListWithRentinMonths(Map<String,Object> paramMap) throws Exception{
 		List<User> managerList = rentMonthDao.findUserSortUsetTypeLevel(paramMap, "", "busi_manager", "");
+		if(null == managerList || managerList.size() == 0){
+			return new ArrayList<User>();
+		}
 		User manager = managerList.get(0);
 		List<User> departleaders = rentMonthDao.findUserSortUsetTypeLevel(paramMap, "busi_manager", "busi_departleader", manager.getId());
 		for(int i = 0 ; i < departleaders.size() ; i++){

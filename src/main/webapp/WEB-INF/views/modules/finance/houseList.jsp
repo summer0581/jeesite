@@ -88,12 +88,9 @@
 				</form:select>
 				<label>房东姓名 ：</label><form:input path="landlord.name" htmlEscape="false" maxlength="50" class="input-small"/>
 				<label>租户姓名：</label><form:input path="tenant.name" htmlEscape="false" maxlength="50" class="input-small"/>
-				<label>收款户名：</label><form:input path="receive_username" htmlEscape="false" maxlength="50" class="input-small"/>
-				<label>是否可租：</label>
-					<form:select path="is_canrent" cssClass="input-small">
-						<form:option value="" label="请选择"/>
-						<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
-					</form:select>
+				<label>房东电话 ：</label><form:input path="landlord.telephone" htmlEscape="false" maxlength="50" class="input-small"/>
+				<label>租户电话：</label><form:input path="tenant.telephone" htmlEscape="false" maxlength="50" class="input-small"/>
+				
 			</div>
 			<div style="margin-bottom:5px;">
 					<label>房屋来源：</label>
@@ -168,6 +165,12 @@
 				<label>租出业务员：</label>
 				<tags:treeselect id="rentout_userid" name="rentout_userid" notAllowSelectParent="true" cssClass="input-small" value="${paramMap.rentout_user.id}" labelName="rentout_user.name" labelValue="${paramMap.rentout_user.name}"
 					title="人员" url="/sys/user/treeData" />
+				<label>收款户名：</label><form:input path="receive_username" htmlEscape="false" maxlength="50" class="input-small"/>
+				<label>是否可租：</label>
+					<form:select path="is_canrent" cssClass="input-small">
+						<form:option value="" label="请选择"/>
+						<form:options items="${fns:getDictList('yes_no')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+					</form:select>
 			</div>
 			
 		</div>
