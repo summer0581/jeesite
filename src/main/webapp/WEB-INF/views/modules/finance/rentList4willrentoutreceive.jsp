@@ -129,8 +129,10 @@
 		<shiro:hasPermission name="finance:house:view">
 			&nbsp;<input id="btnExport" class="btn btn-primary" type="button" value="导出"/>
 		</shiro:hasPermission>
-		
-		<input id="autoPayfor" name="autoPayfor" class="btn btn-primary" type="button" value="批量收租"/>		</div>
+		<shiro:hasPermission name="finance:rent:edit">
+		<input id="autoPayfor" name="autoPayfor" class="btn btn-primary" type="button" value="批量收租"/>
+		</shiro:hasPermission>		
+		</div>
 		<div id="pro_search" style="margin-top:10px;${'true' eq paramMap.showHighSearch?'':'display:none;'}">
 		<div style="margin-bottom:5px;">
 			<label>承租租金：</label>

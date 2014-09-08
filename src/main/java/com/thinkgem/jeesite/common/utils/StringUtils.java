@@ -7,6 +7,7 @@ package com.thinkgem.jeesite.common.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -209,6 +210,35 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 		}
 		return false;
 	}
+	
+	public static String createInSql(String incolumn,List<String> values){
+		StringBuffer result = new StringBuffer();
+		StringBuffer tmpStr = new StringBuffer();
+		int tmpLong = 50;
+		int loopsize = values.size()/tmpLong;
+		int looplastsize = values.size()%tmpLong;
+		int subloopsize = 0;
+		for(int j = 1 ; j <= loopsize ; j++){
+			tmpStr = new StringBuffer();
+			result.append(" and ").append(incolumn).append(" in ( ");
+			subloopsize = j*tmpLong;
+			
+			for(int i = (j-1)*tmpLong ; i < subloopsize ; i ++){
+				tmpStr.append("'").append(values.get(i)).append("',");
+			}
+			result.append(tmpStr.substring(0, tmpStr.length()-1));
+			result.append(" ) ");
+		}
+		tmpStr = new StringBuffer();
+		result.append(" and ").append(incolumn).append(" in ( ");
+		for(int i = 0 ; i < looplastsize; i ++){
+			tmpStr.append("'").append(values.get(i)).append("',");
+		}
+		result.append(tmpStr.substring(0, tmpStr.length()-1));
+		result.append(" ) ");
+		return result.toString();
+	}
+
 	
 	public static void main(String[] args){
 		Date date = DateUtils.parseDate("30");

@@ -95,6 +95,11 @@ public class StatsRentService extends BaseService {
 		
 
 		for(RentMonth rentmonth : list){
+			rentin_cut = 0;
+			rentout_cut = 0;
+			teamleader_cut = 0;
+			departleader_cut = 0;
+			manager_cut = 0;
 			Map<String,Object> resultMap = new HashMap<String,Object>();
 
 			lastRentoutMonth = rentMonthService.findLastRentMonth(rentmonth);
@@ -124,8 +129,13 @@ public class StatsRentService extends BaseService {
 			cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentmonth.getCut_vacantperiodtype());
 			rentin_cut = Math.round(rentout_rentmonth/DaysPerMonth * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
 			rentout_cut = Math.round(rentout_rentmonth/DaysPerMonth * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
-			teamleader_cut = Math.round(rentout_rentmonth/DaysPerMonth  * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
-			departleader_cut = Math.round(rentout_rentmonth/DaysPerMonth  * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.departleader, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel );
+			if(null != sameMonthRentin.getBusi_teamleader() && StringUtils.isNotBlank(sameMonthRentin.getBusi_teamleader().getName())){
+				teamleader_cut = Math.round(rentout_rentmonth/DaysPerMonth  * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
+			}
+			if(null != sameMonthRentin.getBusi_departleader() && StringUtils.isNotBlank(sameMonthRentin.getBusi_departleader().getName())){
+				departleader_cut = Math.round(rentout_rentmonth/DaysPerMonth  * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.departleader, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel );
+			}
+			
 			manager_cut = Math.round(rentout_rentmonth/DaysPerMonth * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel );
 			
 			resultMap.put("rentinmonth", sameMonthRentin);
@@ -227,8 +237,12 @@ public class StatsRentService extends BaseService {
 				cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentmonth.getCut_vacantperiodtype());
 				rentin_cut = Math.round(rentout_rentmonth/DaysPerMonth * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
 				rentout_cut = Math.round(rentout_rentmonth/DaysPerMonth * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
-				teamleader_cut = Math.round(rentout_rentmonth/DaysPerMonth  * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
-				departleader_cut = Math.round(rentout_rentmonth/DaysPerMonth  * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.departleader, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel );
+				if(null != sameMonthRentin.getBusi_teamleader() && StringUtils.isNotBlank(sameMonthRentin.getBusi_teamleader().getName())){
+					teamleader_cut = Math.round(rentout_rentmonth/DaysPerMonth  * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
+				}
+				if(null != sameMonthRentin.getBusi_departleader() && StringUtils.isNotBlank(sameMonthRentin.getBusi_departleader().getName())){
+					departleader_cut = Math.round(rentout_rentmonth/DaysPerMonth  * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.departleader, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel );
+				}
 				manager_cut = Math.round(rentout_rentmonth/DaysPerMonth * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel );
 				
 				/**************************以下是空置期合计的计算**********************/
@@ -513,8 +527,12 @@ public class StatsRentService extends BaseService {
 				cut_vacantperiodtypeconfigs = cutconfigService.findCutconfiglistByCutcode(rentmonth.getCut_vacantperiodtype());
 				rentin_cut = Math.round(rentout_rentmonth/DaysPerMonth * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.rentinsaler, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
 				rentout_cut = Math.round(rentout_rentmonth/DaysPerMonth * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.rentoutsaler, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
-				teamleader_cut = Math.round(rentout_rentmonth/DaysPerMonth  * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
-				departleader_cut = Math.round(rentout_rentmonth/DaysPerMonth  * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.departleader, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel );
+				if(null != sameMonthRentin.getBusi_teamleader() && StringUtils.isNotBlank(sameMonthRentin.getBusi_teamleader().getName())){
+					teamleader_cut = Math.round(rentout_rentmonth/DaysPerMonth  * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.teamleader, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel);
+				}
+				if(null != sameMonthRentin.getBusi_departleader() && StringUtils.isNotBlank(sameMonthRentin.getBusi_departleader().getName())){
+					departleader_cut = Math.round(rentout_rentmonth/DaysPerMonth  * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.departleader, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel );
+				}
 				manager_cut = Math.round(rentout_rentmonth/DaysPerMonth * cutconfigService.getCutpercentByPersonAndType(cut_vacantperiodtypeconfigs, CutConfigPersonConstant.manager, CutConfigTypeConstant.cut_vacantperiod) * vacantperiod * cutlevel );
 				
 				/**************************以下是空置期合计的计算**********************/

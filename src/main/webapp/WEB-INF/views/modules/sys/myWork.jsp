@@ -68,7 +68,7 @@
 	</div>
 	<div class="clear"></div>
 	<div class="panel-div">
-	<div class="panel-title"><a href="${ctx}/finance/rent/rentList?rentin_edateedate=${rentwarndate}&order=rms.edate">您有<span class="badge badge-important">${rentinWRElistcount}</span>套租进房子将要到期，是否续签</a></div>
+	<div class="panel-title"><a href="${ctx}/finance/rent/rentList?rentin_edateedate=${rentwarndate}&order=rms.edate&viewtype=rentinwillreachedate">您有<span class="badge badge-important">${rentinWRElistcount}</span>套租进房子将要到期，是否续签</a></div>
 			 <table class="table table-bordered">
               <thead>
                 <tr>
@@ -94,7 +94,7 @@
             </table>
 	</div>
 	<div class="panel-div">
-	<div class="panel-title"><a href="${ctx}/finance/rent/rentList?rentout_edateedate=${rentwarndate}&notcancelrentonly=true&order=rms2.edate">您有<span class="badge badge-important">${rentoutWRElistcount}</span>套出租房子将要到期，是否续租</a></div>
+	<div class="panel-title"><a href="${ctx}/finance/rent/rentList?rentout_edateedate=${rentwarndate}&notcancelrentonly=true&order=rms2.edate&viewtype=rentoutwillreachedate">您有<span class="badge badge-important">${rentoutWRElistcount}</span>套出租房子将要到期，是否续租</a></div>
 			 <table class="table table-bordered"> 
               <thead>
                 <tr>

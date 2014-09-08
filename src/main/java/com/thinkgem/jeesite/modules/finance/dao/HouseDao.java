@@ -164,39 +164,12 @@ public class HouseDao extends BaseDao<House> {
 		sql = new StringBuffer();
 		
 		sql.append("update finance_house set flag_norentin = 'N' where 1=1 ");
-		sql.append(createInSql("id",houseresult));
+		sql.append(StringUtils.createInSql("id",houseresult));
 		sql.append(" ");
 		result = updateBySql(sql.toString(),null);
 		return result;
 	}
 	
-	private String createInSql(String incolumn,List<String> values){
-		StringBuffer result = new StringBuffer();
-		StringBuffer tmpStr = new StringBuffer();
-		int tmpLong = 50;
-		int loopsize = values.size()/tmpLong;
-		int looplastsize = values.size()%tmpLong;
-		int subloopsize = 0;
-		for(int j = 1 ; j <= loopsize ; j++){
-			tmpStr = new StringBuffer();
-			result.append(" and ").append(incolumn).append(" in ( ");
-			subloopsize = j*tmpLong;
-			
-			for(int i = (j-1)*tmpLong ; i < subloopsize ; i ++){
-				tmpStr.append("'").append(values.get(i)).append("',");
-			}
-			result.append(tmpStr.substring(0, tmpStr.length()-1));
-			result.append(" ) ");
-		}
-		tmpStr = new StringBuffer();
-		result.append(" and ").append(incolumn).append(" in ( ");
-		for(int i = 0 ; i < looplastsize; i ++){
-			tmpStr.append("'").append(values.get(i)).append("',");
-		}
-		result.append(tmpStr.substring(0, tmpStr.length()-1));
-		result.append(" ) ");
-		return result.toString();
-	}
 	
 	/**
 	 * 更新所有未租出的房屋记录
@@ -252,7 +225,7 @@ public class HouseDao extends BaseDao<House> {
 		sql = new StringBuffer();
 		
 		sql.append("update finance_house set flag_norentout = 'Y' where 1=1 ");
-		sql.append(createInSql("id",houseresult));
+		sql.append(StringUtils.createInSql("id",houseresult));
 		sql.append(" ");
 		
 		result = updateBySql(sql.toString(),null);
@@ -298,7 +271,7 @@ public class HouseDao extends BaseDao<House> {
 		sql = new StringBuffer();
 		
 		sql.append("update finance_house set flag_cancelrent = 'Y' where 1=1 ");
-		sql.append(createInSql("id",houseresult));
+		sql.append(StringUtils.createInSql("id",houseresult));
 		sql.append(" ");
 		result = updateBySql(sql.toString(),null);
 		return result;

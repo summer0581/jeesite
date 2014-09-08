@@ -79,6 +79,7 @@
 					<th rowspan="2">编号</th>
 					<th rowspan="2">物业名称</th>
 					<th rowspan="2">租进业务员</th>
+					<th rowspan="2">组长</th>
 					<th rowspan="2">部长</th>
 					<th rowspan="2">租进时间</th>
 					<th rowspan="2">租出业务员</th>
@@ -101,6 +102,7 @@
 					<td>${var.rentinmonth.rent.business_num}</td>
 					<td><a href="#" onclick="openWindow('${ctx}/finance/rent/form?id=${var.rentinmonth.rent.id}','查看[${var.rentinmonth.rent.house.name}]房屋包租明细')">${var.rentinmonth.rent.house.name}</a></td>
 					<td><a href="#" onclick="openWindow('${ctx}/finance/stats/businessCutDetail4Person?personid=${var.rentinmonth.person.id}&rentout_sdate_begin=${paramMap.rentout_sdate_begin}&rentout_sdate_end=${paramMap.rentout_sdate_end}','查看[${var.rentinmonth.person.name}]个人业绩提成明细')">${var.rentinmonth.person.name }</a></td>
+					<td><a href="#" onclick="openWindow('${ctx}/finance/stats/businessCutDetail4Person?personid=${var.rentinmonth.busi_teamleader.id}&rentout_sdate_begin=${paramMap.rentout_sdate_begin}&rentout_sdate_end=${paramMap.rentout_sdate_end}','查看[${var.rentinmonth.busi_teamleader.name}]个人业绩提成明细')">${var.rentinmonth.busi_teamleader.name}</a></td>
 					<td><a href="#" onclick="openWindow('${ctx}/finance/stats/businessCutDetail4Person?personid=${var.rentinmonth.busi_departleader.id}&rentout_sdate_begin=${paramMap.rentout_sdate_begin}&rentout_sdate_end=${paramMap.rentout_sdate_end}','查看[${var.rentinmonth.busi_departleader.name}]个人业绩提成明细')">${var.rentinmonth.busi_departleader.name}</a></td>
 					<td><fmt:formatDate value="${var.rentinmonth.sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${var.rentinmonth.edate}" pattern="yyyy-MM-dd"/></td>
 					<td><a href="#" onclick="openWindow('${ctx}/finance/stats/businessCutDetail4Person?personid=${var.rentoutmonth.person.id}&rentout_sdate_begin=${paramMap.rentout_sdate_begin}&rentout_sdate_end=${paramMap.rentout_sdate_end}','查看[${var.rentoutmonth.person.name}]个人业绩提成明细')">${var.rentoutmonth.person.name }</a></td>
@@ -115,7 +117,7 @@
 				</tr> 
 			</c:forEach>
 			<tr>
-				<td colspan="9">合计</td>
+				<td colspan="10">合计</td>
 				<td>${total.rentin_cut_total}</td>
 				<td>${total.rentout_cut_total}</td>
 				<td>${total.teamleader_cut_total}</td>

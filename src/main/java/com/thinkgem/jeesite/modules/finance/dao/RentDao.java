@@ -131,6 +131,7 @@ public class RentDao extends BaseDao<Rent> {
 		String rentoutperson_id = (String)paramMap.get("rentoutperson_id");
 		String rentin_remark = (String)paramMap.get("rentin_remark");
 		String rentout_remark = (String)paramMap.get("rentout_remark");
+		String rentout_cancelrentremark = (String)paramMap.get("rentout_cancelrentremark");
 		String is_terentrentout = (String)paramMap.get("is_terentrentout");
 		
 		String housefilter = (String)paramMap.get("housefilter");
@@ -233,7 +234,7 @@ public class RentDao extends BaseDao<Rent> {
 		if(!StringUtils.checkParameterIsAllBlank(paramMap, "rentout_sdatesdate","rentout_sdateedate",
 				"rentout_nextpaysdate","rentout_nextpayedate","rentout_rentmonthmin","rentout_rentmonthmax","rentout_paytype",
 				"rentout_edatesdate","rentout_edateedate","rentoutperson_id","rentout_departleader_id","rentout_teamleader_id",
-				"notcancelrent","notcancelrentonly","rentout_remark","is_terentrentout")){
+				"notcancelrent","notcancelrentonly","rentout_remark","is_terentrentout","rentout_cancelrentremark")){
 			sql.append("INNER JOIN ( ");
 			//2014.7.12 sql 进行优化，从以前的查询要40多秒，优化到只要1秒不到，主要原因是，以前用的方式是每行去一一比对，现在是全部排序进行比对
 			sql.append("SELECT rm.* FROM  ( ");
@@ -289,6 +290,11 @@ public class RentDao extends BaseDao<Rent> {
 				sql.append(" and rm.remarks like :rentout_remark ");
 				sqlparam.put("rentout_remark", "%"+rentout_remark+"%");
 			}
+			if (StringUtils.isNotBlank(rentout_cancelrentremark)){
+				sql.append(" and rm.cancelrentremark like :rentout_cancelrentremark ");
+				sqlparam.put("rentout_cancelrentremark", "%"+rentout_cancelrentremark+"%");
+			}
+			
 			if(StringUtils.isNotBlank(is_terentrentout)){
 				sql.append(" and rm.is_terentrentout = :is_terentrentout ");
 				sqlparam.put("is_terentrentout", is_terentrentout);
@@ -327,7 +333,7 @@ public class RentDao extends BaseDao<Rent> {
 		
 		String is_norentout = (String)paramMap.get("is_norentout");
 		if (StringUtils.isNotEmpty(is_norentout)){
-			sql.append(" and h.flag_norentout = :is_norentout ");
+			sql.append(" and (h.flag_norentout = :is_norentout OR h.flag_cancelrent = :is_norentout) ");
 			String flag_norentout = "0".equals(is_norentout)?"N":"Y";
 			sqlparam.put("is_norentout",  flag_norentout);
 		}
@@ -335,7 +341,7 @@ public class RentDao extends BaseDao<Rent> {
 		if(null != rentout_cancelrentsdate || null != rentout_cancelrentedate){//2014.08.25 刘睿提出，退租日期查询的，历史记录也要查出来
 			StringBuffer cancelrentSql = new StringBuffer();
 			Parameter cancelSqlParam = new Parameter();
-			cancelrentSql.append(" SELECT group_concat(concat('''',rm.rent_id,'''')) rent_ids FROM finance_rentmonth rm WHERE 1 = 1 ");
+			cancelrentSql.append(" SELECT rm.rent_id FROM finance_rentmonth rm WHERE 1 = 1 ");
 			if(null != rentout_cancelrentsdate){
 				cancelrentSql.append(" and rm.cancelrentdate >= :rentout_cancelrentsdate ");
 				cancelSqlParam.put("rentout_cancelrentsdate", rentout_cancelrentsdate);
@@ -346,9 +352,7 @@ public class RentDao extends BaseDao<Rent> {
 			}
 			List<String> cancelrentresult = findBySql(cancelrentSql.toString(),cancelSqlParam);
 			if(cancelrentresult.size()>0){//此处，需要先将in的内容查出来，否则直接用子查询查会慢很多倍
-				sql.append(" and r.id in (");
-				sql.append(cancelrentresult.get(0));
-				sql.append(" ) ");
+				sql.append(StringUtils.createInSql("r.id", cancelrentresult));
 			}
 
 			

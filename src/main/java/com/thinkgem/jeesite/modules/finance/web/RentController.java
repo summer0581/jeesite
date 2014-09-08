@@ -88,10 +88,17 @@ public class RentController extends BaseController {
 	@RequestMapping(value = "rentList")
 	public String rentList(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, Model model) {
 		Page<Rent> page = rentService.rentList(new Page<Rent>(request, response),paramMap);
+		String viewtype = (String)paramMap.get("viewtype");
 		model.addAttribute("page", page);
 		model.addAttribute("sysdate", new Date());
 		model.addAttribute("paramMap", paramMap);
-		return "modules/finance/rentList";
+		if("rentinwillreachedate".equals(viewtype)){
+			return "modules/finance/rentList4rentinwillreachedate";
+		}else if("rentoutwillreachedate".equals(viewtype)){
+			return "modules/finance/rentList4rentoutwillreachedate";
+		}else{
+			return "modules/finance/rentList";
+		}
 	}
 	
 	/**
@@ -173,7 +180,7 @@ public class RentController extends BaseController {
 		return "modules/finance/rentForm";
 	}
 	//快速录入合同
-	@RequiresPermissions("finance:rent:view")
+	@RequiresPermissions("finance:rent:edit")
 	@RequestMapping(value = "quickluruhetongform")
 	public String quickluruhetongform(Rent rent, Model model) {
 		model.addAttribute("rent", rent);

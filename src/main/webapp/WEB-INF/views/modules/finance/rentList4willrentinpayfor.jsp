@@ -149,7 +149,10 @@
 			&nbsp;<input id="btnExport4zuozhang" class="btn btn-primary" type="button" value="导出做账依据"/>
 			
 		</shiro:hasPermission>
-		<input id="autoPayfor" name="autoPayfor" class="btn btn-primary" type="button" value="批量付租"/>		</div>
+		<shiro:hasPermission name="finance:rent:edit">
+		<input id="autoPayfor" name="autoPayfor" class="btn btn-primary" type="button" value="批量付租"/>
+		</shiro:hasPermission>		
+		</div>
 		<div id="pro_search" style="margin-top:10px;${'true' eq paramMap.showHighSearch?'':'display:none;'}">
 		<div style="margin-bottom:5px;">
 			<label>承租租金：</label>
