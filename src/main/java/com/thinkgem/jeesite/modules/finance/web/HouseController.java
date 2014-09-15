@@ -123,10 +123,17 @@ public class HouseController extends BaseController {
 
 	@RequiresPermissions("finance:house:add")
 	@RequestMapping(value = "save")
-	public String save(House house, Model model, RedirectAttributes redirectAttributes) {
+	public String save(@RequestParam Map<String, Object> paramMap,House house, Model model, RedirectAttributes redirectAttributes) {
 		if (!beanValidator(model, house)){
 			return form(house, model);
 		}
+		User rentinperson = new User();
+		User rentoutperson = new User();
+
+		rentinperson.setId((String)paramMap.get("rentin_user.id"));
+		rentoutperson.setId((String)paramMap.get("rentout_user.id"));
+		house.setRentin_user(rentinperson);
+		house.setRentout_user(rentoutperson);
 		houseService.save(house);
 		addMessage(redirectAttributes, "保存房屋明细'" + house.getName() + "'成功");
 		return "redirect:"+Global.getAdminPath()+"/finance/house/?repage";

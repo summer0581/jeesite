@@ -41,12 +41,12 @@ public class MyWorkController extends BaseController {
 	public String list( Model model) throws Exception {
 		Page<Rent> page1 = new Page<Rent>(0,5);
 		Map<String, Object> paramMap = new HashMap<String,Object>();
-		paramMap.put("rentin_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 7), "yyyy-MM-dd"));
+		paramMap.put("rentin_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 30), "yyyy-MM-dd"));
 		paramMap.put("order", "rms.nextpaydate");
 		Page<Rent> temprentinlist = rentService.rentInListWillNeedPayNextMonth(page1,paramMap);
 		Page<Rent> page2 = new Page<Rent>(0,5);
 		paramMap = new HashMap<String,Object>();
-		paramMap.put("rentout_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 7), "yyyy-MM-dd"));
+		paramMap.put("rentout_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 30), "yyyy-MM-dd"));
 		paramMap.put("notcancelrent", "true");
 		paramMap.put("order", "rms2.nextpaydate");
 		Page<Rent> temprentoutlist = rentService.rentOutListWillNeedPayNextMonth(page2,paramMap);

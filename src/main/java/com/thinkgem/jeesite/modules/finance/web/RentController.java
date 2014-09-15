@@ -131,7 +131,7 @@ public class RentController extends BaseController {
 	@RequestMapping(value = "rentList4WillRentinPayfor")
 	public String rentList4WillRentinPayfor(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
 		if(null == paramMap.get("rentin_nextpayedate")){
-			paramMap.put("rentin_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 7), "yyyy-MM-dd"));
+			paramMap.put("rentin_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 30), "yyyy-MM-dd"));
 		}
 		paramMap.put("order", "rms.nextpaydate,r.business_num");
 		Page<Rent> pages = new Page<Rent>(request, response);
@@ -155,7 +155,7 @@ public class RentController extends BaseController {
 	@RequestMapping(value = "rentList4WillRentoutReceive")
 	public String rentList4WillRentoutReceive(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, Model model) {
 		if(null == paramMap.get("rentout_nextpayedate")){
-			paramMap.put("rentout_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 7), "yyyy-MM-dd"));
+			paramMap.put("rentout_nextpayedate",DateUtils.formatDate(DateUtils.addDays(new Date(), 30), "yyyy-MM-dd"));
 		}
 		paramMap.put("order", "rms2.nextpaydate,r.business_num");
 		paramMap.put("notcancelrent", "true");

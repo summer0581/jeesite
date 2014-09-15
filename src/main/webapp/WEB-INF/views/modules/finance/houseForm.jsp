@@ -422,7 +422,7 @@
 			<c:choose>
 				<c:when test="${empty house.rentout_user or isSuperEditRole}">
 					<tags:treeselect id="rentout_user" name="rentout_user.id" notAllowSelectParent="true" value="${house.rentout_user.id}" labelName="rentout_user.name" labelValue="${house.rentout_user.name}"
-					title="人员" url="/sys/user/treeData" cssClass=""/>
+					title="人员" url="/sys/user/treeData" cssClass=""/> 
 				</c:when>
 				<c:otherwise>
 					<input type="text" value="${house.rentout_user.name}" readonly/>

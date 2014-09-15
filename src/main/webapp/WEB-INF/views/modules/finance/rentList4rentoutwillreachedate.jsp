@@ -254,7 +254,7 @@
 				<td>${rent.rentinMonths[0].person.name}</td>
 				<td>${rent.rentinMonths[0].rentmonth}</td>
 				<td>${rent.rentoutMonths[0].person.name}</td>
-				<td><fmt:formatDate value="${rent.rentinMonths[0].sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentinMonths[0].edate}" pattern="yyyy-MM-dd"/></td>
+				<td><fmt:formatDate value="${rent.rentoutMonths[0].sdate}" pattern="yyyy-MM-dd"/>-<br/><fmt:formatDate value="${rent.rentoutMonths[0].edate}" pattern="yyyy-MM-dd"/></td>
 				<td>${rent.rentoutMonths[0].rentmonth}</td>
 				<td>${rent.rentoutMonths[0].deposit}</td>
 				<td>${fns:getDictLabel(rent.rentoutMonths[0].paytype, 'finance_rent_paytype', '')}</td>

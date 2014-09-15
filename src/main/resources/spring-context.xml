@@ -89,6 +89,11 @@
 			<property name="testOnBorrow" value="false" />
 			<property name="testOnReturn" value="false" />
 			
+			<!-- 对于长时间不使用的连接强制关闭 -->
+			<property name="removeAbandoned" value="true" />   
+			<!-- 超过30分钟开始关闭空闲连接   -->
+        	<property name="removeAbandonedTimeout" value="1800" />
+			
 			<!-- 打开PSCache，并且指定每个连接上PSCache的大小（Oracle使用）
 			<property name="poolPreparedStatements" value="true" />
 			<property name="maxPoolPreparedStatementPerConnectionSize" value="20" /> -->

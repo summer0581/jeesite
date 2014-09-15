@@ -220,7 +220,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 		int subloopsize = 0;
 		for(int j = 1 ; j <= loopsize ; j++){
 			tmpStr = new StringBuffer();
-			result.append(" and ").append(incolumn).append(" in ( ");
+			result.append(" or ").append(incolumn).append(" in ( ");
 			subloopsize = j*tmpLong;
 			
 			for(int i = (j-1)*tmpLong ; i < subloopsize ; i ++){
@@ -230,13 +230,17 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 			result.append(" ) ");
 		}
 		tmpStr = new StringBuffer();
-		result.append(" and ").append(incolumn).append(" in ( ");
-		for(int i = 0 ; i < looplastsize; i ++){
+		
+		for(int i = loopsize*tmpLong ; i < values.size(); i ++){
 			tmpStr.append("'").append(values.get(i)).append("',");
 		}
-		result.append(tmpStr.substring(0, tmpStr.length()-1));
-		result.append(" ) ");
-		return result.toString();
+		if(tmpStr.length() > 0){//判断是否有余下的
+			result.append(" or ").append(incolumn).append(" in ( ");
+			result.append(tmpStr.substring(0, tmpStr.length()-1));
+			result.append(" ) ");
+		}
+		
+		return result.toString().replaceFirst("or", "and");
 	}
 
 	

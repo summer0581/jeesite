@@ -1553,6 +1553,7 @@ public class StatsRentService extends BaseService {
 	public List<RentMonth> getVacantperiodBaseList(Map<String, Object> paramMap){
 		DetachedCriteria dc = rentMonthDao.createDetachedCriteria();
 		dc.createAlias("rent", "rent");
+		dc.createAlias("rent.house", "house");
 		dc.add(Restrictions.eq(RentMonth.FIELD_DEL_FLAG, Rent.DEL_FLAG_NORMAL));
 		
 		Date rentout_sdate_begin = DateUtils.parseDate(paramMap.get("rentout_sdate_begin"));
@@ -1571,7 +1572,7 @@ public class StatsRentService extends BaseService {
 
 		String name = (String)paramMap.get("name");
 		if(!StringUtils.isBlank(name)){
-			dc.add(Restrictions.like("rent.name", "%"+name+"%"));
+			dc.add(Restrictions.like("house.name", "%"+name+"%"));
 		}
 		dc.addOrder(Order.asc("rent.business_num"));
 		return rentMonthDao.find(dc); 

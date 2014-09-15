@@ -140,24 +140,8 @@ public class HouseDao extends BaseDao<House> {
 		sql = new StringBuffer();
 		
 		sql.append("		select r.house_id from finance_rent r ");
-		sql.append("		inner join ( ");
-		sql.append("		SELECT ");
-		sql.append("				* ");
-		sql.append("			FROM ");
-		sql.append("				( ");
-		sql.append("					SELECT ");
-		sql.append("						* ");
-		sql.append("					FROM ");
-		sql.append("						finance_rentmonth rm1 ");
-		sql.append("					WHERE ");
-		sql.append("						rm1.infotype = 'rentin' ");
-		sql.append("					AND rm1.del_flag = '0' ");
-		sql.append("					ORDER BY ");
-		sql.append("						rm1.create_date DESC ");
-		sql.append("				) rm2 ");
-		sql.append("			GROUP BY ");
-		sql.append("				rm2.rent_id ");
-		sql.append("		) rm on rm.rent_id = r.id ");
+		sql.append("		where r.business_num is not null ");
+		
 
 		List<String> houseresult = findBySql(sql.toString());
 		
@@ -182,44 +166,14 @@ public class HouseDao extends BaseDao<House> {
 		result = updateBySql(sql.toString(),null);
 		
 		sql = new StringBuffer();
-		sql.append("		select r.house_id from finance_rent r ");
-		sql.append("	inner join ( ");
-		sql.append("	SELECT ");
-		sql.append("			* ");
-		sql.append("		FROM ");
-		sql.append("			( ");
-		sql.append("				SELECT ");
-		sql.append("					* ");
-		sql.append("				FROM ");
-		sql.append("					finance_rentmonth rm1 ");
-		sql.append("				WHERE ");
-		sql.append("					rm1.infotype = 'rentin' ");
-		sql.append("				AND rm1.del_flag = '0' ");
-		sql.append("				ORDER BY ");
-		sql.append("					rm1.create_date DESC ");
-		sql.append("			) rm2 ");
-		sql.append("		GROUP BY ");
-		sql.append("			rm2.rent_id ");
-		sql.append("	) rm on rm.rent_id = r.id ");
-		sql.append("	left join ( ");
-		sql.append("		SELECT ");
-		sql.append("			* ");
-		sql.append("		FROM ");
-		sql.append("			( ");
-		sql.append("				SELECT ");
-		sql.append("					* ");
-		sql.append("				FROM ");
-		sql.append("					finance_rentmonth rm1 ");
-		sql.append("				WHERE ");
-		sql.append("					rm1.infotype = 'rentout' ");
-		sql.append("				AND rm1.del_flag = '0' ");
-		sql.append("				ORDER BY ");
-		sql.append("					rm1.create_date DESC ");
-		sql.append("			) rm2 ");
-		sql.append("		GROUP BY ");
-		sql.append("			rm2.rent_id ");
-		sql.append("	) rm2 on rm2.rent_id = r.id ");
-		sql.append("	where rm2.rent_id is null  ");
+		sql.append("select r.house_id from finance_rent r ");
+		sql.append("where r.business_num <> '' and r.business_num is not null  ");
+		sql.append("and r.id not in (SELECT ");
+		sql.append("				rm1.rent_id ");
+		sql.append("			FROM ");
+		sql.append("				finance_rentmonth rm1 ");
+		sql.append("			WHERE ");
+		sql.append("				rm1.infotype = 'rentout') ");
 		List<String> houseresult = findBySql(sql.toString());
 		
 		sql = new StringBuffer();
