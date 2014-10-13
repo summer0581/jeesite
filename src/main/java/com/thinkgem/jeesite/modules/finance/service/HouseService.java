@@ -283,7 +283,7 @@ public class HouseService extends BaseService {
 	public void save(House house) {
 		if(StringUtils.isBlank(house.getId())){//新增数据的时候，默认设置房子为未租进，未租出，未退租
 			house.setFlag_norentin(House.Y);
-			house.setFlag_norentout(House.Y);
+			house.setFlag_norentout(House.N);//房子最开始添加时，还是未租进，那未租出就设置成空，避免在未租出列表会显示
 			house.setFlag_cancelrent(House.N);
 		}
 
