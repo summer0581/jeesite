@@ -25,8 +25,12 @@ import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.modules.finance.constant.RentMonthConstant;
 import com.thinkgem.jeesite.modules.finance.constant.VacantPeriodConstant;
 import com.thinkgem.jeesite.modules.finance.dao.CutconfigDao;
+import com.thinkgem.jeesite.modules.finance.dao.HouseDao;
+import com.thinkgem.jeesite.modules.finance.dao.RentDao;
 import com.thinkgem.jeesite.modules.finance.dao.RentMonthDao;
 import com.thinkgem.jeesite.modules.finance.entity.Cutconfig;
+import com.thinkgem.jeesite.modules.finance.entity.House;
+import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.finance.entity.VacantPeriod;
 import com.thinkgem.jeesite.modules.sys.utils.DictUtils;
@@ -43,6 +47,12 @@ public class RentMonthService extends BaseService {
 
 	@Autowired
 	private RentMonthDao rentMonthDao;
+	
+	@Autowired
+	private RentDao rentDao;
+	
+	@Autowired
+	private HouseDao houseDao;
 	
 	@Autowired
 	private CutconfigDao cutconfigDao;
@@ -180,7 +190,22 @@ public class RentMonthService extends BaseService {
 	
 	@Transactional(readOnly = false)
 	public void save(RentMonth rentMonth) {
+		Rent rent = rentDao.get(rentMonth.getRent().getId());
+		House house = rent.getHouse();
+		if(RentMonth.INFOTYPE.rentout.toString().equals(rentMonth.getInfotype())){
+			house.setFlag_norentout(House.N);//此处还待改进，租出时，会将房子的未租出状态修改
+			if(null != rentMonth.getCancelrentdate()){//当设置了提前退租时间，则房子设置为已退租
+				house.setFlag_cancelrent(House.Y);
+			}else{
+				house.setFlag_cancelrent(House.N);
+			}
+			
+		}
+		
 		rentMonthDao.save(rentMonth);
+		rentMonthDao.flush();
+		houseDao.save(house);
+		houseDao.flush();
 	}
 	
 	@Transactional(readOnly = false)
@@ -407,6 +432,7 @@ public class RentMonthService extends BaseService {
 		if(null == landlord_vacantperiods){
 			return null;
 		}
+		System.out.println(rentin.getRent().getHouse().getName());
 		for(VacantPeriod vp : landlord_vacantperiods){ //此循环是为了获取实际要用到的空置期
 			if(null == vp.getSdate() || null == vp.getEdate() ||
 					vp.getSdate().compareTo(DateUtils.addMonths(rentin.getLastpayedate(), monthunit) ) > 0 || //下次付租起始日要大于空置期起始日才算

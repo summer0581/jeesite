@@ -74,7 +74,7 @@ public class HouseService extends BaseService {
 			dc.add(Restrictions.like("houses", "%"+house.getHouses()+"%"));
 		}
 		if (StringUtils.isNotBlank(house.getArea())){
-			dc.add(Restrictions.eq("area", house.getArea()));
+			dc.add(Restrictions.eq("area", house.getArea())); 
 		}
 		if (StringUtils.isNotBlank(house.getHouse_source())){
 			dc.add(Restrictions.eq("house_source", house.getHouse_source()));
@@ -219,6 +219,7 @@ public class HouseService extends BaseService {
 		dc.addOrder(Order.desc("id"));
 		return houseDao.find(page, dc);
 	}
+	
 	/**
 	 * 获取未与明细表关联的房子信息
 	 * @param page
@@ -280,6 +281,11 @@ public class HouseService extends BaseService {
 	
 	@Transactional(readOnly = false)
 	public void save(House house) {
+		if(StringUtils.isBlank(house.getId())){//新增数据的时候，默认设置房子为未租进，未租出，未退租
+			house.setFlag_norentin(House.Y);
+			house.setFlag_norentout(House.Y);
+			house.setFlag_cancelrent(House.N);
+		}
 
 		if(null == house.getLandlord() || null == house.getLandlord().getOffice()){//房东很有可能只带有id，需要在这里自动查询一次
 			if(StringUtils.isNotBlank(house.getLandlord().getId())){

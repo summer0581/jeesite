@@ -822,9 +822,9 @@ public class StatsRentService extends BaseService {
 		List<Cutconfig> cut_businesssaletypeconfigs = null;
 		RentMonth sameMonthRentout = null;//同期的租进月记录
 		for(RentMonth rentinmonth : list){
-			sameMonthRentout = getSameMonthRentoutByRentinMonthSql(rentinmonth);
+			sameMonthRentout = getSameMonthRentoutByQueryEdateSql(rentinmonth,rentout_sdate_end);
 			
-			if(null == sameMonthRentout){//如果未找到同期的出租记录，则跳出循环
+			if(null == sameMonthRentout || null != sameMonthRentout.getCancelrentdate()){//如果未找到同期的出租记录,或者同期租出已退租，则跳出循环
 				continue;
 			}
 			rentin_cut = 0;
@@ -998,8 +998,8 @@ public class StatsRentService extends BaseService {
 		
 
 		for(RentMonth rentinmonth : list){
-			sameMonthRentout = getSameMonthRentoutByRentinMonthSql(rentinmonth);
-			if(null == sameMonthRentout){//如果未找到同期的出租记录，则跳出循环
+			sameMonthRentout = getSameMonthRentoutByQueryEdateSql(rentinmonth,rentout_sdate_end);
+			if(null == sameMonthRentout || null != sameMonthRentout.getCancelrentdate()){//如果未找到同期的出租记录,或者同期租出已退租，则跳出循环
 				continue;
 			}
 			cut_businesssaletypeconfigs = cutconfigService.findCutconfiglistByCutcode(sameMonthRentout.getCut_businesssaletype());
@@ -1198,8 +1198,8 @@ public class StatsRentService extends BaseService {
 		
 
 		for(RentMonth rentinmonth : list){
-			sameMonthRentout = getSameMonthRentoutByRentinMonthSql(rentinmonth);	
-			if(null == sameMonthRentout){//如果未找到同期的出租记录，则跳出循环
+			sameMonthRentout = getSameMonthRentoutByQueryEdateSql(rentinmonth,rentout_sdate_end);	
+			if(null == sameMonthRentout || null != sameMonthRentout.getCancelrentdate()){//如果未找到同期的出租记录,或者同期租出已退租，则跳出循环
 				continue;
 			}
 			resultMap = new HashMap<String,Object>();
@@ -1739,7 +1739,7 @@ public class StatsRentService extends BaseService {
 		
 		RentMonth sameMonthRentout = null;//同期的租进月记录
 		for(RentMonth rentmonth : list){
-			sameMonthRentout = getSameMonthRentoutByRentinMonthSql(rentmonth);
+			sameMonthRentout = getSameMonthRentoutByRentinMonthSql(rentmonth,DateUtils.parseDate(paramMap.get("rentout_sdate_end")));
 
 			if(null != rentmonth ){
 				if(null != rentmonth.getBusi_manager()){
@@ -1854,16 +1854,31 @@ public class StatsRentService extends BaseService {
 	
 	
 	/**
+	 * 根据指定的结束时间获取相对应的租出月记录（主要用于业绩提成）
+	 * @param rentinMonth
+	 * @return
+	 */
+	public RentMonth getSameMonthRentoutByQueryEdateSql(RentMonth rentinMonth,Date queryEdate){
+		Map<String,Object> paramMap1 = new HashMap<String,Object>();
+		paramMap1.put("infotype", "rentout");
+		paramMap1.put("rent", rentinMonth.getRent());
+		paramMap1.put("queryEdate", queryEdate);
+
+		return rentMonthDao.findSameRentoutByRentinAndQueryEdate(paramMap1);
+	}
+	
+	/**
 	 * 根据出租月记录获取相对应的租进月记录
 	 * @param rentoutMonth
 	 * @return
 	 */
-	public RentMonth getSameMonthRentoutByRentinMonthSql(RentMonth rentinMonth){
+	public RentMonth getSameMonthRentoutByRentinMonthSql(RentMonth rentinMonth,Date queryEdate){
 		Map<String,Object> paramMap1 = new HashMap<String,Object>();
 		paramMap1.put("infotype", "rentout");
 		paramMap1.put("rent", rentinMonth.getRent());
 		paramMap1.put("sdate_begin", rentinMonth.getLastpaysdate());
 		paramMap1.put("sdate_end", rentinMonth.getLastpayedate());
+		paramMap1.put("queryEdate", queryEdate);
 
 		return rentMonthDao.findSameRentoutByRentin(paramMap1);
 	}

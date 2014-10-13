@@ -21,7 +21,9 @@
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
 		<input id="pageSize" name="pageSize" type="hidden" value="${page.pageSize}"/>
 		<div>
-			<label>用户：</label><input id="createByName" name="createByName" type="text" maxlength="50" class="input-small" value="${createByName}"/>
+			<label>用户：</label>
+			<tags:treeselect id="createByName1" name="createByName1" notAllowSelectParent="true" cssClass="input-small" value="${createByName}" labelName="createByName" labelValue="${createByName}"
+					title="人员" url="/sys/user/treeData" allowClear="true"/>
 			<label>URI：</label><input id="requestUri" name="requestUri" type="text" maxlength="50" class="input-small" value="${requestUri}"/>
 			&nbsp;
 			<label>开始日期：</label><input id="beginDate" name="beginDate" type="text" readonly="readonly" maxlength="20" class="input-small Wdate"

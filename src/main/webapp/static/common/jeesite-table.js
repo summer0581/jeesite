@@ -28,6 +28,10 @@
 
 })(jQuery)
 
+String.prototype.trim = function() {  
+    return this.replace(/(^\s*)|(\s*$)/g,'');  
+};  
+
 String.prototype.toDate = function(){
 	return new Date(Date.parse(this.replace(/-/g,  "/"))); 
 }

@@ -123,6 +123,9 @@ public abstract class BaseEntity<T> implements Serializable {
 	// 是/否
 	public static final String YES = "1";
 	public static final String NO = "0";
+	
+	public static final String Y = "Y";
+	public static final String N = "N";
 
 	// 删除标记（0：正常；1：删除；2：审核；）
 	public static final String FIELD_DEL_FLAG = "delFlag";

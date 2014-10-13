@@ -114,6 +114,15 @@ public class Rent extends IdEntity<Rent> {
 		
 	}
 	
+	@ExcelField(title="楼盘", type=0, align=1, sort=12)
+	@Transient
+	public String getHouses() {
+		return house.getHouses();
+	}
+	public void setHouses(String houses) {
+		house.setHouses(houses);
+	}
+	
 	public int getBusiness_num() {
 		return business_num;
 	}

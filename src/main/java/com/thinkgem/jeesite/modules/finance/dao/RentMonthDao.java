@@ -338,7 +338,8 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 		Parameter pm = new Parameter();
 		sql.append("select t.id,t.rent_id,t.sdate,t.edate,t.lastpaysdate,t.lastpayedate,t.cut_businesssaletype,");
 		sql.append(" t.person,c_p.name person_name,c_p.user_busitype person_busitype,c_p.login_name person_loginname, ");
-		sql.append(" t.agencyfee,t.person_fixedcut,t.manager_fixedcut,t.departer_fixedcut,t.teamleader_fixedcut ");
+		sql.append(" t.agencyfee,t.person_fixedcut,t.manager_fixedcut,t.departer_fixedcut,t.teamleader_fixedcut, ");
+		sql.append(" t.cancelrentdate");
 		sql.append(" from  finance_rentmonth t  ");
 		sql.append(" left join sys_user c_p on c_p.id = t.person ");
 		sql.append(" where t.del_flag = :del_flag and t.infotype = 'rentout' ");
@@ -369,6 +370,11 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 			sql.append(" and ((t.lastpaysdate <= :sdate_begin and t.lastpayedate >= :sdate_begin) or (t.lastpaysdate >= :sdate_begin and t.lastpaysdate <= :sdate_end)) ");
 			pm.put("sdate_begin", sdate_begin);
 			pm.put("sdate_end", sdate_end);
+			if(null != paramMap.get("queryEdate")){
+				Date queryEdate = (Date)paramMap.get("queryEdate");
+				sql.append(" and t.lastpaysdate < :queryEdate ");
+				pm.put("queryEdate", queryEdate);
+			}
 		}
 		sql.append(" order by t.lastpayedate desc ");
 		List<Map<String,Object>> resultList = findBySql(sql.toString(), pm, Map.class);
@@ -389,6 +395,68 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 			rentMonth.setTeamleader_fixedcut((String)rMap.get("teamleader_fixedcut"));
 			rentMonth.setDeparter_fixedcut((String)rMap.get("departer_fixedcut"));
 			rentMonth.setManager_fixedcut((String)rMap.get("manager_fixedcut"));
+			rentMonth.setCancelrentdate((Date)rMap.get("cancelrentdate"));
+			
+			User person = null;
+			if(StringUtils.isNotBlank((String)rMap.get("person_name"))){
+				person = new User();
+				person.setId((String)rMap.get("person"));
+				person.setName((String)rMap.get("person_name"));
+				person.setUserBusitype((String)rMap.get("person_busitype"));	
+				person.setLoginName((String)rMap.get("person_loginname"));
+			}
+
+			
+			rentMonth.setPerson(person);
+		}
+				
+		return rentMonth;
+	}
+
+	
+	public RentMonth findSameRentoutByRentinAndQueryEdate(Map<String, Object> paramMap){
+		StringBuffer sql = new StringBuffer();
+		Parameter pm = new Parameter();
+		sql.append("select t.id,t.rent_id,t.sdate,t.edate,t.lastpaysdate,t.lastpayedate,t.cut_businesssaletype,");
+		sql.append(" t.person,c_p.name person_name,c_p.user_busitype person_busitype,c_p.login_name person_loginname, ");
+		sql.append(" t.agencyfee,t.person_fixedcut,t.manager_fixedcut,t.departer_fixedcut,t.teamleader_fixedcut, ");
+		sql.append(" t.cancelrentdate");
+		sql.append(" from  finance_rentmonth t  ");
+		sql.append(" left join sys_user c_p on c_p.id = t.person ");
+		sql.append(" where t.del_flag = :del_flag and t.infotype = 'rentout' ");
+		sql.append(" and t.rent_id = :rent_id ");
+		pm.put("del_flag", RentMonth.DEL_FLAG_NORMAL);
+		if (null != paramMap.get("rent")){
+			pm.put("rent_id", ((Rent)paramMap.get("rent")).getId());
+		}else{
+			pm.put("rent_id", "null");
+		}
+
+		if(null != paramMap.get("queryEdate")){
+			Date queryEdate = (Date)paramMap.get("queryEdate");
+			sql.append(" and t.sdate < :queryEdate and t.edate > :queryEdate");
+			pm.put("queryEdate", queryEdate);
+		}
+		sql.append(" order by t.lastpayedate desc limit 0,1 ");
+		List<Map<String,Object>> resultList = findBySql(sql.toString(), pm, Map.class);
+		/****************************以下是拼接字符串************************************/
+		RentMonth rentMonth = null;
+		if(null != resultList && resultList.size() > 0){
+			Map<String,Object> rMap = resultList.get(0);
+			rentMonth = new RentMonth();
+
+			rentMonth.setId((String)rMap.get("id"));
+			rentMonth.setSdate((Date)rMap.get("sdate"));
+			rentMonth.setEdate((Date)rMap.get("edate"));
+			rentMonth.setLastpaysdate((Date)rMap.get("lastpaysdate"));
+			rentMonth.setLastpayedate((Date)rMap.get("lastpayedate"));
+			rentMonth.setCut_businesssaletype((String)rMap.get("cut_businesssaletype"));
+			rentMonth.setAgencyfee((String)rMap.get("agencyfee"));
+			rentMonth.setPerson_fixedcut((String)rMap.get("person_fixedcut"));
+			rentMonth.setTeamleader_fixedcut((String)rMap.get("teamleader_fixedcut"));
+			rentMonth.setDeparter_fixedcut((String)rMap.get("departer_fixedcut"));
+			rentMonth.setManager_fixedcut((String)rMap.get("manager_fixedcut"));
+			rentMonth.setCancelrentdate((Date)rMap.get("cancelrentdate"));
 			
 			User person = null;
 			if(StringUtils.isNotBlank((String)rMap.get("person_name"))){

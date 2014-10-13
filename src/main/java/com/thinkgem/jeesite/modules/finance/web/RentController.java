@@ -38,6 +38,8 @@ import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
 import com.thinkgem.jeesite.modules.finance.excel.entity.Excel2House4BatchBank;
 import com.thinkgem.jeesite.modules.finance.excel.entity.Excel2House4ZuoZhang;
+import com.thinkgem.jeesite.modules.finance.excel.entity.Excel2Rent4RentinWillReachEdate;
+import com.thinkgem.jeesite.modules.finance.excel.entity.Excel2Rent4RentoutWillReachEdate;
 import com.thinkgem.jeesite.modules.finance.excel.entity.Excel2Rent4WillReceive;
 import com.thinkgem.jeesite.modules.finance.service.RentService;
 import com.thinkgem.jeesite.modules.sys.entity.User;
@@ -332,6 +334,38 @@ public class RentController extends BaseController {
 			addMessage(redirectAttributes, "导出房屋失败！失败信息："+e.getMessage());
 		}
 		return "redirect:"+Global.getAdminPath()+"/finance/rentList/?repage";
+    }
+	
+	@RequiresPermissions("finance:rent:view")
+    @RequestMapping(value = "export4rentinwillreachedate", method=RequestMethod.POST)
+    public String exportFile4rentinwillreachedate(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
+		try {
+            String fileName = "包租(租进即将到期)数据"+DateUtils.getDate("yyyyMMddHHmmss")+".xlsx"; 
+            Page<Rent> pages = new Page<Rent>(request, response, -1);
+            pages.setPageSize(100000);
+    		Page<Rent> page = rentService.rentList(pages, paramMap); 
+    		new ExportExcel("包租(租进即将到期)数据", Excel2Rent4RentinWillReachEdate.class).setDataList(page.getList()).write(response, fileName).dispose();
+    		return null;
+		} catch (Exception e) {
+			addMessage(redirectAttributes, "导出包租失败！失败信息："+e.getMessage());
+		}
+		return "redirect:"+Global.getAdminPath()+"/finance/rent/rentList?repage";
+    }
+	
+	@RequiresPermissions("finance:rent:view")
+    @RequestMapping(value = "export4rentoutwillreachedate", method=RequestMethod.POST)
+    public String exportFile4rentoutwillreachedate(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, RedirectAttributes redirectAttributes) {
+		try {
+            String fileName = "包租(租出即将到期)数据"+DateUtils.getDate("yyyyMMddHHmmss")+".xlsx"; 
+            Page<Rent> pages = new Page<Rent>(request, response, -1);
+            pages.setPageSize(100000);
+    		Page<Rent> page = rentService.rentList(pages, paramMap); 
+    		new ExportExcel("包租(租出即将到期)数据", Excel2Rent4RentoutWillReachEdate.class).setDataList(page.getList()).write(response, fileName).dispose();
+    		return null;
+		} catch (Exception e) {
+			addMessage(redirectAttributes, "导出包租失败！失败信息："+e.getMessage());
+		}
+		return "redirect:"+Global.getAdminPath()+"/finance/rent/rentList?repage";
     }
 
 	@RequiresPermissions("finance:rent:edit")

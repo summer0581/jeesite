@@ -25,6 +25,7 @@ import com.thinkgem.jeesite.modules.finance.dao.HouseDao;
 import com.thinkgem.jeesite.modules.finance.dao.RentDao;
 import com.thinkgem.jeesite.modules.finance.dao.RentMonthDao;
 import com.thinkgem.jeesite.modules.finance.dao.VacantPeriodDao;
+import com.thinkgem.jeesite.modules.finance.entity.House;
 import com.thinkgem.jeesite.modules.finance.entity.HouseAreaRole;
 import com.thinkgem.jeesite.modules.finance.entity.Rent;
 import com.thinkgem.jeesite.modules.finance.entity.RentMonth;
@@ -106,6 +107,8 @@ public class RentService extends BaseService {
 		if(StringUtils.isBlank(rent.getId())){
 			rent.setRentinMonths(null);
 			rent.setRentoutMonths(null);
+			rent.getHouse().setFlag_norentin(House.N);//包租记录添加时，设置对应房屋为租进状态
+			rent.getHouse().setFlag_norentout(House.Y);//包租记录添加时，设置对应房屋为租进状态
 		}
 		if(null != rent.getRentinMonths())
 			for(int i = 0 ;  i < rent.getRentinMonths().size(); i++){//批量设置承租月明细
@@ -318,10 +321,10 @@ public class RentService extends BaseService {
 	
 	@Transactional(readOnly = false)
 	public void delete(String id) {
-				//Rent rent = get(id);
-		//rent.getHouse().setId("");
-		//rent.setDelFlag(BaseEntity.DEL_FLAG_DELETE);
-		//rentDao.save(rent);
+		Rent rent = get(id);
+		rent.getHouse().setFlag_norentin(House.Y);//包租记录添加时，设置对应房屋为租进状态
+		rent.getHouse().setFlag_norentout(House.N);//包租记录添加时，设置对应房屋为租进状态
+		rentDao.save(rent);
 		rentDao.deleteById(id);
 		//rentDao.deleteRent(id);
 	}

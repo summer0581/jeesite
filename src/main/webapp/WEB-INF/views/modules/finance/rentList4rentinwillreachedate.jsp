@@ -23,6 +23,19 @@
 
 		});
 		
+		function exportExcel4base(){
+			top.$.jBox.confirm("确认要导出房屋包租数据吗？","系统提示",function(v,h,f){
+				if(v=="ok"){
+					//var tempaction = $("#searchForm").attr();
+					$("#searchForm").attr("action","${ctx}/finance/rent/export4rentinwillreachedate");
+					$("#searchForm").submit();
+					//$("#searchForm").attr("action",tempaction);
+				}
+			},{buttonsFocus:1});
+			top.$('.jbox-body .jbox-icon').css('top','55px');
+
+		}
+		
 		function page(n,s){
 			$("#pageNo").val(n);
 			$("#pageSize").val(s);
@@ -77,6 +90,7 @@
 		&nbsp;<input id="btnSubmit" class="btn btn-primary" onclick="return page();" type="submit" value="查询"/>
 		&nbsp;<input id="btnReset" class="btn btn-primary" onclick="resets()" type="button" value="重置"/>
 		&nbsp;<input id="btnShow" class="btn btn-primary" onclick="showOrHidden()" type="button" value="高级查询"/>	
+		&nbsp;<input id="btnExport" class="btn btn-primary" type="button" value="导出"/>
 		</div>
 		<div id="pro_search" style="margin-top:10px;${'true' eq paramMap.showHighSearch?'':'display:none;'}">
 		<div style="margin-bottom:5px;">

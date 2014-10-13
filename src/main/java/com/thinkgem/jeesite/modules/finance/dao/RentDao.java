@@ -50,7 +50,7 @@ public class RentDao extends BaseDao<Rent> {
 	 * @return
 	 */
 	public Page<Rent> rentList(Page<Rent> page,Map<String, Object> paramMap) {
-		Map<String,Object> result = createRentListBaseSql("r.*",paramMap);
+		Map<String,Object> result = createRentListBaseSql("r.*,h.houses",paramMap);
 		String sql = (String)result.get("sql"); 
 		Parameter sqlparam = (Parameter)result.get("sqlparam"); 
 		

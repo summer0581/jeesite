@@ -69,7 +69,7 @@
 			<label class="control-label">承租业务员:</label>
 			<div class="controls">
 				<tags:treeselect id="person" name="person.id" notAllowSelectParent="true" value="${rentMonth.person.id}" labelName="person.name" labelValue="${rentMonth.person.name}"
-					title="人员" url="/sys/user/treeData" />
+					title="人员" url="/sys/user/treeData" allowClear="true"/>
 				<shiro:hasPermission name="finance:rentMonth:edit"><input id="btnSubmit" class="btn btn-primary" type="submit" value="承租月记录保存"/>&nbsp;</shiro:hasPermission>
 				<input id="btnAutoSetLeaders" class="btn btn-primary" type="button" onclick="autoSetUserLeaders()" value="自动设置业务员领导"/>
 				<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
@@ -163,7 +163,7 @@
 			<label class="control-label">业务经理:</label>
 			<div class="controls">
 			<tags:treeselect id="busi_manager" name="busi_manager.id" notAllowSelectParent="true" value="${rentMonth.busi_manager.id}" labelName="busi_manager.name" labelValue="${rentMonth.busi_manager.name}"
-					title="人员" url="/sys/user/treeData" />
+					title="人员" url="/sys/user/treeData" allowClear="true"/>
 			业务提成固定值:
 				<form:input path="manager_fixedcut" htmlEscape="false" maxlength="64" class="input-small digits"/>	
 			</div>
@@ -172,7 +172,7 @@
 			<label class="control-label">业务部长:</label>
 			<div class="controls">
 			<tags:treeselect id="busi_departleader" name="busi_departleader.id" notAllowSelectParent="true" value="${rentMonth.busi_departleader.id}" labelName="busi_departleader.name" labelValue="${rentMonth.busi_departleader.name}"
-					title="人员" url="/sys/user/treeData" />	
+					title="人员" url="/sys/user/treeData" allowClear="true"/>	
 			业务提成固定值:
 				<form:input path="departer_fixedcut" htmlEscape="false" maxlength="64" class="input-small digits"/>		
 			</div>
@@ -181,7 +181,7 @@
 			<label class="control-label">业务组长:</label>
 			<div class="controls">
 			<tags:treeselect id="busi_teamleader" name="busi_teamleader.id" notAllowSelectParent="true" value="${rentMonth.busi_teamleader.id}" labelName="busi_teamleader.name" labelValue="${rentMonth.busi_teamleader.name}"
-					title="人员" url="/sys/user/treeData" />		
+					title="人员" url="/sys/user/treeData" allowClear="true"/>		
 			业务提成固定值:
 				<form:input path="teamleader_fixedcut" htmlEscape="false" maxlength="64" class="input-small digits"/>		
 			</div>

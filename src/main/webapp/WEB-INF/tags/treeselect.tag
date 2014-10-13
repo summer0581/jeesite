@@ -74,7 +74,7 @@
 						break; // 如果为非复选框选择，则返回第一个选择  </c:if>
 					}
 					$("#${id}Id").val(ids);
-					$("#${id}Name").val(names);
+					$("#${id}Name").val(names.join("").trim());
 				}//<c:if test="${allowClear}">
 				else if (v=="clear"){
 					$("#${id}Id").val("");
