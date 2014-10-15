@@ -191,14 +191,15 @@ public class StatsRentController extends BaseController {
 	        	ete.addCell(row, 4, DateUtils.formatDate(rentoutmonth.getSdate(), "yyyy-MM-dd")+"-"+DateUtils.formatDate(rentoutmonth.getEdate(), "yyyy-MM-dd"));
 	        	ete.addCell(row, 5, rentoutmonth.getRentmonth());
 	        	ete.addCell(row, 6, rentoutmonth.getPerson().getName());
-	        	ete.addCell(row, 7, rentinmonth.getBusi_departleader().getName());
-	        	ete.addCell(row, 8, vacantperiodconfig);
-	        	ete.addCell(row, 9, vacantperiod);
-	        	ete.addCell(row, 10, rentin_cut);
-	        	ete.addCell(row, 11, rentout_cut);
-	        	ete.addCell(row, 12, teamleader_cut);
-	        	ete.addCell(row, 13, departleader_cut);
-	        	ete.addCell(row, 14, manager_cut);
+	        	ete.addCell(row, 7, null != rentinmonth.getBusi_teamleader()?rentinmonth.getBusi_teamleader().getName():"");
+	        	ete.addCell(row, 8, null != rentinmonth.getBusi_departleader()?rentinmonth.getBusi_departleader().getName():"");
+	        	ete.addCell(row, 9, vacantperiodconfig);
+	        	ete.addCell(row, 10, vacantperiod);
+	        	ete.addCell(row, 11, rentin_cut);
+	        	ete.addCell(row, 12, rentout_cut);
+	        	ete.addCell(row, 13, teamleader_cut);
+	        	ete.addCell(row, 14, departleader_cut);
+	        	ete.addCell(row, 15, manager_cut);
    			}
    			long rentin_cut_total = (Long)total.get("rentin_cut_total");
    			long rentout_cut_total = (Long)total.get("rentout_cut_total");
@@ -206,13 +207,13 @@ public class StatsRentController extends BaseController {
    			long departleader_cut_total = (Long)total.get("departleader_cut_total");
    			long manager_cut_total = (Long)total.get("manager_cut_total");
    			Row row = ete.addRow();
-            ete.mergeCell(ete.getCurRownum(), ete.getCurRownum(), 0, 9);
+            ete.mergeCell(ete.getCurRownum(), ete.getCurRownum(), 0, 10);
             ete.addCell(row, 0, "合计", 2);
-            ete.addCell(row, 10, rentin_cut_total);
-            ete.addCell(row, 11, rentout_cut_total);
-            ete.addCell(row, 12, teamleader_cut_total);
-            ete.addCell(row, 13, departleader_cut_total);
-            ete.addCell(row, 14, manager_cut_total);
+            ete.addCell(row, 11, rentin_cut_total);
+            ete.addCell(row, 12, rentout_cut_total);
+            ete.addCell(row, 13, teamleader_cut_total);
+            ete.addCell(row, 14, departleader_cut_total);
+            ete.addCell(row, 15, manager_cut_total);
             ete.write(response, fileName).dispose();
     		return null;
 		} catch (Exception e) {
@@ -416,16 +417,17 @@ public class StatsRentController extends BaseController {
         	   ete.addCell(row, 1, rentinmonth.getRent().getHouse().getName());
         	   ete.addCell(row, 2, null != rentinmonth.getPerson()?rentinmonth.getPerson().getName():"");
         	   ete.addCell(row, 3, null != rentinmonth.getBusi_departleader()?rentinmonth.getBusi_departleader().getName():"");
-        	   ete.addCell(row, 4, DateUtils.formatDate(rentinmonth.getSdate(), "yyyy-MM-dd")+"-"+DateUtils.formatDate(rentinmonth.getEdate(), "yyyy-MM-dd"));
-        	   ete.addCell(row, 5, null !=rentoutmonth.getPerson() ?rentoutmonth.getPerson().getName():"");
-        	   ete.addCell(row, 6, DateUtils.formatDate(rentoutmonth.getSdate(), "yyyy-MM-dd")+"-"+DateUtils.formatDate(rentoutmonth.getEdate(), "yyyy-MM-dd"));
-        	   ete.addCell(row, 7, rentinmonth.getAgencyfee());
-        	   ete.addCell(row, 8, rentoutmonth.getAgencyfee());
-        	   ete.addCell(row, 9, rentin_cut);
-        	   ete.addCell(row, 10, rentout_cut);
-        	   ete.addCell(row, 11, teamleader_cut);
-        	   ete.addCell(row, 12, departleader_cut);
-        	   ete.addCell(row, 13, manager_cut);
+        	   ete.addCell(row, 4, null != rentinmonth.getBusi_teamleader()?rentinmonth.getBusi_teamleader().getName():"");
+        	   ete.addCell(row, 5, DateUtils.formatDate(rentinmonth.getSdate(), "yyyy-MM-dd")+"-"+DateUtils.formatDate(rentinmonth.getEdate(), "yyyy-MM-dd"));
+        	   ete.addCell(row, 6, null !=rentoutmonth.getPerson() ?rentoutmonth.getPerson().getName():"");
+        	   ete.addCell(row, 7, DateUtils.formatDate(rentoutmonth.getSdate(), "yyyy-MM-dd")+"-"+DateUtils.formatDate(rentoutmonth.getEdate(), "yyyy-MM-dd"));
+        	   ete.addCell(row, 8, rentinmonth.getAgencyfee());
+        	   ete.addCell(row, 9, rentoutmonth.getAgencyfee());
+        	   ete.addCell(row, 10, rentin_cut);
+        	   ete.addCell(row, 11, rentout_cut);
+        	   ete.addCell(row, 12, teamleader_cut);
+        	   ete.addCell(row, 13, departleader_cut);
+        	   ete.addCell(row, 14, manager_cut);
 
            }
   			long rentin_cut_total = (Long)total.get("rentin_cut_total");
@@ -434,13 +436,13 @@ public class StatsRentController extends BaseController {
   			long departleader_cut_total = (Long)total.get("departleader_cut_total");
   			long manager_cut_total = (Long)total.get("manager_cut_total");
   			Row row = ete.addRow();
-           ete.mergeCell(ete.getCurRownum(), ete.getCurRownum(), 0, 8);
+           ete.mergeCell(ete.getCurRownum(), ete.getCurRownum(), 0, 9);
            ete.addCell(row, 0, "合计", 2);
-           ete.addCell(row, 9, rentin_cut_total);
-           ete.addCell(row, 10, rentout_cut_total);
-           ete.addCell(row, 11, teamleader_cut_total);
-           ete.addCell(row, 12, departleader_cut_total);
-           ete.addCell(row, 13, manager_cut_total);
+           ete.addCell(row, 10, rentin_cut_total);
+           ete.addCell(row, 11, rentout_cut_total);
+           ete.addCell(row, 12, teamleader_cut_total);
+           ete.addCell(row, 13, departleader_cut_total);
+           ete.addCell(row, 14, manager_cut_total);
            ete.write(response, fileName).dispose();
     		return null;
 		} catch (Exception e) {

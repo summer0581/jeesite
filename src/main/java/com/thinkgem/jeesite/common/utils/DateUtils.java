@@ -141,8 +141,12 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 		if(Calendar.DATE == field ){
 			result = t/(24*60*60*1000);
 		}else if(Calendar.MONTH == field ){
-			t = newdate.getMonth()-olddate.getMonth()+(newdate.getYear()-olddate.getYear())*12;
-			result = t;
+			/*t = newdate.getMonth()-olddate.getMonth()+(newdate.getYear()-olddate.getYear())*12;
+			result = t;*/
+			result = t/(24*60*60*1000*30);
+			if(result < 0){//如果月份差额没有一个月，则会是-1，需要处理
+				result = 0;
+			}
 		}
 		return result;
 	}
