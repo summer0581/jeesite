@@ -240,6 +240,7 @@ public class RentMonthService extends BaseService {
 				rentMonth.setId("");
 				//rentMonth.setRemarks("");14-06-18 刘睿建议不取消remarks复制。
 				int addMonth = getPayMonthUnit(rentMonth.getPaytype());
+				int addDay = addMonth*30;
 				//此计算是计算当前要支付的月份，起始与结束
 				Map<String,Object> resultMap1 = ruleNextPayDate(rentMonth.getLastpaysdate(),rentMonth.getLastpayedate(),rentMonth.getEdate(),addMonth,vacantPeriodDays);
 				Date willlastpaysdate = (Date)resultMap1.get("willlastpaysdate");
@@ -262,12 +263,16 @@ public class RentMonthService extends BaseService {
 				if(null != rentMonth.getNextpaydate() && null != rentMonth.getLastpayedate())
 					//rentMonth.setNextpaydate(DateUtils.addDays(rentMonth.getLastpayedate(), vacantPeriodDays-RentMonthConstant.PAYFOR_REMIND_DAYS-1));
 					rentMonth.setNextpaydate(DateUtils.addMonths(rentMonth.getNextpaydate(), monthunit));
-				addMonth = (int)DateUtils.compareDates(nextwilllastpayedate, nextwilllastpaysdate, Calendar.MONTH);
-				int addDay = (int)DateUtils.compareDates(nextwilllastpayedate, nextwilllastpaysdate, Calendar.DATE);
 				
-				if((addDay - addMonth*30) > 0){//比较下次支付的天数差额大于 月份差额的总天数，则月数加一
-					addMonth +=1 ;
+				if(null != nextwilllastpayedate && null != nextwilllastpaysdate){
+					addMonth = (int)DateUtils.compareDates(DateUtils.addDays(nextwilllastpayedate, 1), nextwilllastpaysdate, Calendar.MONTH);
+					addDay = (int)DateUtils.compareDates(nextwilllastpayedate, nextwilllastpaysdate, Calendar.DATE)+1;
+					if((addDay - addMonth*30) > 0){//比较下次支付的天数差额大于 月份差额的总天数，则月数加一
+						addMonth +=1 ;
+					}
 				}
+				
+				
 				double vacantPeriodCut = (double)(addDay)/(addMonth*30);
 				if(vacantPeriodCut < 0){
 					vacantPeriodCut = 0;

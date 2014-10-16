@@ -143,7 +143,8 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
 		}else if(Calendar.MONTH == field ){
 			/*t = newdate.getMonth()-olddate.getMonth()+(newdate.getYear()-olddate.getYear())*12;
 			result = t;*/
-			result = t/(24*60*60*1000*30);
+			long monthtime = 2592000000L;
+			result = t/monthtime;
 			if(result < 0){//如果月份差额没有一个月，则会是-1，需要处理
 				result = 0;
 			}
