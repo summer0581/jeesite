@@ -174,12 +174,22 @@ public class RentController extends BaseController {
 	}
 	@RequiresPermissions("finance:rent:view")
 	@RequestMapping(value = "form")
-	public String form(Rent rent, Model model) {
+	public String form(@RequestParam Map<String, Object> paramMap,Rent rent, Model model) {
+		String viewtype = "";
+		if(null != paramMap){
+			viewtype = (String)paramMap.get("viewtype");
+		}
+		
 		model.addAttribute("rent", rent);
 		if(StringUtils.isBlank(rent.getId())){
 			rent.setBusiness_num(rentService.getMaxBusinessNum());
 		}
-		return "modules/finance/rentForm";
+		if("noreturnlist".equals(viewtype)){//不返回列表
+			return "modules/finance/rentNoReturnListForm";
+		}else{
+			return "modules/finance/rentForm";
+		}
+		
 	}
 	//快速录入合同
 	@RequiresPermissions("finance:rent:edit")
@@ -194,14 +204,14 @@ public class RentController extends BaseController {
 
 	@RequiresPermissions("finance:rent:edit")
 	@RequestMapping(value = "save")
-	public String save(Rent rent, Model model, RedirectAttributes redirectAttributes) {
+	public String save(@RequestParam Map<String, Object> paramMap,Rent rent, Model model, RedirectAttributes redirectAttributes) {
 		if (!beanValidator(model, rent)){
-			return form(rent, model);
+			return form(paramMap, rent, model);
 		}
 		
 		rentService.save(rent);
 		addMessage(redirectAttributes, "保存包租明细'" + rent.getName() + "'成功");
-		return form(rent, model);
+		return form(paramMap ,rent, model);
 	}
 	
 	//快速录入合同的保存
@@ -209,7 +219,7 @@ public class RentController extends BaseController {
 	@RequestMapping(value = "save4quickLuruHetong")
 	public String save4quickLuruHetong(Rent rent, Model model, RedirectAttributes redirectAttributes) {
 		if (!beanValidator(model, rent)){
-			return form(rent, model);
+			return form(null,rent, model);
 		}
 		try{
 			rentService.save4quickLuruHetong(rent);

@@ -203,6 +203,12 @@ public class DateUtils extends org.apache.commons.lang.time.DateUtils {
         return lastDate;  
 	}  
 	
+	public static int getTotalDayOfMonth(Date sdate){
+		Calendar cDay1 = Calendar.getInstance();  
+        cDay1.setTime(sdate); 
+        return cDay1.getActualMaximum(Calendar.DAY_OF_MONTH);
+	}
+	
 	/**
 	 * @param args
 	 * @throws ParseException

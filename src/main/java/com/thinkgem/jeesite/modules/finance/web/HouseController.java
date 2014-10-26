@@ -110,7 +110,11 @@ public class HouseController extends BaseController {
 
 	@RequiresPermissions("finance:house:view")
 	@RequestMapping(value = "form")
-	public String form(House house, Model model) {
+	public String form(@RequestParam Map<String, Object> paramMap,House house, Model model) {
+		String viewtype = "";
+		if(null != paramMap){
+			viewtype = (String)paramMap.get("viewtype");
+		}
 		User user = UserUtils.getUser();
 		List<Role> roles = user.getRoleList();
 		if(user.isAdmin() || !(0 == roles.size() || (1 == roles.size() && Role.DATA_SCOPE_SELF.equals(roles.get(0).getDataScope())))){
@@ -118,14 +122,23 @@ public class HouseController extends BaseController {
 		}
 		model.addAttribute("isSuperEditRole", houseService.isSuperEditRole());
 		model.addAttribute("house", house);
-		return "modules/finance/houseForm";
+		if("noreturnlist".equals(viewtype)){
+			return "modules/finance/houseNoReturnListForm";
+		}else{
+			return "modules/finance/houseForm";
+		}
+		
 	}
 
 	@RequiresPermissions("finance:house:add")
 	@RequestMapping(value = "save")
 	public String save(@RequestParam Map<String, Object> paramMap,House house, Model model, RedirectAttributes redirectAttributes) {
+		String viewtype = "";
+		if(null != paramMap){
+			viewtype = (String)paramMap.get("viewtype");
+		}
 		if (!beanValidator(model, house)){
-			return form(house, model);
+			return form(paramMap,house, model);
 		}
 		User rentinperson = new User();
 		User rentoutperson = new User();
@@ -136,7 +149,12 @@ public class HouseController extends BaseController {
 		house.setRentout_user(rentoutperson);
 		houseService.save(house);
 		addMessage(redirectAttributes, "保存房屋明细'" + house.getName() + "'成功");
-		return "redirect:"+Global.getAdminPath()+"/finance/house/?repage";
+		if("noreturnlist".equals(viewtype)){
+			return "redirect:"+Global.getAdminPath()+"/finance/house/form?viewtype=noreturnlist";
+		}else{
+			return "redirect:"+Global.getAdminPath()+"/finance/house/?repage";
+		}
+		
 	}
 	
 	@RequiresPermissions("finance:house:delete")

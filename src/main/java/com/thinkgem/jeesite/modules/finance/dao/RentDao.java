@@ -131,6 +131,8 @@ public class RentDao extends BaseDao<Rent> {
 		String rentoutperson_id = (String)paramMap.get("rentoutperson_id");
 		String rentin_remark = (String)paramMap.get("rentin_remark");
 		String rentout_remark = (String)paramMap.get("rentout_remark");
+		String rentin_nextshouldremark = (String)paramMap.get("rentin_nextshouldremark");
+		String rentout_nextshouldremark = (String)paramMap.get("rentout_nextshouldremark");
 		String rentout_cancelrentremark = (String)paramMap.get("rentout_cancelrentremark");
 		String is_terentrentout = (String)paramMap.get("is_terentrentout");
 		
@@ -162,13 +164,17 @@ public class RentDao extends BaseDao<Rent> {
 		if(!StringUtils.checkParameterIsAllBlank(paramMap, "rentin_sdatesdate","rentin_sdateedate",
 				"rentin_nextpaysdate","rentin_nextpayedate","rentin_rentmonthmin","rentin_rentmonthmax",
 				"rentin_edatesdate","rentin_edateedate","rentinperson_id","rentin_paytype","rentin_remark",
-				"rentin_departleader_id","rentin_teamleader_id")){
+				"rentin_departleader_id","rentin_teamleader_id","rentin_nextshouldremark")){
 			sql.append("INNER JOIN ( ");
 			//2014.7.12 sql 进行优化，从以前的查询要40多秒，优化到只要1秒不到，主要原因是，以前用的方式是每行去一一比对，现在是全部排序进行比对
 			sql.append("SELECT rm.* FROM  ( ");
 			sql.append("		SELECT * FROM ( ");
 			sql.append("				SELECT * FROM finance_rentmonth rm1 ");
 			sql.append("				WHERE rm1.infotype = 'rentin' AND rm1.del_flag = "+Rent.DEL_FLAG_NORMAL+" ");
+			if (StringUtils.isNotBlank(rentin_nextshouldremark)){//下次付租备注需要能查以前的月记录
+				sql.append(" and rm1.nextshouldremark like :rentin_nextshouldremark ");
+				sqlparam.put("rentin_nextshouldremark", "%"+rentin_nextshouldremark+"%");
+			}
 			sql.append("				ORDER BY rm1.create_date DESC ");
 			sql.append("			) rm2 GROUP BY rm2.rent_id ");
 			sql.append("	) rm where 1=1 ");
@@ -217,6 +223,7 @@ public class RentDao extends BaseDao<Rent> {
 				sql.append(" and rm.remarks like :rentin_remark ");
 				sqlparam.put("rentin_remark", "%"+rentin_remark+"%");
 			}
+
 			if(StringUtils.isNotBlank(rentin_departleader)){
 				sql.append("and rm.busi_departleader = :rentin_departleader   ");
 				sqlparam.put("rentin_departleader", rentin_departleader);
@@ -234,13 +241,18 @@ public class RentDao extends BaseDao<Rent> {
 		if(!StringUtils.checkParameterIsAllBlank(paramMap, "rentout_sdatesdate","rentout_sdateedate",
 				"rentout_nextpaysdate","rentout_nextpayedate","rentout_rentmonthmin","rentout_rentmonthmax","rentout_paytype",
 				"rentout_edatesdate","rentout_edateedate","rentoutperson_id","rentout_departleader_id","rentout_teamleader_id",
-				"notcancelrent","notcancelrentonly","rentout_remark","is_terentrentout","rentout_cancelrentremark")){
+				"notcancelrent","notcancelrentonly","rentout_remark","is_terentrentout","rentout_cancelrentremark",
+				"rentout_nextshouldremark")){
 			sql.append("INNER JOIN ( ");
 			//2014.7.12 sql 进行优化，从以前的查询要40多秒，优化到只要1秒不到，主要原因是，以前用的方式是每行去一一比对，现在是全部排序进行比对
 			sql.append("SELECT rm.* FROM  ( ");
 			sql.append("		SELECT * FROM ( ");
 			sql.append("				SELECT * FROM finance_rentmonth rm1 ");
 			sql.append("				WHERE rm1.infotype = 'rentout' AND rm1.del_flag = "+Rent.DEL_FLAG_NORMAL+" ");
+			if (StringUtils.isNotBlank(rentout_nextshouldremark)){
+				sql.append(" and rm1.nextshouldremark like :rentout_nextshouldremark ");
+				sqlparam.put("rentout_nextshouldremark", "%"+rentout_nextshouldremark+"%");
+			}
 			sql.append("				ORDER BY rm1.create_date DESC ");
 			sql.append("			) rm2 GROUP BY rm2.rent_id ");
 			sql.append("	) rm where 1=1 ");
@@ -290,6 +302,7 @@ public class RentDao extends BaseDao<Rent> {
 				sql.append(" and rm.remarks like :rentout_remark ");
 				sqlparam.put("rentout_remark", "%"+rentout_remark+"%");
 			}
+
 			if (StringUtils.isNotBlank(rentout_cancelrentremark)){
 				sql.append(" and rm.cancelrentremark like :rentout_cancelrentremark ");
 				sqlparam.put("rentout_cancelrentremark", "%"+rentout_cancelrentremark+"%");

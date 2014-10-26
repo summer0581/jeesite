@@ -233,11 +233,17 @@
 		</div>
 		<div style="margin-bottom:5px;">
 			<label>承租备注：</label>
-			<input id="rentin_remark" name="rentin_remark" type="text" maxlength="10" class="input-medium" value="${paramMap.rentin_remark}"/>
+			<input id="rentin_remark" name="rentin_remark" type="text" maxlength="20" class="input-medium" value="${paramMap.rentin_remark}"/>
 			<label>出租备注：</label>
-			<input id="rentout_remark" name="rentout_remark" type="text" maxlength="10" class="input-medium" value="${paramMap.rentout_remark}"/>
+			<input id="rentout_remark" name="rentout_remark" type="text" maxlength="20" class="input-medium" value="${paramMap.rentout_remark}"/>
 			<label>提前退租备注：</label>
-			<input id="rentout_cancelrentremark" name="rentout_cancelrentremark" type="text" maxlength="10" class="input-medium" value="${paramMap.rentout_cancelrentremark}"/>
+			<input id="rentout_cancelrentremark" name="rentout_cancelrentremark" type="text" maxlength="20" class="input-medium" value="${paramMap.rentout_cancelrentremark}"/>
+		</div>
+		<div style="margin-bottom:5px;">
+			<label>承租下次应付备注：</label>
+			<input id="rentin_nextshouldremark" name="rentin_nextshouldremark" type="text" maxlength="20" class="input-medium" value="${paramMap.rentin_nextshouldremark}"/>
+			<label>出租下次应收备注：</label>
+			<input id="rentout_nextshouldremark" name="rentout_nextshouldremark" type="text" maxlength="20" class="input-medium" value="${paramMap.rentout_nextshouldremark}"/>
 		</div>
 		<div>
 			<label>出租提前退租时间：</label>
