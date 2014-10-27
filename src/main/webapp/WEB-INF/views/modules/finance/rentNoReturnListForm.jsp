@@ -71,6 +71,10 @@
 	</script>
 </head>
 <body>
+	<ul class="nav nav-tabs">
+		<li ><a href="${ctx}/finance/rent/rentList?viewtype=rent4Secret">包租明细列表</a></li>
+		<li class="active"><a href="${ctx}/finance/rent/form?viewtype=noreturnlist">包租明细添加</a></li>
+	</ul>
 	<form:form id="inputForm" modelAttribute="rent" action="${ctx}/finance/rent/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
 		

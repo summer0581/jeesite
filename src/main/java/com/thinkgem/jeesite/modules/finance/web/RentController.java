@@ -98,6 +98,8 @@ public class RentController extends BaseController {
 			return "modules/finance/rentList4rentinwillreachedate";
 		}else if("rentoutwillreachedate".equals(viewtype)){
 			return "modules/finance/rentList4rentoutwillreachedate";
+		}else if("rent4Secret".equals(viewtype)){
+			return "modules/finance/rentList4Secret";
 		}else{
 			return "modules/finance/rentList";
 		}
@@ -211,7 +213,9 @@ public class RentController extends BaseController {
 		
 		rentService.save(rent);
 		addMessage(redirectAttributes, "保存包租明细'" + rent.getName() + "'成功");
+
 		return form(paramMap ,rent, model);
+		
 	}
 	
 	//快速录入合同的保存
