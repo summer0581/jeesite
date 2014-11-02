@@ -60,6 +60,7 @@
 	<form:form id="inputForm" modelAttribute="rentMonth" action="${ctx}/finance/rentMonth/save" method="post" class="form-horizontal">
 		<form:hidden path="id"/>
 		<form:hidden path="rent.id" value=""/>
+		<input type="hidden" id="viewtype" name="viewtype" value="${paramMap.viewtype}"/>
 		<form:hidden path="infotype" value="rentout"/>
 		<tags:message content="${message}"/>
 		<div class="control-group">

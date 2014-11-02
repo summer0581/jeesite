@@ -28,6 +28,7 @@ import com.google.common.collect.Lists;
 import com.thinkgem.jeesite.common.beanvalidator.BeanValidators;
 import com.thinkgem.jeesite.common.config.Global;
 import com.thinkgem.jeesite.common.persistence.Page;
+import com.thinkgem.jeesite.common.persistence.Parameter;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
 import com.thinkgem.jeesite.common.utils.excel.ExportExcel;
@@ -103,6 +104,35 @@ public class RentController extends BaseController {
 		}else{
 			return "modules/finance/rentList";
 		}
+	}
+	
+	/**
+	 * 包租审核信息
+	 * @param paramMap
+	 * @param model
+	 * @return
+	 */
+	@RequiresPermissions("finance:rent:view4Audit")
+	@RequestMapping(value = "rentList4Audit")
+	public String rentList4Audit(@RequestParam Map<String, Object> paramMap, HttpServletRequest request, HttpServletResponse response, Model model) {
+		Page<Rent> page = rentService.rentList4Audit(new Page<Rent>(request, response),paramMap);
+		model.addAttribute("page", page);
+		model.addAttribute("sysdate", new Date());
+		model.addAttribute("paramMap", paramMap);
+		
+		return "modules/finance/rentList4Audit";
+	}
+	
+	/**
+	 * 设置包租月记录为已审核
+	 * @param rent_id
+	 */
+	@RequestMapping(value = "setAudited")
+	public String setAudited(@RequestParam Map<String, Object> paramMap,RedirectAttributes redirectAttributes){
+		String rent_id = (String)paramMap.get("rent_id");
+		rentService.setAudited(rent_id);
+		addMessage(redirectAttributes, "保存审核信息成功！");
+		return "redirect:"+Global.getAdminPath()+"/finance/rent/rentList4Audit";
 	}
 	
 	/**

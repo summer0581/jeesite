@@ -130,10 +130,10 @@
             </ul>
             <div id="myTabContent" class="tab-content">
               <div class="tab-pane fade in active" id="rentin">
-					<iframe src="${ctx}/finance/rentMonth/?infotype=rentin&rent.id=${rent.id}" class="tabiframe"></iframe>
+					<iframe src="${ctx}/finance/rentMonth/?infotype=rentin&rent.id=${rent.id}&viewtype=noreturnlist" class="tabiframe"></iframe>
               </div>
               <div class="tab-pane fade" id="rentout">
-		           <iframe src="${ctx}/finance/rentMonth/?infotype=rentout&rent.id=${rent.id}" class="tabiframe"></iframe>
+		           <iframe src="${ctx}/finance/rentMonth/?infotype=rentout&rent.id=${rent.id}&viewtype=noreturnlist" class="tabiframe"></iframe>
               </div>
 			<div class="tab-pane fade" id="vacantperiod"> 		
 				<ul id="myTab1" class="nav nav-tabs">

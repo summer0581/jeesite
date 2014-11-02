@@ -285,6 +285,104 @@
 									<form:options items="${fns:getDictList('finance_vacnatperiod_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
 								</form:select></td>
 							 	</tr>
+							 	<tr>
+							 		<th>时段七：</th>
+							 		<td>
+							 		<input type="hidden" name="salesman_vacantperiods[6].id" value="${empty rent.salesman_vacantperiods?'':rent.salesman_vacantperiods[6].id }"/>
+							 		<input type="hidden" name="salesman_vacantperiods[6].sn" value="7"/>
+							 		<input id="salesman_vacantperiods_sdate6" name="salesman_vacantperiods[6].sdate" type="text"  maxlength="20" class="input-medium Wdate"
+								value="<fmt:formatDate value="${empty rent.salesman_vacantperiods?'':rent.salesman_vacantperiods[6].sdate}" pattern="yyyy-MM-dd"/>"
+								onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+							至
+							<input id="salesman_vacantperiods_edate7" name="salesman_vacantperiods[6].edate" type="text"  maxlength="20" class="input-medium Wdate"
+								value="<fmt:formatDate value="${empty rent.salesman_vacantperiods?'':rent.salesman_vacantperiods[6].edate}" pattern="yyyy-MM-dd"/>"
+								onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/></td>
+								<td><select id="salesman_year7" name="salesman_year7" class="input-small">
+									<option value="">请选择</option>
+									<c:forEach items="${fns:getDictList('finance_vacantperiod_year') }" var="dict">
+									<option value="${dict.value }">${dict.label }</option>
+									</c:forEach>
+								</select></td>
+								<td>前<input type="text" id="salesman_day7" name="salesman_day7" class="input-mini digits"></input>天</td>
+
+								<td><form:select path="salesman_vacantperiods[6].type" >
+									<form:options items="${fns:getDictList('finance_vacnatperiod_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+								</form:select></td>
+							 	</tr>
+							 	<tr>
+							 		<th>时段八：</th>
+							 		<td>
+							 		<input type="hidden" name="salesman_vacantperiods[7].id" value="${empty rent.salesman_vacantperiods?'':rent.salesman_vacantperiods[7].id }"/>
+							 		<input type="hidden" name="salesman_vacantperiods[7].sn" value="8"/>
+							 		<input id="salesman_vacantperiods_sdate7" name="salesman_vacantperiods[7].sdate" type="text"  maxlength="20" class="input-medium Wdate"
+								value="<fmt:formatDate value="${empty rent.salesman_vacantperiods?'':rent.salesman_vacantperiods[7].sdate}" pattern="yyyy-MM-dd"/>"
+								onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+							至
+							<input id="salesman_vacantperiods_edate8" name="salesman_vacantperiods[7].edate" type="text"  maxlength="20" class="input-medium Wdate"
+								value="<fmt:formatDate value="${empty rent.salesman_vacantperiods?'':rent.salesman_vacantperiods[7].edate}" pattern="yyyy-MM-dd"/>"
+								onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/></td>
+								<td><select id="salesman_year8" name="salesman_year8" class="input-small">
+									<option value="">请选择</option>
+									<c:forEach items="${fns:getDictList('finance_vacantperiod_year') }" var="dict">
+									<option value="${dict.value }">${dict.label }</option>
+									</c:forEach>
+								</select></td>
+								<td>前<input type="text" id="salesman_day8" name="salesman_day8" class="input-mini digits"></input>天</td>
+
+								<td><form:select path="salesman_vacantperiods[7].type" >
+									<form:options items="${fns:getDictList('finance_vacnatperiod_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+								</form:select></td>
+							 	</tr>
+							 	<tr>
+							 		<th>时段九：</th>
+							 		<td>
+							 		<input type="hidden" name="salesman_vacantperiods[8].id" value="${empty rent.salesman_vacantperiods?'':rent.salesman_vacantperiods[8].id }"/>
+							 		<input type="hidden" name="salesman_vacantperiods[8].sn" value="9"/>
+							 		<input id="salesman_vacantperiods_sdate8" name="salesman_vacantperiods[8].sdate" type="text"  maxlength="20" class="input-medium Wdate"
+								value="<fmt:formatDate value="${empty rent.salesman_vacantperiods?'':rent.salesman_vacantperiods[8].sdate}" pattern="yyyy-MM-dd"/>"
+								onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+							至
+							<input id="salesman_vacantperiods_edate9" name="salesman_vacantperiods[8].edate" type="text"  maxlength="20" class="input-medium Wdate"
+								value="<fmt:formatDate value="${empty rent.salesman_vacantperiods?'':rent.salesman_vacantperiods[8].edate}" pattern="yyyy-MM-dd"/>"
+								onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/></td>
+								<td><select id="salesman_year9" name="salesman_year9" class="input-small">
+									<option value="">请选择</option>
+									<c:forEach items="${fns:getDictList('finance_vacantperiod_year') }" var="dict">
+									<option value="${dict.value }">${dict.label }</option>
+									</c:forEach>
+								</select></td>
+								<td>前<input type="text" id="salesman_day9" name="salesman_day9" class="input-mini digits"></input>天</td>
+
+								<td><form:select path="salesman_vacantperiods[8].type" >
+									<form:options items="${fns:getDictList('finance_vacnatperiod_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+								</form:select></td>
+							 	</tr>
+							 	<tr>
+							 		<th>时段十：</th>
+							 		<td>
+							 		<input type="hidden" name="salesman_vacantperiods[9].id" value="${empty rent.salesman_vacantperiods?'':rent.salesman_vacantperiods[9].id }"/>
+							 		<input type="hidden" name="salesman_vacantperiods[9].sn" value="10"/>
+							 		<input id="salesman_vacantperiods_sdate9" name="salesman_vacantperiods[9].sdate" type="text"  maxlength="20" class="input-medium Wdate"
+								value="<fmt:formatDate value="${empty rent.salesman_vacantperiods?'':rent.salesman_vacantperiods[9].sdate}" pattern="yyyy-MM-dd"/>"
+								onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+							至
+							<input id="salesman_vacantperiods_edate10" name="salesman_vacantperiods[9].edate" type="text"  maxlength="20" class="input-medium Wdate"
+								value="<fmt:formatDate value="${empty rent.salesman_vacantperiods?'':rent.salesman_vacantperiods[9].edate}" pattern="yyyy-MM-dd"/>"
+								onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/></td>
+								<td><select id="salesman_year10" name="salesman_year10" class="input-small">
+									<option value="">请选择</option>
+									<c:forEach items="${fns:getDictList('finance_vacantperiod_year') }" var="dict">
+									<option value="${dict.value }">${dict.label }</option>
+									</c:forEach>
+								</select></td>
+								<td>前<input type="text" id="salesman_day10" name="salesman_day10" class="input-mini digits"></input>天</td>
+
+								<td><form:select path="salesman_vacantperiods[9].type" >
+									<form:options items="${fns:getDictList('finance_vacnatperiod_type')}" itemLabel="label" itemValue="value" htmlEscape="false"/>
+								</form:select></td>
+							 	</tr>
+							 
+
 							</table>
 		              </div>
 		              <div class="tab-pane fade" id="profile1">
@@ -400,6 +498,116 @@
 								<td>前<input type="text" id="landlord_day5" name="landlord_day5" class="input-mini digits"></input>天</td>
 
 								<td><input type="hidden" name="landlord_vacantperiods[4].type" value="2"/></td>
+							 	</tr>
+							 	<tr>
+							 		<th>时段六：</th>
+							 		<td>
+							 		<input type="hidden" name="landlord_vacantperiods[5].id" value="${empty rent.landlord_vacantperiods?'':rent.landlord_vacantperiods[5].id }"/>
+							 		<input type="hidden" name="landlord_vacantperiods[5].sn" value="6"/>
+							 		<input id="landlord_vacantperiods_sdate6" name="landlord_vacantperiods[5].sdate" type="text"  maxlength="20" class="input-medium Wdate"
+								value="<fmt:formatDate value="${empty rent.landlord_vacantperiods?'':rent.landlord_vacantperiods[5].sdate}" pattern="yyyy-MM-dd"/>"
+								onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+							至
+							<input id="landlord_vacantperiods_edate6" name="landlord_vacantperiods[5].edate" type="text"  maxlength="20" class="input-medium Wdate"
+								value="<fmt:formatDate value="${empty rent.landlord_vacantperiods?'':rent.landlord_vacantperiods[5].edate}" pattern="yyyy-MM-dd"/>"
+								onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/></td>
+								<td><select id="landlord_year6" name="landlord_year6" class="input-small">
+									<option value="">请选择</option>
+									<c:forEach items="${fns:getDictList('finance_vacantperiod_year') }" var="dict">
+									<option value="${dict.value }">${dict.label }</option>
+									</c:forEach>
+								</select></td>
+								<td>前<input type="text" id="landlord_day6" name="landlord_day6" class="input-mini digits"></input>天</td>
+
+								<td><input type="hidden" name="landlord_vacantperiods[5].type" value="2"/></td>
+							 	</tr>
+							 	<tr>
+							 		<th>时段七：</th>
+							 		<td>
+							 		<input type="hidden" name="landlord_vacantperiods[6].id" value="${empty rent.landlord_vacantperiods?'':rent.landlord_vacantperiods[6].id }"/>
+							 		<input type="hidden" name="landlord_vacantperiods[6].sn" value="7"/>
+							 		<input id="landlord_vacantperiods_sdate7" name="landlord_vacantperiods[6].sdate" type="text"  maxlength="20" class="input-medium Wdate"
+								value="<fmt:formatDate value="${empty rent.landlord_vacantperiods?'':rent.landlord_vacantperiods[6].sdate}" pattern="yyyy-MM-dd"/>"
+								onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+							至
+							<input id="landlord_vacantperiods_edate7" name="landlord_vacantperiods[6].edate" type="text"  maxlength="20" class="input-medium Wdate"
+								value="<fmt:formatDate value="${empty rent.landlord_vacantperiods?'':rent.landlord_vacantperiods[6].edate}" pattern="yyyy-MM-dd"/>"
+								onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/></td>
+								<td><select id="landlord_year7" name="landlord_year7" class="input-small">
+									<option value="">请选择</option>
+									<c:forEach items="${fns:getDictList('finance_vacantperiod_year') }" var="dict">
+									<option value="${dict.value }">${dict.label }</option>
+									</c:forEach>
+								</select></td>
+								<td>前<input type="text" id="landlord_day7" name="landlord_day7" class="input-mini digits"></input>天</td>
+
+								<td><input type="hidden" name="landlord_vacantperiods[6].type" value="2"/></td>
+							 	</tr>
+							 	<tr>
+							 		<th>时段八：</th>
+							 		<td>
+							 		<input type="hidden" name="landlord_vacantperiods[7].id" value="${empty rent.landlord_vacantperiods?'':rent.landlord_vacantperiods[7].id }"/>
+							 		<input type="hidden" name="landlord_vacantperiods[7].sn" value="7"/>
+							 		<input id="landlord_vacantperiods_sdate8" name="landlord_vacantperiods[7].sdate" type="text"  maxlength="20" class="input-medium Wdate"
+								value="<fmt:formatDate value="${empty rent.landlord_vacantperiods?'':rent.landlord_vacantperiods[7].sdate}" pattern="yyyy-MM-dd"/>"
+								onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+							至
+							<input id="landlord_vacantperiods_edate8" name="landlord_vacantperiods[7].edate" type="text"  maxlength="20" class="input-medium Wdate"
+								value="<fmt:formatDate value="${empty rent.landlord_vacantperiods?'':rent.landlord_vacantperiods[7].edate}" pattern="yyyy-MM-dd"/>"
+								onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/></td>
+								<td><select id="landlord_year8" name="landlord_year8" class="input-small">
+									<option value="">请选择</option>
+									<c:forEach items="${fns:getDictList('finance_vacantperiod_year') }" var="dict">
+									<option value="${dict.value }">${dict.label }</option>
+									</c:forEach>
+								</select></td>
+								<td>前<input type="text" id="landlord_day8" name="landlord_day8" class="input-mini digits"></input>天</td>
+
+								<td><input type="hidden" name="landlord_vacantperiods[7].type" value="2"/></td>
+							 	</tr>
+							 	<tr>
+							 		<th>时段九：</th>
+							 		<td>
+							 		<input type="hidden" name="landlord_vacantperiods[8].id" value="${empty rent.landlord_vacantperiods?'':rent.landlord_vacantperiods[8].id }"/>
+							 		<input type="hidden" name="landlord_vacantperiods[8].sn" value="9"/>
+							 		<input id="landlord_vacantperiods_sdate9" name="landlord_vacantperiods[8].sdate" type="text"  maxlength="20" class="input-medium Wdate"
+								value="<fmt:formatDate value="${empty rent.landlord_vacantperiods?'':rent.landlord_vacantperiods[8].sdate}" pattern="yyyy-MM-dd"/>"
+								onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+							至
+							<input id="landlord_vacantperiods_edate9" name="landlord_vacantperiods[8].edate" type="text"  maxlength="20" class="input-medium Wdate"
+								value="<fmt:formatDate value="${empty rent.landlord_vacantperiods?'':rent.landlord_vacantperiods[8].edate}" pattern="yyyy-MM-dd"/>"
+								onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/></td>
+								<td><select id="landlord_year9" name="landlord_year9" class="input-small">
+									<option value="">请选择</option>
+									<c:forEach items="${fns:getDictList('finance_vacantperiod_year') }" var="dict">
+									<option value="${dict.value }">${dict.label }</option>
+									</c:forEach>
+								</select></td>
+								<td>前<input type="text" id="landlord_day9" name="landlord_day9" class="input-mini digits"></input>天</td>
+
+								<td><input type="hidden" name="landlord_vacantperiods[8].type" value="2"/></td>
+							 	</tr>
+							 	<tr>
+							 		<th>时段十：</th>
+							 		<td>
+							 		<input type="hidden" name="landlord_vacantperiods[9].id" value="${empty rent.landlord_vacantperiods?'':rent.landlord_vacantperiods[9].id }"/>
+							 		<input type="hidden" name="landlord_vacantperiods[9].sn" value="9"/>
+							 		<input id="landlord_vacantperiods_sdate10" name="landlord_vacantperiods[9].sdate" type="text"  maxlength="20" class="input-medium Wdate"
+								value="<fmt:formatDate value="${empty rent.landlord_vacantperiods?'':rent.landlord_vacantperiods[9].sdate}" pattern="yyyy-MM-dd"/>"
+								onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/>
+							至
+							<input id="landlord_vacantperiods_edate10" name="landlord_vacantperiods[9].edate" type="text"  maxlength="20" class="input-medium Wdate"
+								value="<fmt:formatDate value="${empty rent.landlord_vacantperiods?'':rent.landlord_vacantperiods[9].edate}" pattern="yyyy-MM-dd"/>"
+								onclick="WdatePicker({dateFmt:'yyyy-MM-dd',isShowClear:false});"/></td>
+								<td><select id="landlord_year10" name="landlord_year10" class="input-small">
+									<option value="">请选择</option>
+									<c:forEach items="${fns:getDictList('finance_vacantperiod_year') }" var="dict">
+									<option value="${dict.value }">${dict.label }</option>
+									</c:forEach>
+								</select></td>
+								<td>前<input type="text" id="landlord_day10" name="landlord_day10" class="input-mini digits"></input>天</td>
+
+								<td><input type="hidden" name="landlord_vacantperiods[9].type" value="2"/></td>
 							 	</tr>
 
 							</table>			                
