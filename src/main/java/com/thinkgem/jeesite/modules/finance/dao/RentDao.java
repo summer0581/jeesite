@@ -42,6 +42,42 @@ public class RentDao extends BaseDao<Rent> {
 	public int deleteRent(String id){
 		return update(" update Rent set house=:p1,delFlag=:p2 where id = :p3", new Parameter(null,BaseEntity.DEL_FLAG_DELETE,id));
 	}
+	
+	/**
+	 * 包租表的综合查询(待审核的）
+	 * @param page
+	 * @param paramMap
+	 * @return
+	 */
+	public Page<Rent> rentList4Audit(Page<Rent> page,Map<String, Object> paramMap) {
+		StringBuffer sql = new StringBuffer();
+		sql.append(" ");
+		sql.append("SELECT ");
+		sql.append("DISTINCT r.*,h.houses ");
+		sql.append("FROM ");
+		sql.append("finance_rent r ");
+		sql.append("INNER JOIN finance_rentmonth rm ON r.id = rm.rent_id ");
+		sql.append("inner join finance_house h on h.id = r.house_id ");
+		sql.append("WHERE ");
+		sql.append("rm.audit_state = 'N' ");
+		sql.append("AND rm.add_from = 'noreturnlist' ");
+		sql.append(" ORDER BY ");
+		sql.append("rm.update_date DESC ");
+		Parameter sqlparam = new Parameter();
+		
+		return findBySql(page, sql.toString(),sqlparam, Rent.class);
+	}
+	/**
+	 * 设置包租月记录为已审核
+	 * @param rent_id
+	 */
+	public void setAudited(String rent_id){
+		StringBuffer sql = new StringBuffer();
+		sql.append(" update finance_rentmonth rm set rm.audit_state = 'Y' where rm.rent_id = :rent_id ");
+		Parameter sqlparam = new Parameter();
+		sqlparam.put("rent_id", rent_id);
+		updateBySql(sql.toString(), sqlparam);
+	}
 
 	/**
 	 * 包租表的综合查询

@@ -72,7 +72,9 @@ public class RentMonth extends IdEntity<RentMonth> {
 	private String manager_fixedcut;//经理业绩提成固定值
 	private String departer_fixedcut;//部长业绩提成固定值
 	private String teamleader_fixedcut;//组长业绩提成固定值
-
+	
+	private String audit_state;//审核状态
+	private String add_from;//新增来源
 	
 
 	public RentMonth() {
@@ -337,6 +339,22 @@ public class RentMonth extends IdEntity<RentMonth> {
 
 	public void setTeamleader_fixedcut(String teamleader_fixedcut) {
 		this.teamleader_fixedcut = teamleader_fixedcut;
+	}
+
+	public String getAudit_state() {
+		return audit_state;
+	}
+
+	public void setAudit_state(String audit_state) {
+		this.audit_state = audit_state;
+	}
+
+	public String getAdd_from() {
+		return add_from;
+	}
+
+	public void setAdd_from(String add_from) {
+		this.add_from = add_from;
 	}
 	
 }

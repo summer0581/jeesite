@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.thinkgem.jeesite.common.persistence.Page;
+import com.thinkgem.jeesite.common.persistence.Parameter;
 import com.thinkgem.jeesite.common.service.BaseService;
 import com.thinkgem.jeesite.common.utils.EntityUtils;
 import com.thinkgem.jeesite.common.utils.StringUtils;
@@ -369,6 +370,14 @@ public class RentService extends BaseService {
 	}
 	
 
+	/**
+	 * 设置包租月记录为已审核
+	 * @param rent_id
+	 */
+	@Transactional(readOnly = false)
+	public void setAudited(String rent_id){
+		rentDao.setAudited(rent_id);
+	}
 	
 	public Page<Rent> rentList(Page<Rent> page,Map<String, Object> paramMap) {
 		String housefilter = (String)paramMap.get("housefilter");
@@ -388,6 +397,10 @@ public class RentService extends BaseService {
 			}
 		}
 		return rentDao.rentList(page,paramMap);
+	}
+	
+	public Page<Rent> rentList4Audit(Page<Rent> page,Map<String, Object> paramMap) {
+		return rentDao.rentList4Audit(page,paramMap);
 	}
 	
 

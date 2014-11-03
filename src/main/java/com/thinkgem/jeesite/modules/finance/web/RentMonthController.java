@@ -58,7 +58,11 @@ public class RentMonthController extends BaseController {
 	
 	@RequiresPermissions("finance:rentMonth:view")
 	@RequestMapping(value = {"list", ""})
-	public String list(RentMonth rentMonth, HttpServletRequest request, HttpServletResponse response, Model model) {
+	public String list(@RequestParam Map<String, Object> paramMap,RentMonth rentMonth, HttpServletRequest request, HttpServletResponse response, Model model) {
+		String viewtype = "";
+		if(null != paramMap){
+			viewtype = (String)paramMap.get("viewtype");
+		}
 		User user = UserUtils.getUser();
 		if (!user.isAdmin()){
 			rentMonth.setCreateBy(user);
@@ -68,10 +72,19 @@ public class RentMonthController extends BaseController {
         page = rentMonthService.find(page, rentMonth); 
         model.addAttribute("page", page);
         model.addAttribute("rent", rentMonth.getRent());
-        if(RentMonth.INFOTYPE.rentin.toString().equals(rentMonth.getInfotype())){
-        	return "modules/finance/rentinMonthList";
-        }else if(RentMonth.INFOTYPE.rentout.toString().equals(rentMonth.getInfotype())){
-        	return "modules/finance/rentoutMonthList";
+        model.addAttribute("paramMap", paramMap);
+        if("noreturnlist".equals(viewtype)){
+            if(RentMonth.INFOTYPE.rentin.toString().equals(rentMonth.getInfotype())){
+            	return "modules/finance/rentinMonthList4Secret";
+            }else if(RentMonth.INFOTYPE.rentout.toString().equals(rentMonth.getInfotype())){
+            	return "modules/finance/rentoutMonthList4Secret";
+            }
+        }else{
+            if(RentMonth.INFOTYPE.rentin.toString().equals(rentMonth.getInfotype())){
+            	return "modules/finance/rentinMonthList";
+            }else if(RentMonth.INFOTYPE.rentout.toString().equals(rentMonth.getInfotype())){
+            	return "modules/finance/rentoutMonthList";
+            }
         }
         return "modules/finance/rentinMonthList";
 	}
@@ -87,21 +100,23 @@ public class RentMonthController extends BaseController {
 	
 	@RequiresPermissions("finance:rentMonth:view")
 	@RequestMapping(value = "rentinform")
-	public String rentinform(RentMonth rentMonth, Model model) {
+	public String rentinform(@RequestParam Map<String, Object> paramMap,RentMonth rentMonth, Model model) {
 		rentMonth = rentMonthService.setNewRentinMonth(rentMonth);
 		model.addAttribute("vacantPeriodCutconfigs", rentMonthService.findVacantPeriodCutconfigList());
 		model.addAttribute("businessSaleCutconfigs", rentMonthService.findBusinessSaleCutconfigList());
 		model.addAttribute("rentMonth", rentMonth);
+		model.addAttribute("paramMap", paramMap);
 		return "modules/finance/rentinMonthForm";
 	}
 
 	@RequiresPermissions("finance:rentMonth:view")
 	@RequestMapping(value = "rentoutform")
-	public String rentoutform(RentMonth rentMonth, Model model) {
+	public String rentoutform(@RequestParam Map<String, Object> paramMap,RentMonth rentMonth, Model model) {
 		rentMonth = rentMonthService.setNewRentoutMonth(rentMonth);
 		model.addAttribute("vacantPeriodCutconfigs", rentMonthService.findVacantPeriodCutconfigList());
 		model.addAttribute("businessSaleCutconfigs", rentMonthService.findBusinessSaleCutconfigList());
 		model.addAttribute("rentMonth", rentMonth);
+		model.addAttribute("paramMap", paramMap);
 		return "modules/finance/rentoutMonthForm";
 	} 
 
@@ -110,6 +125,10 @@ public class RentMonthController extends BaseController {
 	@RequiresPermissions("finance:rentMonth:edit")
 	@RequestMapping(value = "save")
 	public String save(RentMonth rentMonth, @RequestParam Map<String, Object> paramMap,Model model, RedirectAttributes redirectAttributes) {
+		String viewtype = "";
+		if(null != paramMap){
+			viewtype = (String)paramMap.get("viewtype");
+		}
 		if (!beanValidator(model, rentMonth)){
 			return form(rentMonth, model);
 		}
@@ -128,9 +147,11 @@ public class RentMonthController extends BaseController {
 		rentMonth.setBusi_manager(manager);
 		rentMonth.setBusi_departleader(departleader);
 		rentMonth.setBusi_teamleader(teamleader);
+		rentMonth.setAdd_from(viewtype);
+		rentMonth.setAudit_state("N");
 		rentMonthService.save(rentMonth);
 		addMessage(redirectAttributes, "保存包租月记录成功");
-		return "redirect:"+Global.getAdminPath()+"/finance/rentMonth/?infotype="+rentMonth.getInfotype()+"&rent.id="+rentMonth.getRent().getId();
+		return "redirect:"+Global.getAdminPath()+"/finance/rentMonth/?infotype="+rentMonth.getInfotype()+"&rent.id="+rentMonth.getRent().getId()+"&viewtype="+viewtype;
 	}
 	
 	@RequiresPermissions("finance:rentMonth:edit")

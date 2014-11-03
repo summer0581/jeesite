@@ -409,6 +409,7 @@
 					title="人员" url="/sys/user/treeData" cssClass=""/>
 				</c:when>
 				<c:otherwise>
+					<input type="hidden" id="rentin_user" name="rentin_user.id" value="${house.rentin_user.id}" />
 					<input type="text" value="${house.rentin_user.name}" readonly/>
 				</c:otherwise>
 			</c:choose>
@@ -425,6 +426,7 @@
 					title="人员" url="/sys/user/treeData" cssClass=""/> 
 				</c:when>
 				<c:otherwise>
+					<input type="hidden" id="rentout_user" name="rentout_user.id" value="${house.rentout_user.id}" />
 					<input type="text" value="${house.rentout_user.name}" readonly/>
 				</c:otherwise>
 			</c:choose>
