@@ -183,6 +183,34 @@ public abstract class BaseService {
 		ql.append(")");
 		return ql.toString();
 	}
+	
+	/**
+	 * 数据范围过滤
+	 * @param user 当前用户对象，通过“UserUtils.getUser()”获取
+	 * @param officeAlias 机构表别名，例如：dc.createAlias("office", "office");
+	 * @param userAlias 用户表别名，传递空，忽略此参数
+	 * @return ql查询字符串
+	 */
+	public static String dataScopeFilterStringNoAnd(User user, String officeAlias, String userAlias) {
+		Junction junction = dataScopeFilterAddSyn(user, officeAlias, userAlias);
+		Iterator<Criterion> it = junction.conditions().iterator();
+		StringBuilder ql = new StringBuilder();
+		ql.append("  (");
+		if (it.hasNext()){
+			ql.append(it.next());
+		}
+		String[] strField = {".parentIds like ", ".type="}; // 需要给字段增加“单引号”的字段。
+		while (it.hasNext()) {
+			ql.append(" or (");
+			String s = it.next().toString();
+			for(String field : strField){
+				s = s.replaceAll(field + "(\\w.*)", field + "'$1'");
+			}
+			ql.append(s).append(")");
+		}
+		ql.append(")");
+		return ql.toString();
+	}
 
 	protected List<Long> getIdList(String ids) {
 		List<Long> idList = Lists.newArrayList();
