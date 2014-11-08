@@ -297,6 +297,16 @@ public class User extends IdEntity<User> {
 	}
 	
 	/**
+	 * 是否系统管理员
+	 * @param id
+	 * @return
+	 */
+	@Transient
+	public static boolean isSystemAdmin(User person){
+		return (","+person.getRoleNames()+",").indexOf("系统管理员") != -1;
+	}
+	
+	/**
 	 * 是否是经理
 	 * @param user
 	 * @return

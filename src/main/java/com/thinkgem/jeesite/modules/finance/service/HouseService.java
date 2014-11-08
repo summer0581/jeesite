@@ -436,7 +436,7 @@ public class HouseService extends BaseService {
 	 * @return
 	 */
 	public boolean isSuperEditRole(){
-		return UserUtils.getUser().isAdmin() || UserUtils.hasRole("财务管理员") 
+		return UserUtils.getUser().isAdmin() || User.isSystemAdmin(UserUtils.getUser()) || UserUtils.hasRole("财务管理员") 
 				|| UserUtils.hasRole("店面行政主管") || UserUtils.hasRole("客服人员");
 	}
 	
