@@ -230,58 +230,71 @@ public class RentMonthService extends BaseService {
 			
 			if(null != rentMonth){
 				int monthunit = getPayMonthUnit(DictUtils.getDictLabel(rentMonth.getPaytype(), "finance_rent_paytype", "月付"));
+				int addMonth = getPayMonthUnit(rentMonth.getPaytype());
+				int addDay = addMonth*30;
 				List<VacantPeriod> vacantPeriods = rentMonth.getRent().getLandlord_vacantperiods();
-				Map<String,Object> resultMap = getLandlordVacantPeriodByRentMonth(rentMonth,vacantPeriods);
+				RentMonth tempRentmonth = new RentMonth();
+				if(null != rentMonth.getLastpayedate()){
+					tempRentmonth.setLastpaysdate(DateUtils.addDays(DateUtils.addMonths(rentMonth.getLastpayedate(), -addMonth),1));
+					tempRentmonth.setLastpayedate(rentMonth.getLastpayedate());
+				}
+				Map<String,Object> resultMap = getLandlordVacantPeriodByRentMonth(tempRentmonth,vacantPeriods);
 				int vacantPeriodDays = 0;
 				if(null != resultMap){//房东空置期计算
 					vacantPeriodDays = (int)DateUtils.compareDates((Date)resultMap.get("landlord_vacantPeriodedate"), (Date)resultMap.get("landlord_vacantPeriodsdate"), Calendar.DATE)+1;
 				}
 
 				rentMonth.setId("");
-				//rentMonth.setRemarks("");14-06-18 刘睿建议不取消remarks复制。
-				int addMonth = getPayMonthUnit(rentMonth.getPaytype());
-				int addDay = addMonth*30;
+				
 				//此计算是计算当前要支付的月份，起始与结束
 				Map<String,Object> resultMap1 = ruleNextPayDate(rentMonth.getLastpaysdate(),rentMonth.getLastpayedate(),rentMonth.getEdate(),addMonth,vacantPeriodDays);
 				Date willlastpaysdate = (Date)resultMap1.get("willlastpaysdate");
 				Date willlastpayedate = (Date)resultMap1.get("willlastpayedate");
 				rentMonth.setLastpaysdate(willlastpaysdate);
 				rentMonth.setLastpayedate(willlastpayedate);
-				
-				resultMap = getLandlordVacantPeriodByRentMonth(rentMonth,vacantPeriods);  
-				if(null != resultMap){//下一次房东空置期计算
-					vacantPeriodDays = (int)DateUtils.compareDates((Date)resultMap.get("landlord_vacantPeriodedate"), (Date)resultMap.get("landlord_vacantPeriodsdate"), Calendar.DATE)+1;
-				}else{//如果没找到空置期，则设置空置期天数为0；
-					vacantPeriodDays = 0;
-				}
-				//此计算式计算下次要支付的月份，起始与结束
-				Map<String,Object> resultMap2 = ruleNextPayDate(willlastpaysdate,willlastpayedate,rentMonth.getEdate(),addMonth,vacantPeriodDays);
-				Date nextwilllastpaysdate = (Date)resultMap2.get("willlastpaysdate");
-				Date nextwilllastpayedate = (Date)resultMap2.get("willlastpayedate");
-
-
-				if(null != rentMonth.getNextpaydate() && null != rentMonth.getLastpayedate())  
-					//rentMonth.setNextpaydate(DateUtils.addDays(rentMonth.getLastpayedate(), vacantPeriodDays-RentMonthConstant.PAYFOR_REMIND_DAYS-1));
-					rentMonth.setNextpaydate(DateUtils.addMonths(rentMonth.getNextpaydate(), monthunit));
-				
-				
-				int addTotalDay = 0;
-				if(null != nextwilllastpayedate && null != nextwilllastpaysdate){
-					addDay = (int)DateUtils.compareDates(nextwilllastpayedate, nextwilllastpaysdate, Calendar.DATE)+1;
-					willlastpaysdate = DateUtils.addDays(willlastpayedate, 1);
-					willlastpayedate = DateUtils.addMonths(willlastpayedate, addMonth);
-					addTotalDay = (int)DateUtils.compareDates(willlastpayedate, willlastpaysdate, Calendar.DATE)+1;
+				//设置下一次已付起始日期和结束日期
+				if(null != willlastpayedate && null != willlastpayedate){
+					tempRentmonth.setLastpaysdate(DateUtils.addDays(DateUtils.addMonths(willlastpayedate, -addMonth),1));
+					tempRentmonth.setLastpayedate(willlastpayedate);
 					
+					resultMap = getLandlordVacantPeriodByRentMonth(tempRentmonth,vacantPeriods);  
+					if(null != resultMap){//下一次房东空置期计算
+						vacantPeriodDays = (int)DateUtils.compareDates((Date)resultMap.get("landlord_vacantPeriodedate"), (Date)resultMap.get("landlord_vacantPeriodsdate"), Calendar.DATE)+1;
+					}else{//如果没找到空置期，则设置空置期天数为0；
+						vacantPeriodDays = 0;
+					}
+					//此计算式计算下次要支付的月份，起始与结束
+					Map<String,Object> resultMap2 = ruleNextPayDate(willlastpaysdate,willlastpayedate,rentMonth.getEdate(),addMonth,vacantPeriodDays);
+					Date nextwilllastpaysdate = (Date)resultMap2.get("willlastpaysdate");
+					Date nextwilllastpayedate = (Date)resultMap2.get("willlastpayedate");
+					if(null != rentMonth.getNextpaydate() && null != rentMonth.getLastpayedate())  
+						//rentMonth.setNextpaydate(DateUtils.addDays(rentMonth.getLastpayedate(), vacantPeriodDays-RentMonthConstant.PAYFOR_REMIND_DAYS-1));
+						rentMonth.setNextpaydate(DateUtils.addMonths(rentMonth.getNextpaydate(), monthunit));
+					
+					
+					int addTotalDay = 0;
+					if(null != nextwilllastpayedate && null != nextwilllastpaysdate){
+						//addDay = (int)DateUtils.compareDates(nextwilllastpayedate, nextwilllastpaysdate, Calendar.DATE)+1;
+						willlastpaysdate = DateUtils.addDays(willlastpayedate, 1);
+						willlastpayedate = DateUtils.addMonths(willlastpayedate, addMonth);
+						addTotalDay = (int)DateUtils.compareDates(willlastpayedate, willlastpaysdate, Calendar.DATE)+1;
+						addDay = addTotalDay-vacantPeriodDays;
+						
+					}
+					
+					
+					double vacantPeriodCut = (double)(addDay)/addTotalDay;
+					if(vacantPeriodCut < 0){
+						vacantPeriodCut = 0;
+					}
+					//提成计算公式：月支付数*月份 * (实际支付总天数/计划支付总天数)
+					rentMonth.setNextshouldamount(String.valueOf((int)(Integer.valueOf(StringUtils.defaultIfBlank(rentMonth.getRentmonth(), "0"))*addMonth*vacantPeriodCut)));
+
 				}
 				
-				
-				double vacantPeriodCut = (double)(addDay)/addTotalDay;
-				if(vacantPeriodCut < 0){
-					vacantPeriodCut = 0;
-				}
-				//提成计算公式：月支付数*月份 * (实际支付总天数/计划支付总天数)
-				rentMonth.setNextshouldamount(String.valueOf((int)(Integer.valueOf(StringUtils.defaultIfBlank(rentMonth.getRentmonth(), "0"))*addMonth*vacantPeriodCut)));
-				
+
+
+								
 			}
 		}
 		return rentMonth;
@@ -306,6 +319,9 @@ public class RentMonthService extends BaseService {
 		if(null != lastpayedate){//1，判断上次收租结束日期是否大于出租结束日期，如果大于，则看收租起始日期是否大于结束日期，大于则跳出，否则上次付租结束日期=结束日期
 			//willlastpayedate = DateUtils.addDays(DateUtils.addMonths(lastpayedate, addMonth), vacantPeriodDays);
 			willlastpayedate = DateUtils.addMonths(lastpayedate, addMonth);
+			if(DateUtils.compareDates(willlastpaysdate, willlastpayedate, Calendar.DATE) > 0){//已付起始日期最多只能与结束日期相等
+				willlastpaysdate = DateUtils.addDays(willlastpayedate,1);
+			}
 			if(DateUtils.compareDates(willlastpayedate, edate, Calendar.DATE) > 0){
 				if(null != willlastpaysdate ){
 					if(DateUtils.compareDates(willlastpaysdate, edate, Calendar.DATE) > 0){
@@ -315,6 +331,11 @@ public class RentMonthService extends BaseService {
 						willlastpayedate = edate;
 					}
 				}
+			}
+		}
+		if(null != willlastpaysdate && null != willlastpayedate){//起始日期最多不能超过结束日期
+			if(DateUtils.compareDates(willlastpaysdate, willlastpayedate, Calendar.DATE) > 0){
+				willlastpaysdate = willlastpayedate;
 			}
 		}
 		resultMap.put("willlastpaysdate", willlastpaysdate);
@@ -448,34 +469,51 @@ public class RentMonthService extends BaseService {
 		Date landlord_vacantPeriodsdate = null;
 		Date landlord_vacantPeriodedate = null;
 		int monthunit = getPayMonthUnit(DictUtils.getDictLabel(rentin.getPaytype(), "finance_rent_paytype", "月付"));
+		int dayunit = monthunit * 30;
 		RentMonth lastRentoutMonth = findLastRentMonth(rentin);
 		int greatThanDateNumTemp = 0;
 		int greatThanDateNum = 99999;
+		if(null == rentin.getLastpaysdate() || null == rentin.getLastpayedate()){
+			return null;
+		}
+		Date nextLastpaysdate = DateUtils.addMonths(rentin.getLastpaysdate(), monthunit);
+		Date nextLastpayedate = DateUtils.addMonths(rentin.getLastpayedate(), monthunit);
 		if(null == landlord_vacantperiods){
 			return null;
 		}
 		//System.out.println(rentin.getRent().getHouse().getName());
-		for(VacantPeriod vp : landlord_vacantperiods){ //此循环是为了获取实际要用到的空置期
-			if(null == vp.getSdate() || null == vp.getEdate() ||
-					vp.getSdate().compareTo(DateUtils.addMonths(rentin.getLastpayedate(), monthunit) ) > 0 || //下次付租起始日要大于空置期起始日才算
+		for(VacantPeriod vp : landlord_vacantperiods){ //此循环是为了获取实际要用到的空置期,
+			if(null == vp.getSdate() || null == vp.getEdate() 
+					|| //空置期起始日期要在付租起始日期与付租结束日期之间才计算
 					!VacantPeriodConstant.LANDLORD_VACANTPERIOD.equals(vp.getType())){
 				continue;
 			}
-			greatThanDateNumTemp = DateUtils.addMonths(rentin.getLastpaysdate(), monthunit).compareTo(vp.getSdate());//用房东空置期的起始时间去比较下次付租起始时间
-			if(greatThanDateNumTemp >= 0 && greatThanDateNumTemp < greatThanDateNum){//如果月租起始日期大于空置期起始日期 并且 大的数量小于上一次比较的数量
-				landlord_vacantPeriodsdate = vp.getSdate();
-				landlord_vacantPeriodedate = vp.getEdate();
+
+			if((vp.getSdate().compareTo( nextLastpaysdate) >= 0 
+				&& vp.getSdate().compareTo( nextLastpayedate) <= 0)){//首先判断空置期起始日是否在已付时间段之内
+				if(vp.getEdate().compareTo( nextLastpayedate) <= 0){//再次判断空置期结束日期是否在已付时间段之内
+					landlord_vacantPeriodsdate = vp.getSdate();
+					landlord_vacantPeriodedate = vp.getEdate();
+				}else{
+					landlord_vacantPeriodsdate = vp.getSdate();
+					landlord_vacantPeriodedate = nextLastpayedate;
+				}
+			}else if(vp.getSdate().compareTo( nextLastpaysdate) < 0
+					&& vp.getEdate().compareTo( nextLastpaysdate) > 0){//首先判断空置期起始日，是否小于已付起始时间,并且空置期结束日要大于已付起始日期
+				if(vp.getEdate().compareTo( nextLastpayedate) >= 0){//再次判断空置期结束日，是否大于或等于已付结束日期
+					landlord_vacantPeriodsdate = nextLastpaysdate;
+					landlord_vacantPeriodedate = nextLastpayedate;
+				}else{
+					landlord_vacantPeriodsdate = nextLastpaysdate;
+					landlord_vacantPeriodedate = vp.getEdate();
+				}
 			}
-			if(greatThanDateNumTemp >= 0){//如果房东空置期的起始时间去比较下次付租起始时间得到的数量大于0
-				greatThanDateNum = greatThanDateNumTemp;
-			}
-			
-			
+
 		}
-		if(99999 == greatThanDateNum){//如果greatThanDateNum仍然是99999，则表示没设置空置期，则跳出
+		if(null == landlord_vacantPeriodsdate){//如果landlord_vacantPeriodsdate为空，则表示没设置空置期，则跳出
 			return null;
 		}
-		if(null != lastRentoutMonth && null != landlord_vacantPeriodsdate && lastRentoutMonth.getLastpaysdate().compareTo(landlord_vacantPeriodsdate) >=0){//如果上一次出租月记录的付租起始时间 > 空置期起始日期，则排除，说明已计算过空置期了
+		if(null != rentin && null != landlord_vacantPeriodsdate && rentin.getLastpaysdate().compareTo(landlord_vacantPeriodsdate) >=0){//如果上一次出租月记录的付租起始时间 > 空置期起始日期，则排除，说明已计算过空置期了
 			return null;
 		}
 		Map<String,Object> resultMap = new HashMap<String,Object>();
