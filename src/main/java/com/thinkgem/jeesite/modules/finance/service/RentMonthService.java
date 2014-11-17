@@ -272,13 +272,13 @@ public class RentMonthService extends BaseService {
 						rentMonth.setNextpaydate(DateUtils.addMonths(rentMonth.getNextpaydate(), monthunit));
 					
 					
-					int addTotalDay = 0;
+					int addTotalDay = 30;
 					if(null != nextwilllastpayedate && null != nextwilllastpaysdate){
 						//addDay = (int)DateUtils.compareDates(nextwilllastpayedate, nextwilllastpaysdate, Calendar.DATE)+1;
 						willlastpaysdate = DateUtils.addDays(willlastpayedate, 1);
 						willlastpayedate = DateUtils.addMonths(willlastpayedate, addMonth);
-						addTotalDay = (int)DateUtils.compareDates(willlastpayedate, willlastpaysdate, Calendar.DATE)+1;
-						addDay = addTotalDay-vacantPeriodDays;
+						//addTotalDay = (int)DateUtils.compareDates(willlastpayedate, willlastpaysdate, Calendar.DATE)+1;
+						addDay = addTotalDay-vacantPeriodDays; //2014-11-17刘睿要求所有月份都按30天籁算
 						
 					}
 					
@@ -567,18 +567,26 @@ public class RentMonthService extends BaseService {
 		int payMonthUnit = 0;
 		if(StringUtils.isBlank(paytype) || "月付".equals(paytype)){
 			payMonthUnit = 1;
+		}else if("二月付".equals(paytype)){
+			payMonthUnit = 3;
 		}else if("季付".equals(paytype)){
 			payMonthUnit = 3;
 		}else if("四月付".equals(paytype)){
 			payMonthUnit = 4;
 		}else if("五月付".equals(paytype)){
 			payMonthUnit = 5;
-		}else if("八月付".equals(paytype)){
-			payMonthUnit = 8;
-		}else if("十月付".equals(paytype)){
-			payMonthUnit = 10;
 		}else if("半年付".equals(paytype)){
 			payMonthUnit = 6;
+		}else if("七月付".equals(paytype)){
+			payMonthUnit = 7;
+		}else if("八月付".equals(paytype)){
+			payMonthUnit = 8;
+		}else if("九月付".equals(paytype)){
+			payMonthUnit = 9;
+		}else if("十月付".equals(paytype)){
+			payMonthUnit = 10;
+		}else if("十一月付".equals(paytype)){
+			payMonthUnit = 11;
 		}else if("年付".equals(paytype)){
 			payMonthUnit = 12;
 		}
