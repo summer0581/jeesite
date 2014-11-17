@@ -72,7 +72,8 @@ public class HouseController extends BaseController {
 		}
 		
 		Page<House> page = new Page<House>(request, response);
-        page = houseService.find(page, house, paramMap); 
+        //page = houseService.find(page, house, paramMap); 
+		page = houseService.findListBySql(page, house, paramMap); 
         model.addAttribute("page", page);
         model.addAttribute("paramMap",paramMap);
 		return "modules/finance/houseList";

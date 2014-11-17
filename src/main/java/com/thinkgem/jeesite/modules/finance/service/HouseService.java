@@ -52,6 +52,35 @@ public class HouseService extends BaseService {
 	public House get(String id) {
 		return houseDao.get(id);
 	}
+	/**
+	 * 查找房屋list根据sql
+	 * @param page
+	 * @param house
+	 * @param paramMap
+	 * @return
+	 */
+	public Page<House> findListBySql(Page<House> page, House house,Map<String, Object> paramMap) {
+		StringBuffer sql = new StringBuffer();
+		HouseAreaRole houseAreaRole = houseAreaRoleDao.findByPerson(UserUtils.getUser().getId());
+		if(null == houseAreaRole || StringUtils.isBlank(houseAreaRole.getAreas())){//房屋查询可以设置区域查询权限
+			if(isSuperEditRole()){
+			}else{
+				sql.append(" and (cb.id = '"+UserUtils.getUser().getId()+"' or ");
+				sql.append(dataScopeFilterStringNoAnd(UserUtils.getUser(), "uio", "ui")).append(" or ");
+				sql.append(dataScopeFilterStringNoAnd(UserUtils.getUser(), "uoo", "uo")).append(") ");
+			}
+		}else{
+			if(isSuperEditRole()){
+			}else{
+				sql.append(" and (cb.id = '"+UserUtils.getUser().getId()+"' or ");
+				sql.append(dataScopeFilterStringNoAnd(UserUtils.getUser(), "uio", "ui")).append(" or ");
+				sql.append(dataScopeFilterStringNoAnd(UserUtils.getUser(), "uoo", "uo")).append(" or ");
+				sql.append(Restrictions.in("h.houses", ("'"+houseAreaRole.getAreas()+"'").replaceAll(",", "','").split(","))).append(") ");
+			}
+		}
+		
+		return houseDao.findListBySql(page, house, paramMap, sql.toString());
+	}
 	
 	public Page<House> find(Page<House> page, House house,Map<String, Object> paramMap) {
 		DetachedCriteria dc = houseDao.createDetachedCriteria();
@@ -219,6 +248,7 @@ public class HouseService extends BaseService {
 		dc.addOrder(Order.desc("id"));
 		return houseDao.find(page, dc);
 	}
+
 	
 	/**
 	 * 获取未与明细表关联的房子信息
@@ -406,8 +436,8 @@ public class HouseService extends BaseService {
 	 * @return
 	 */
 	public boolean isSuperEditRole(){
-		return UserUtils.getUser().isAdmin() || UserUtils.hasRole("财务管理员") 
-				|| UserUtils.hasRole("行政人员") || UserUtils.hasRole("客服人员");
+		return UserUtils.getUser().isAdmin() || User.isSystemAdmin(UserUtils.getUser()) || UserUtils.hasRole("财务管理员") 
+				|| UserUtils.hasRole("店面行政主管") || UserUtils.hasRole("客服人员");
 	}
 	
 	/**

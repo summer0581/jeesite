@@ -433,8 +433,8 @@ public class RentMonthDao extends BaseDao<RentMonth> {
 		}
 
 		if(null != paramMap.get("queryEdate")){
-			Date queryEdate = (Date)paramMap.get("queryEdate");
-			sql.append(" and t.sdate < :queryEdate and t.edate > :queryEdate");
+			Date queryEdate = (Date)paramMap.get("queryEdate"); 
+			sql.append(" and t.sdate <= :queryEdate and t.edate > :queryEdate");
 			pm.put("queryEdate", queryEdate);
 		}
 		sql.append(" order by t.lastpayedate desc limit 0,1 ");

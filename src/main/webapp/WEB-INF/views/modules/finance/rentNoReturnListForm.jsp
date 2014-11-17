@@ -88,6 +88,7 @@
 				<form:input id="house_name" path="house.name" htmlEscape="false" maxlength="64" class="required input-xlarge" readonly="true"/>
 				<a id="relationButton" href="javascript:" class="btn">选择房屋</a>
 				<input id="btnSubmit" class="btn btn-primary" type="submit" value="包租主信息保存"/>&nbsp;
+				<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
 				<script type="text/javascript">
 					var houseSelect = [];
 					function houseSelectAddOrDel(id,title){
