@@ -54,6 +54,12 @@
 			</div>
 		</div>
 		<div class="control-group">
+			<label class="control-label">身份证:</label>
+			<div class="controls">
+				<form:input path="card" htmlEscape="false" maxlength="64" class="card"/>
+			</div>
+		</div>
+		<div class="control-group">
 			<label class="control-label">工作:</label>
 			<div class="controls">
 				<form:input path="job" htmlEscape="false" maxlength="100" class=""/>

@@ -98,19 +98,21 @@
 				<a id="relationButton_landlordadd" href="javascript:" class="btn">添加房东</a>
 				<script type="text/javascript">
 					var landlordSelect = [];
-					function landlordSelectAddOrDel(id,title,telephone){
+					function landlordSelectAddOrDel(id,title,telephone,card){
 						landlordSelect = []
-						landlordSelect.push([id,title,telephone]);
+						landlordSelect.push([id,title,telephone,card]);
 						landlordSelectRefresh();
 					}
 					function landlordSelectRefresh(){
 						$("#landlord_id").val("");
 						$("#landlord_name").val("");
 						$("#landlord_telephone").val("");
+						$("#landlord_card").val("");
 						if(landlordSelect.length > 0){
 							$("#landlord_name").val(landlordSelect[landlordSelect.length-1][1]);
 							$("#landlord_id").val(landlordSelect[landlordSelect.length-1][0]);
 							$("#landlord_telephone").val(landlordSelect[landlordSelect.length-1][2]);
+							$("#landlord_card").val(landlordSelect[landlordSelect.length-1][3]);
 						}
 					}
 					$("#relationButton_landlord").click(function(){
@@ -131,6 +133,12 @@
 			</div>
 		</div>
 		<div class="control-group">
+			<label class="control-label">房东身份证:</label>
+			<div class="controls">
+				<form:input id="landlord_card" path="landlord.card" htmlEscape="false" maxlength="64" class="card"/>
+			</div>
+		</div>
+		<div class="control-group">
 			<label class="control-label">转帐卡号:</label>
 			<div class="controls">
 				<form:input path="debit_card" htmlEscape="false" maxlength="64" class="input-xxlarge"/>
@@ -148,19 +156,21 @@
 				<a id="relationButton_tenantadd" href="javascript:" class="btn">添加租户</a>
 				<script type="text/javascript">
 					var tenantSelect = [];
-					function tenantSelectAddOrDel(id,title,telephone){
+					function tenantSelectAddOrDel(id,title,telephone,card){
 						tenantSelect = []
-						tenantSelect.push([id,title,telephone]);
+						tenantSelect.push([id,title,telephone,card]);
 						tenantSelectRefresh();
 					}
 					function tenantSelectRefresh(){
 						$("#tenant_id").val("");
 						$("#tenant_name").val("");
 						$("#tenant_telephone").val("");
+						$("#tenant_card").val("");
 						if(tenantSelect.length > 0){
 							$("#tenant_name").val(tenantSelect[tenantSelect.length-1][1]);
 							$("#tenant_id").val(tenantSelect[tenantSelect.length-1][0]);
 							$("#tenant_telephone").val(tenantSelect[tenantSelect.length-1][2]);
+							$("#tenant_card").val(tenantSelect[tenantSelect.length-1][3]);
 						}
 					}
 					$("#relationButton_tenant").click(function(){
@@ -177,6 +187,12 @@
 			<label class="control-label">租户联系电话:</label>
 			<div class="controls">
 				<form:input id="tenant_telephone" path="tenant.telephone" htmlEscape="false" maxlength="64" class=""/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">租户身份证:</label>
+			<div class="controls">
+				<form:input id="tenant_card" path="tenant.card" htmlEscape="false" maxlength="64" class="card"/>
 			</div>
 		</div>
 		</c:if>
@@ -430,6 +446,18 @@
 					<input type="text" value="${house.rentout_user.name}" readonly/>
 				</c:otherwise>
 			</c:choose>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">进房合同编号:</label>
+			<div class="controls">
+				<form:input path="rentin_htnum" htmlEscape="false" maxlength="200" class="input-xxlarge"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">出房合同编号:</label>
+			<div class="controls">
+				<form:input path="rentout_htnum" htmlEscape="false" maxlength="200" class="input-xxlarge"/>
 			</div>
 		</div>
 		<div class="control-group">

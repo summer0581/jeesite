@@ -288,7 +288,8 @@ public class RentMonthService extends BaseService {
 						vacantPeriodCut = 0;
 					}
 					//提成计算公式：月支付数*月份 * (实际支付总天数/计划支付总天数)
-					rentMonth.setNextshouldamount(String.valueOf((int)(Integer.valueOf(StringUtils.defaultIfBlank(rentMonth.getRentmonth(), "0"))*addMonth*vacantPeriodCut)));
+					
+					rentMonth.setNextshouldamount(String.valueOf(Math.round(Integer.valueOf(StringUtils.defaultIfBlank(rentMonth.getRentmonth(), "0"))*addMonth*vacantPeriodCut)));
 
 				}
 				

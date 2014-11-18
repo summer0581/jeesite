@@ -69,6 +69,7 @@
 				<th>名称</th>
 				<th>性别</th>
 				<th>电话号码</th>
+				<th>身份证</th>
 				<th>工作</th>
 				<th>爱好</th>
 				<th>备注</th>
@@ -81,6 +82,7 @@
 				<td><a href="${ctx}/finance/customer/form?id=${customer.id}">${customer.name}</a></td>
 				<td>${fns:getDictLabel(customer.sex, 'sys_user_sex', '未知')}</td>
 				<td>${customer.telephone}</td>
+				<td>${customer.card}</td>
 				<td>${customer.job}</td>
 				<td>${customer.hobby}</td>
 				<td>${customer.remark}</td>

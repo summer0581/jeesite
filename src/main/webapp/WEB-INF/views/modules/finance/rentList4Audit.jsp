@@ -84,6 +84,13 @@
 		<input id="notcancelrentonly" name="notcancelrentonly" type="hidden" value="${paramMap.notcancelrentonly}"/>
 		<input id="order" name="order" type="hidden" value="${paramMap.order}"/>
 		<input id="showHighSearch" name="showHighSearch" type="hidden" value="${paramMap.showHighSearch}"/>
+		<div><label>房屋地址：</label>
+		<form:input path="name" htmlEscape="false" maxlength="50" class="input-small" value="${paramMap.name}"/>
+		<label>编号：</label>
+		<input name="business_num" maxlength="50" type="text" class="input-small digits" value="${paramMap.business_num}"/>
+		&nbsp;<input id="btnSubmit" class="btn btn-primary" onclick="return page();" type="submit" value="查询"/>
+		&nbsp;<input id="btnReset" class="btn btn-primary" onclick="resets()" type="button" value="重置"/>
+		</div>
 	</form:form>
 	<tags:message content="${message}"/>
 	<table id="contentTable" class="table table-striped table-bordered table-condensed">

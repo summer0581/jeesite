@@ -61,9 +61,20 @@ public class RentDao extends BaseDao<Rent> {
 		sql.append("WHERE ");
 		sql.append("rm.audit_state = 'N' ");
 		sql.append("AND rm.add_from = 'noreturnlist' ");
+		Parameter sqlparam = new Parameter();
+		String name = (String)paramMap.get("name");
+		if(StringUtils.isNotBlank(name)){
+			sql.append("AND h.name like :name ");
+			sqlparam.put("name", "%"+name+"%");
+		}
+		String business_num = (String)paramMap.get("business_num");
+		if(StringUtils.isNotBlank(business_num)){
+			sql.append("AND r.business_num = :business_num ");
+			sqlparam.put("business_num", business_num);
+		}
 		sql.append(" ORDER BY ");
 		sql.append("rm.update_date DESC ");
-		Parameter sqlparam = new Parameter();
+		
 		
 		return findBySql(page, sql.toString(),sqlparam, Rent.class);
 	}

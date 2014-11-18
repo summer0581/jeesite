@@ -48,7 +48,7 @@
 
 	<ul class="nav nav-tabs">
 		<li class="active"><a href="${ctx}/finance/rent/rentList?viewtype=rent4Secret">包租明细列表</a></li>
-		<shiro:hasPermission name="finance:rent:edit"><li><a href="${ctx}/finance/rent/form?viewtype=noreturnlist">包租明细添加</a></li></shiro:hasPermission>
+		<!--<shiro:hasPermission name="finance:rent:edit"><li><a href="${ctx}/finance/rent/form?viewtype=noreturnlist">包租明细添加</a></li></shiro:hasPermission>-->
 	</ul>
 	<form:form id="searchForm" modelAttribute="rent" action="${ctx}/finance/rent/rentList" method="post" class="breadcrumb form-search">
 		<input id="pageNo" name="pageNo" type="hidden" value="${page.pageNo}"/>
