@@ -35,6 +35,7 @@ public class Customer extends IdEntity<Customer> {
 	private String name; 	// 名称
 	private String social_context;//'客户的社会背景',
 	private String telephone;//'电话号码',
+	private String card;//身份证
 	private String job;//'工作',
 	private String hobby;//'爱好',
 	private String sex;//'性别',
@@ -78,6 +79,16 @@ public class Customer extends IdEntity<Customer> {
 
 	public void setTelephone(String telephone) {
 		this.telephone = telephone;
+	}
+	
+	@Length(min=0, max=64)
+	@ExcelField(title="身份证", type=0, align=1, sort=35)
+	public String getCard() {
+		return card;
+	}
+
+	public void setCard(String card) {
+		this.card = card;
 	}
 	@Length(min=0, max=100)
 	@ExcelField(title="工作", type=0, align=1, sort=40)

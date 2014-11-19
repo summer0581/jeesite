@@ -91,6 +91,9 @@ public class House extends IdEntity<House> {
 	private User rentin_user;//租进业务员
 	private User rentout_user;//租出业务员
 	
+	private String rentin_htnum;//进房合同编号
+	private String rentout_htnum;//出房合同编号
+	
 	private Rent rent;
 	private String rent_state;//出租状态
 	private String  flag_norentin;//'未租进',
@@ -175,10 +178,24 @@ public class House extends IdEntity<House> {
 			return "";
 	}
 
+	public void setLandlord_card(String landlord_card) {
+		if(null != this.landlord)
+			this.landlord.setCard(landlord_card);
+	}
+	@ExcelField(title="房东身份证", type=0, align=1, sort=55)
+	@Transient
+	public String getLandlord_card() {
+		if(null != this.landlord)
+			return this.landlord.getCard();
+		else
+			return "";
+	}
+
 	public void setLandlord_telephone(String landlord_telephone) {
 		if(null != this.landlord)
 			this.landlord.setTelephone(landlord_telephone);
 	}
+
 	@ExcelField(title="转帐卡号", type=0, align=1, sort=60)
 	public String getDebit_card() {
 		return debit_card;
@@ -208,6 +225,20 @@ public class House extends IdEntity<House> {
 		}
 		return "";
 		
+	}
+
+	public void setTenant_card(String tenant_card) {
+		if(null != this.tenant)
+			this.tenant.setCard(tenant_card);
+	}
+	
+	@ExcelField(title="租户身份证", type=0, align=1, sort=85)
+	@Transient
+	public String getTenant_card() {
+		if(null != this.tenant){
+			return this.tenant.getCard();
+		}
+		return "";
 	}
 
 	public void setTenant_telephone(String tenant_telephone) {
@@ -250,7 +281,22 @@ public class House extends IdEntity<House> {
 	public void setRentout_user(User rentout_user) {
 		this.rentout_user = rentout_user;
 	}
+	@ExcelField(title="进房合同编号", type=0, align=1, sort=103)
+	public String getRentin_htnum() {
+		return rentin_htnum;
+	}
 
+	public void setRentin_htnum(String rentin_htnum) {
+		this.rentin_htnum = rentin_htnum;
+	}
+	@ExcelField(title="出房合同编号", type=0, align=1, sort=105)
+	public String getRentout_htnum() {
+		return rentout_htnum;
+	}
+
+	public void setRentout_htnum(String rentout_htnum) {
+		this.rentout_htnum = rentout_htnum;
+	}
 
 	public String getImage() {
 		return image;

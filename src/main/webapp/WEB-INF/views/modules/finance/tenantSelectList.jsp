@@ -19,11 +19,11 @@
 					}
 				}
 				$(this).click(function(){
-					var id = $(this).val(), title = $(this).attr("title"), telephone = $(this).attr("telephone");
+					var id = $(this).val(), title = $(this).attr("title"), telephone = $(this).attr("telephone"), card = $(this).attr("card");;
 					if (top.mainFrame.financeMainFrame){
-						top.mainFrame.financeMainFrame.tenantSelectAddOrDel(id, title, telephone);
+						top.mainFrame.financeMainFrame.tenantSelectAddOrDel(id, title, telephone, card);
 					}else{
-						top.mainFrame.tenantSelectAddOrDel(id, title ,telephone);
+						top.mainFrame.tenantSelectAddOrDel(id, title ,telephone, card);
 					}
 				});
 			});
@@ -52,16 +52,18 @@
 			<th>名称</th>
 			<th>性别</th>
 			<th>电话号码</th>
+			<th>身份证</th>
 			<th>工作</th>
 			<th>爱好</th>
 			<th>备注</th>
 		<tbody>
 		<c:forEach items="${page.list}" var="customer">
 			<tr>
-				<td style="text-align:center;"><input type="radio" name="id" value="${customer.id}" title="${fns:abbr(customer.name,40)}" telephone="${customer.telephone}"/></td>
+				<td style="text-align:center;"><input type="radio" name="id" value="${customer.id}" title="${fns:abbr(customer.name,40)}" telephone="${customer.telephone}"  card="${customer.card}"/></td>
 				<td>${customer.name}</td>
 				<td>${fns:getDictLabel(customer.sex, 'sys_user_sex', '未知')}</td>
 				<td>${customer.telephone}</td>
+				<td>${customer.card}</td>
 				<td>${customer.job}</td>
 				<td>${customer.hobby}</td>
 				<td>${customer.remark}</td>
