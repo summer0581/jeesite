@@ -128,6 +128,12 @@
 			</div>
 		</div>
 		<div class="control-group">
+			<label class="control-label">房东身份证:</label>
+			<div class="controls">
+				<form:input id="landlord_card" path="landlord.card" htmlEscape="false" maxlength="64" class="card"/>
+			</div>
+		</div>
+		<div class="control-group">
 			<label class="control-label">转帐卡号:</label>
 			<div class="controls">
 				<form:input path="debit_card" htmlEscape="false" maxlength="64" class="input-xxlarge"/>
@@ -174,6 +180,12 @@
 			<label class="control-label">租户联系电话:</label>
 			<div class="controls">
 				<form:input id="tenant_telephone" path="tenant.telephone" htmlEscape="false" maxlength="64" class=""/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">租户身份证:</label>
+			<div class="controls">
+				<form:input id="tenant_card" path="tenant.card" htmlEscape="false" maxlength="64" class="card"/>
 			</div>
 		</div>
 		</c:if>
@@ -425,6 +437,18 @@
 					<input type="text" value="${house.rentout_user.name}" readonly/>
 				</c:otherwise>
 			</c:choose>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">进房合同编号:</label>
+			<div class="controls">
+				<form:input path="rentin_htnum" htmlEscape="false" maxlength="200" class="input-xxlarge"/>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label">出房合同编号:</label>
+			<div class="controls">
+				<form:input path="rentout_htnum" htmlEscape="false" maxlength="200" class="input-xxlarge"/>
 			</div>
 		</div>
 		<div class="control-group">

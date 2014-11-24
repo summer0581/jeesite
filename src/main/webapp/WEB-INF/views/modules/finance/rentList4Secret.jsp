@@ -28,7 +28,7 @@
         	return false;
         }
 		function resets(){
-			$("input[type=text],input[type=hidden],select","#searchForm").not("#pageNo,#pageSize").val("");
+			$("input[type=text],input[type=hidden],select","#searchForm").not("#pageNo,#pageSize,#viewtype,#notcancelrentonly").val("");
 			page();
 		}
 		
