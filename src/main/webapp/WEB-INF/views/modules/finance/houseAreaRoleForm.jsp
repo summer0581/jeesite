@@ -41,6 +41,13 @@
 				}
 			})
 		}
+		
+		function allcheck(){
+			$(":checkbox[name='areas']").prop("checked","true");
+		}
+		function allnocheck(){
+			$(":checkbox[name='areas']").prop("checked","");
+		}
 	</script>
 </head>
 <body>
@@ -64,6 +71,14 @@
 			<label class="control-label">快速授予权限的区域<b style="color:red;">（请以[区域,区域,区域]的格式输入指定的区域内容,填写完后请用鼠标点击一下其他地方）</b>:</label>
 			<div class="controls">
 				<form:textarea path="areas_str" htmlEscape="false" rows="4" maxlength="3000" style="width:100%;" class="input-xxlarge"/>
+			</div>
+			
+		</div>
+		<div class="control-group">
+			<label class="control-label">工具栏：</label>
+			<div class="controls">
+				<input id="btnAllCheck" class="btn" type="button" value="全选" onclick="allcheck()"/>
+				<input id="btnAllCheck" class="btn" type="button" value="取消全选" onclick="allnocheck()"/>
 			</div>
 			
 		</div>

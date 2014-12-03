@@ -437,7 +437,7 @@ public class RentMonthService extends BaseService {
 			if(null == vp.getSdate() || null == vp.getEdate() || VacantPeriodConstant.LANDLORD_VACANTPERIOD.equals(vp.getType())){
 				continue;
 			}
-			greatThanDateNumTemp = rentout.getSdate().compareTo(vp.getSdate());
+			greatThanDateNumTemp = (int)DateUtils.compareDates(rentout.getSdate(), vp.getSdate(), Calendar.DATE);
 			if(greatThanDateNumTemp >= 0 && greatThanDateNumTemp < greatThanDateNum){//如果月租起始日期大于空置期起始日期 并且 大的数量小于上一次比较的数量
 				recentVacantPeriodSdate = vp.getSdate();
 				recentVacantPeriodEdate = vp.getEdate();

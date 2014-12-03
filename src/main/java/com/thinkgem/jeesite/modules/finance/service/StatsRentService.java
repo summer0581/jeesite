@@ -118,7 +118,7 @@ public class StatsRentService extends BaseService {
 			recentVacantPeriodEdate = (Date)result.get("recent_vacantPeriodEdate");
 			recentVacantType = (String)result.get("recent_vacantType");
 			
-			long vacantperiod = getVacantPeriodCount(rentmonth,sameMonthRentin,lastRentoutMonth,getVacantPeriodConfigNum(recentVacantPeriodEdate,recentVacantPeriodSdate));
+			long vacantperiod = getVacantPeriodCount(rentmonth,sameMonthRentin,lastRentoutMonth,getVacantPeriodConfigNum(recentVacantPeriodEdate,recentVacantPeriodSdate),recentVacantPeriodEdate);
 			if(vacantperiod<0){
 				continue;
 			}
@@ -227,7 +227,7 @@ public class StatsRentService extends BaseService {
 				recentVacantPeriodEdate = (Date)result.get("recent_vacantPeriodEdate");
 				recentVacantType = (String)result.get("recent_vacantType");
 				
-				long vacantperiod = getVacantPeriodCount(rentmonth,sameMonthRentin,lastRentoutMonth,getVacantPeriodConfigNum(recentVacantPeriodEdate,recentVacantPeriodSdate));
+				long vacantperiod = getVacantPeriodCount(rentmonth,sameMonthRentin,lastRentoutMonth,getVacantPeriodConfigNum(recentVacantPeriodEdate,recentVacantPeriodSdate),recentVacantPeriodEdate);
 				if(vacantperiod<0){
 					continue;
 				}
@@ -379,7 +379,7 @@ public class StatsRentService extends BaseService {
 				recentVacantPeriodEdate = (Date)result.get("recent_vacantPeriodEdate");
 				recentVacantType = (String)result.get("recent_vacantType");
 				
-				long vacantperiod = getVacantPeriodCount(rentmonth,sameMonthRentin,lastRentoutMonth,getVacantPeriodConfigNum(recentVacantPeriodEdate,recentVacantPeriodSdate));
+				long vacantperiod = getVacantPeriodCount(rentmonth,sameMonthRentin,lastRentoutMonth,getVacantPeriodConfigNum(recentVacantPeriodEdate,recentVacantPeriodSdate),recentVacantPeriodEdate);
 				if(vacantperiod<0){
 					continue;
 				}
@@ -517,7 +517,7 @@ public class StatsRentService extends BaseService {
 				recentVacantType = (String)result.get("recent_vacantType");
 				
 
-				long vacantperiod = getVacantPeriodCount(rentmonth,sameMonthRentin,lastRentoutMonth,getVacantPeriodConfigNum(recentVacantPeriodEdate,recentVacantPeriodSdate));
+				long vacantperiod = getVacantPeriodCount(rentmonth,sameMonthRentin,lastRentoutMonth,getVacantPeriodConfigNum(recentVacantPeriodEdate,recentVacantPeriodSdate),recentVacantPeriodEdate);
 				if(vacantperiod<0){
 					continue;
 				}
@@ -712,7 +712,7 @@ public class StatsRentService extends BaseService {
 				recentVacantPeriodEdate = (Date)result.get("recent_vacantPeriodEdate");
 				recentVacantType = (String)result.get("recent_vacantType");
 				
-				long vacantperiod = getVacantPeriodCount(rentmonth,sameMonthRentin,lastRentoutMonth,getVacantPeriodConfigNum(recentVacantPeriodEdate,recentVacantPeriodSdate));
+				long vacantperiod = getVacantPeriodCount(rentmonth,sameMonthRentin,lastRentoutMonth,getVacantPeriodConfigNum(recentVacantPeriodEdate,recentVacantPeriodSdate),recentVacantPeriodEdate);
 				if(vacantperiod<0){
 					continue;
 				}
@@ -1892,7 +1892,7 @@ public class StatsRentService extends BaseService {
 	 * @param vacantPeriodConfig 空置期配置天数
 	 * @return
 	 */
-	public int getVacantPeriodCount(RentMonth rentoutmonth,RentMonth sameMonthRentin,RentMonth lastRentoutMonth,int vacantPeriodConfig){
+	public int getVacantPeriodCount(RentMonth rentoutmonth,RentMonth sameMonthRentin,RentMonth lastRentoutMonth,int vacantPeriodConfig,Date recentVacantPeriodEdate){
 		/*如果是第一个头期，也就是第一次租进租出，那么出租 上一次收租时间应该减去 租进的月记录的起始日（因为此时并没有上一条收租记录）。
 		 * 如果不是第一个头期，则要用出租上一次收租时间减去 上一条收租记录的（如果有提前退租时间，则减提前退租时间.如果没有则减 收租结束时间）
 		 */
@@ -1900,10 +1900,17 @@ public class StatsRentService extends BaseService {
 		if(!"1".equals(rentoutmonth.getFirstmonth_num())){
 			if(null == lastRentoutMonth)
 				return -1;
-			if(null != lastRentoutMonth.getCancelrentdate()){
+			/*if(null != lastRentoutMonth.getCancelrentdate()){
 				oldRentoutDate = lastRentoutMonth.getCancelrentdate();
 			}else{
 				oldRentoutDate = lastRentoutMonth.getEdate();
+			}*/
+			//20141203根据刘睿的需求：空置期是死的，比如房子刚进来时，设置了每年的头30天，则这个空置期是死的，后续都依照这个空置期来算提成，如果在这个空置期之中租出去了，则有提成
+			//如果没有在这个空置期时间段之中租出去则不算提成，故下面的计算方式是 if (ped >=ledate) else()
+			if(recentVacantPeriodEdate.compareTo(rentoutmonth.getLastpayedate()) >= 0){
+				return (int)DateUtils.compareDates(rentoutmonth.getLastpayedate(), rentoutmonth.getLastpaysdate(), Calendar.DATE);
+			}else{
+				return (int)DateUtils.compareDates(recentVacantPeriodEdate, rentoutmonth.getLastpaysdate(), Calendar.DATE);
 			}
 		}else{
 			oldRentoutDate = sameMonthRentin.getSdate();
