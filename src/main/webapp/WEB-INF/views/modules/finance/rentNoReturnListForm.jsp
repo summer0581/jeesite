@@ -86,7 +86,7 @@
 				<input type="hidden" id="viewtype" name="viewtype" value="noreturnlist"/>
 				<input type="hidden" id="rentin_sdate" name="rentin_sdate" value="<fmt:formatDate value="${rent.rentin_sdate}" pattern="yyyy-MM-dd"/>"/>
 				<form:input id="house_name" path="house.name" htmlEscape="false" maxlength="64" class="required input-xlarge" readonly="true"/>
-
+				<input id="btnSubmit" class="btn btn-primary" type="submit" value="包租主信息保存"/>&nbsp;
 				<input id="btnCancel" class="btn" type="button" value="返 回" onclick="history.go(-1)"/>
 				<script type="text/javascript">
 					var houseSelect = [];
@@ -116,7 +116,7 @@
 		    <div class="control-group">
 				<label class="control-label">编号:</label>
 				<div class="controls">
-					<form:input path="business_num" htmlEscape="false" rows="4" maxlength="200" class="required input-xxlarge"/>
+					<form:input path="business_num" htmlEscape="false" rows="4" maxlength="200" class="required input-xxlarge" readonly="true"/>
 				</div>
 			</div>
 		
