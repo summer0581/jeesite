@@ -56,7 +56,7 @@ public class LogInterceptor extends BaseService implements HandlerInterceptor {
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, 
 			Object handler, Exception ex) throws Exception {
 		
-		String requestRri = request.getRequestURI();
+		/*String requestRri = request.getRequestURI();
 		String uriPrefix = request.getContextPath() + Global.getAdminPath();
 		
 		if ((StringUtils.startsWith(requestRri, uriPrefix) && (StringUtils.endsWith(requestRri, "/save")
@@ -95,7 +95,7 @@ public class LogInterceptor extends BaseService implements HandlerInterceptor {
 //		logger.debug("最大内存: {}, 已分配内存: {}, 已分配内存中的剩余空间: {}, 最大可用内存: {}", 
 //				Runtime.getRuntime().maxMemory(), Runtime.getRuntime().totalMemory(), Runtime.getRuntime().freeMemory(), 
 //				Runtime.getRuntime().maxMemory()-Runtime.getRuntime().totalMemory()+Runtime.getRuntime().freeMemory()); 
-		
+		*/
 	}
 
 }
