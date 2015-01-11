@@ -413,6 +413,9 @@ public class RentDao extends BaseDao<Rent> {
 			List<String> cancelrentresult = findBySql(cancelrentSql.toString(),cancelSqlParam);
 			if(cancelrentresult.size()>0){//此处，需要先将in的内容查出来，否则直接用子查询查会慢很多倍
 				sql.append(StringUtils.createInSql("r.id", cancelrentresult));
+			}else{
+				cancelrentresult.add("xxxxxx");
+				sql.append(StringUtils.createInSql("r.id", cancelrentresult));
 			}
 
 			
