@@ -390,7 +390,7 @@ public class BaseDao<T> {
 	public <E> Page<E> findBySql(Page<E> page, String sqlString, Parameter parameter, Class<?> resultClass){
 		// get count
     	if (!page.isDisabled() && !page.isNotCount()){
-	        String countSqlString = "select count(*) " + removeSelect(sqlString);  
+	        String countSqlString = "select count(1) " + removeSelect(sqlString);  
 //	        page.setCount(Long.valueOf(createSqlQuery(countSqlString, parameter).uniqueResult().toString()));
 	        Query query = createSqlQuery(countSqlString, parameter);
 	        List<Object> list = query.list();

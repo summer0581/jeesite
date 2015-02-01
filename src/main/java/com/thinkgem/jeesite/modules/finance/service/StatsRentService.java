@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.thinkgem.jeesite.common.persistence.Parameter;
 import com.thinkgem.jeesite.common.service.BaseService;
 import com.thinkgem.jeesite.common.utils.DateUtils;
 import com.thinkgem.jeesite.common.utils.MathUtils;
@@ -1584,7 +1585,7 @@ public class StatsRentService extends BaseService {
 	 * @return
 	 */
 	public List<RentMonth> getVacantperiodBaseAllList(Map<String, Object> paramMap){
-		DetachedCriteria dc = rentMonthDao.createDetachedCriteria();
+/*		DetachedCriteria dc = rentMonthDao.createDetachedCriteria();
 		dc.createAlias("rent", "rent");
 		dc.add(Restrictions.eq(RentMonth.FIELD_DEL_FLAG, Rent.DEL_FLAG_NORMAL));
 		
@@ -1600,8 +1601,28 @@ public class StatsRentService extends BaseService {
 		if(!StringUtils.isBlank(name)){
 			dc.add(Restrictions.like("rent.name", "%"+name+"%"));
 		}
-		dc.addOrder(Order.asc("rent.business_num"));
-		return rentMonthDao.find(dc); 
+		dc.addOrder(Order.asc("rent.business_num"));*/
+		
+		StringBuffer sql = new StringBuffer();
+		Parameter param = new Parameter();
+		sql.append("select ");
+		//sql.append(" rm.id,rm.create_by,rm.create_date,rm.del_flag,rm.remarks,rm.update_by,rm.update_date,rm.add_from,rm.lastpaysdate,rm.lastpayedate,rm.sdate,rm.edate,rm.cut_vacantperiodtype,rm.firstmonth_num,rm.person,rm.infotype,rm.rent_id ");
+		sql.append(" * ");
+		sql.append(" from finance_rentmonth rm inner join finance_rent r on r.id = rm.rent_id where rm.del_flag='0' ");
+
+		Date rentout_sdate_begin = DateUtils.parseDate(paramMap.get("rentout_sdate_begin"));
+		if (rentout_sdate_begin == null){
+			rentout_sdate_begin = DateUtils.getFirstDayOfMonth(new Date());
+			paramMap.put("rentout_sdate_begin", DateUtils.formatDate(rentout_sdate_begin, "yyyy-MM-dd"));
+		}
+		sql.append(" and firstmonth_num <> '' and firstmonth_num is not null and rm.infotype = 'rentout' ");
+
+		String name = (String)paramMap.get("name");
+		if(!StringUtils.isBlank(name)){
+			sql.append(" r.name like  %"+name+"% ");
+		}
+		sql.append(" order by r.business_num ");
+		return rentMonthDao.findBySql(sql.toString(),param,RentMonth.class); 
 	}
 
 	

@@ -66,10 +66,6 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
   
- <!-- 定时器 -->
-  <listener> 
-	<listener-class>com.thinkgem.jeesite.modules.sys.schedule.ContextListener</listener-class> 
-  </listener>
 
   
   <!-- Apache Shiro -->

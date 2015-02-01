@@ -169,7 +169,7 @@ public class RentController extends BaseController {
 		}
 		paramMap.put("order", "rms.nextpaydate,r.business_num");
 		Page<Rent> pages = new Page<Rent>(request, response);
-		pages.setPageSize(50);
+		pages.setPageSize(15);
 		Page<Rent> page = rentService.rentInListWillNeedPayNextMonth(pages,paramMap);
 		Map<String,String> rentsum = rentService.rentListSumColumn(paramMap,RentMonth.INFOTYPE.rentin);
 		model.addAttribute("page", page);
@@ -195,7 +195,7 @@ public class RentController extends BaseController {
 		paramMap.put("notcancelrent", "true");
 		
 		Page<Rent> pages = new Page<Rent>(request, response);
-		pages.setPageSize(50);
+		pages.setPageSize(15);
 		Page<Rent> page = rentService.rentOutListWillNeedPayNextMonth(pages,paramMap);
 		Map<String,String> rentsum = rentService.rentListSumColumn(paramMap,RentMonth.INFOTYPE.rentout);
 		model.addAttribute("page", page);

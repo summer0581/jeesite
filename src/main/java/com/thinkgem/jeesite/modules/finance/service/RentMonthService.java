@@ -267,9 +267,15 @@ public class RentMonthService extends BaseService {
 					Map<String,Object> resultMap2 = ruleNextPayDate(willlastpaysdate,willlastpayedate,rentMonth.getEdate(),addMonth,vacantPeriodDays);
 					Date nextwilllastpaysdate = (Date)resultMap2.get("willlastpaysdate");
 					Date nextwilllastpayedate = (Date)resultMap2.get("willlastpayedate");
-					if(null != rentMonth.getNextpaydate() && null != rentMonth.getLastpayedate())  
-						//rentMonth.setNextpaydate(DateUtils.addDays(rentMonth.getLastpayedate(), vacantPeriodDays-RentMonthConstant.PAYFOR_REMIND_DAYS-1));
-						rentMonth.setNextpaydate(DateUtils.addMonths(rentMonth.getNextpaydate(), monthunit));
+					if(null != rentMonth.getNextpaydate() && null != rentMonth.getLastpayedate()){
+						if( rentMonth.getLastpayedate().compareTo(rentMonth.getEdate()) >= 0){
+							rentMonth.setNextpaydate(null);
+						}else{
+							//rentMonth.setNextpaydate(DateUtils.addDays(rentMonth.getLastpayedate(), vacantPeriodDays-RentMonthConstant.PAYFOR_REMIND_DAYS-1));
+							rentMonth.setNextpaydate(DateUtils.addMonths(rentMonth.getNextpaydate(), monthunit));
+						}
+					}
+
 					
 					
 					int addTotalDay = 30;
@@ -373,8 +379,15 @@ public class RentMonthService extends BaseService {
 	
 				rentMonth.setLastpaysdate(willlastpaysdate);
 				rentMonth.setLastpayedate(willlastpayedate);
-				if(null != rentMonth.getNextpaydate() && null != rentMonth.getLastpayedate())
-					rentMonth.setNextpaydate(DateUtils.addDays(rentMonth.getLastpayedate(), -RentMonthConstant.PAYFOR_REMIND_DAYS-1));
+
+				if(null != rentMonth.getNextpaydate() && null != rentMonth.getLastpayedate()){
+					if( rentMonth.getLastpayedate().compareTo(rentMonth.getEdate()) >= 0){
+						rentMonth.setNextpaydate(null);
+					}else{
+						rentMonth.setNextpaydate(DateUtils.addDays(rentMonth.getLastpayedate(), -RentMonthConstant.PAYFOR_REMIND_DAYS-1));
+					}
+				}
+					
 				 
 				String amountReceived = String.valueOf(MathUtils.sumInt(rentMonth.getAmountreceived(),String.valueOf(Integer.valueOf(StringUtils.defaultIfBlank(rentMonth.getRentmonth(), "0"))*addMonth)));
 				if(StringUtils.isNotBlank(rentMonth.getNextshouldamount())){//如果设置了下次应付金额，则已收总计是用下次应付金额来累加
