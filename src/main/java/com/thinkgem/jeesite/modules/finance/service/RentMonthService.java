@@ -229,7 +229,7 @@ public class RentMonthService extends BaseService {
 			}
 			
 			if(null != rentMonth){
-				int monthunit = getPayMonthUnit(DictUtils.getDictLabel(rentMonth.getPaytype(), "finance_rent_paytype", "月付"));
+				int monthunit = getPayMonthUnit(rentMonth.getPaytype());
 				int addMonth = getPayMonthUnit(rentMonth.getPaytype());
 				int addDay = addMonth*30;
 				List<VacantPeriod> vacantPeriods = rentMonth.getRent().getLandlord_vacantperiods();
